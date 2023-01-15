@@ -7,7 +7,7 @@ import {PaginationOptions} from '../grid/contracts/data-source';
   styleUrls: ['./pagination.component.scss']
 })
 export class ExodoPaginationComponent implements OnInit {
-  public paginationOptions: PaginationOptions;
+  public paginationOptions: PaginationOptions = null;
   @ViewChild('pagInput') pagInput: ElementRef;
   @Output() onRefreshPagination = new EventEmitter<number>();
   constructor() { }

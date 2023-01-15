@@ -21,25 +21,25 @@ import {ModeType} from "./model/types-model";
   styleUrls: ['./grid.component.scss']
 })
 export class ExodoGridComponent implements OnInit, AfterViewInit, OnChanges {
-  public emptyMessage: string;
+  public emptyMessage = 'Sin datos';
   @ViewChild('pagination') pagination: ExodoPaginationComponent;
   @ViewChild('searchField') searchField: ElementRef<HTMLInputElement>;
   @ViewChild('tableGrid') tableGrid: ElementRef<HTMLTableElement>;
   // Properties
-  @Input() mode: ModeType;
-  @Input() caption: string;
-  @Input() minChar: number;
-  @Input() showPagination: boolean;
-  @Input() showSummary: boolean;
-  @Input() bordered: boolean;
-  @Input() customBody: boolean;
+  @Input() mode: ModeType = 'local';
+  @Input() caption = '';
+  @Input() minChar = 3;
+  @Input() showPagination = false;
+  @Input() showSummary = false;
+  @Input() bordered = false;
+  @Input() customBody = false;
   @Input() headers: ColumnContract[] = [];
   @Input() columns: ColumnContract[] = [];
   @Input() dataSource: DataSourceContract = {
     rows: [],
     dataRecords: null
   };
-  @Input() placeholder: string;
+  @Input() placeholder = 'Búsqueda';
   constructor(
       public gridService: GridService,
   ) {
@@ -47,6 +47,7 @@ export class ExodoGridComponent implements OnInit, AfterViewInit, OnChanges {
     this.placeholder  = 'Búsqueda';
     this.minChar      = 3;
     this.mode         = 'local';
+    this.showSummary  = false;
   }
   ngAfterViewInit(): void {
     this.gridService.searchField    = this.searchField;

@@ -5,7 +5,6 @@
     { "input": "src/lib/assets", "glob": "**/*.*", "output": "assets" }
   ],
   "lib": {
-    "entryFile": "src/public-api.ts",
-    "cssUrl": "inline"
+    "entryFile": "src/public-api.ts"
   }
 }

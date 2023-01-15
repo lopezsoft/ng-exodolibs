@@ -10,11 +10,11 @@ export class GridCellComponent {
   protected isEditing = false;
   @Output() onChange = new EventEmitter<string>();
   @ViewChild('inputElement') inputElement: ElementRef<HTMLInputElement>;
-  @Input() column: ColumnContract;
-  @Input() dataSource: DataSourceContract;
+  @Input() column: ColumnContract = null;
+  @Input() dataSource: DataSourceContract = null;
   @Input() row: any;
-  @Input() rowIndex: number;
-  @Input() columnIndex: number;
+  @Input() rowIndex = -1;
+  @Input() columnIndex = -1;
 
   public getCssCell(column: ColumnContract): string {
     return column?.cssCell;
