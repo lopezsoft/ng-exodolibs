@@ -36,6 +36,6 @@ export class AppModule { }
 ### Añadir estilos
 En src/styles de la app principal importamos
 ```
-@import 'node_modules/exodolibs/assets/styles.scss';
+@import './../node_modules/exodolibs/assets/style.scss';
 ```
 ### Uso

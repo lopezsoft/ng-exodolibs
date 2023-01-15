@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
-import {ColumnContract, DataSourceContract} from "../../projects/exodolibs/src/lib/components/grid/contracts";
+import {ColumnContract, DataSourceContract} from "exodolibs";
 
 @Component({
   selector: 'app-root',

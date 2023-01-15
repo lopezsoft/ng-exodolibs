@@ -1,12 +1,10 @@
 <div class="container-fluid">
   <div class="card mt-2">
-    <div class="card-header">
-      <el-exodolibs></el-exodolibs>
-    </div>
     <div class="card">
       <exodo-grid
         [columns]="columns"
         [dataSource]="dataSource"
+        [showPagination]="true"
       >
       </exodo-grid>
     </div>
