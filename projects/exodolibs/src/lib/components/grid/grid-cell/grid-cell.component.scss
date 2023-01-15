@@ -1,0 +1,111 @@
+@import "../grid.component";
+
+.input-editing {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+input:not([type="checkbox"]) {
+  display: block;
+  width: 100%;
+  padding: 0.35rem 0.25rem;
+  font-size: .95rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #212529;
+  background-color: rgb(250, 235, 215) !important;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  -webkit-appearance: none;
+  appearance: none;
+  border-radius: 0;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  &:focus {
+    color: #212529;
+    background-color: #fff;
+    border-color: #86b7fe;
+    outline: 0;
+    border-width: 0 !important;
+    box-shadow: 0 0 0 0.05rem rgba(13, 110, 253, 0.25);
+  }
+}
+
+input[type="checkbox"] {
+  width: 100%;
+  width: $form-check-input-width;
+  height: $form-check-input-width;
+  // line-height minus check height
+  margin: ($line-height-base - $form-check-input-width) * .5 0 auto;
+  vertical-align: top;
+  background-color: $form-check-input-bg;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  border: $form-check-input-border;
+  appearance: none;
+  print-color-adjust: exact; // Keep themed appearance for print
+  @include transition($form-check-transition);
+  @include border-radius($form-check-input-border-radius);
+
+  &:active {
+    filter: $form-check-input-active-filter;
+  }
+
+  &:focus {
+    border-color: $form-check-input-focus-border;
+    outline: 0;
+    box-shadow: $form-check-input-focus-box-shadow;
+  }
+
+  &:checked {
+    background-color: $form-check-input-checked-bg-color;
+    border-color: $form-check-input-checked-border-color;
+
+    &[type="checkbox"] {
+      @if $enable-gradients {
+        background-image: escape-svg($form-check-input-checked-bg-image), var(--#{$prefix}gradient);
+      } @else {
+        background-image: escape-svg($form-check-input-checked-bg-image);
+      }
+    }
+
+    &[type="radio"] {
+      @if $enable-gradients {
+        background-image: escape-svg($form-check-radio-checked-bg-image), var(--#{$prefix}gradient);
+      } @else {
+        background-image: escape-svg($form-check-radio-checked-bg-image);
+      }
+    }
+  }
+
+  input[type="checkbox"]:indeterminate {
+    background-color: $form-check-input-indeterminate-bg-color;
+    border-color: $form-check-input-indeterminate-border-color;
+
+    @if $enable-gradients {
+      background-image: escape-svg($form-check-input-indeterminate-bg-image), var(--#{$prefix}gradient);
+    } @else {
+      background-image: escape-svg($form-check-input-indeterminate-bg-image);
+    }
+  }
+
+  &:disabled {
+    pointer-events: none;
+    filter: none;
+    opacity: $form-check-input-disabled-opacity;
+  }
+
+  // Use disabled attribute in addition of :disabled pseudo-class
+  // See: https://github.com/twbs/bootstrap/issues/28247
+  &[disabled],
+  &:disabled {
+    ~ .form-check-label {
+      cursor: default;
+      opacity: $form-check-label-disabled-opacity;
+    }
+  }
+}
+

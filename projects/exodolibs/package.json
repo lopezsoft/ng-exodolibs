@@ -1,0 +1,22 @@
+{
+  "name": "exodolibs",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lopezsoft/ng-exodolibs.git"
+  },
+  "keywords": [],
+  "author": "Lewis Lopez Gomez <lopezsoft.com@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lopezsoft/ng-exodolibs/issues"
+  },
+  "homepage": "https://github.com/lopezsoft/ng-exodolibs#readme",
+  "peerDependencies": {
+    "@angular/common": ">=13.0.0",
+    "@angular/core": ">=13.0.0"
+  },
+  "dependencies": {
+    "tslib": ">=2.3.0"
+  }
+}

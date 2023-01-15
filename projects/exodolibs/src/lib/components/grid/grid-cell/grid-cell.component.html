@@ -1,0 +1,35 @@
+<ng-container *ngIf="!isEditing && column.type !== 'boolean'">
+  <div class="w-100 h-100 grid-cell"
+       [ngClass]="getCssCell(column)"
+       [style]="getClassValue(column)"
+       [innerHTML]="getCellValue(column, columnIndex, rowIndex) | safeHtml"
+       (click)="cellClick($event, column, row, rowIndex, columnIndex)"
+       (dblclick)="cellDbClick($event, column, row, rowIndex, columnIndex)"
+        >
+  </div>
+</ng-container>
+<ng-container *ngIf="column.type === 'boolean'">
+  <div class="input-editing">
+    <input
+      type="checkbox"
+      [(ngModel)]="row[column.dataIndex]"
+      (change)="onInputChange($event)"
+    >
+  </div>
+</ng-container>
+<ng-container *ngIf="isEditing && column.type !== 'boolean'">
+<div class="input-editing">
+  <input
+    [type]="onTypeInput()"
+    [ngClass]="getCssCell(column)"
+    [style]="getClassValue(column)"
+    [attr.inputmode]="onInputMode()"
+    (blur)="onBlur($event)"
+    (keydown)="onKeyDown($event)"
+    [(ngModel)]="row[column.dataIndex]"
+    (change)="onInputChange($event)"
+    autofocus
+    #inputElement
+    >
+</div>
+</ng-container>

@@ -99,6 +99,44 @@
           }
         }
       }
+    },
+    "exodolibs": {
+      "projectType": "library",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "projects/exodolibs",
+      "sourceRoot": "projects/exodolibs/src",
+      "prefix": "el",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/exodolibs/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/exodolibs/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/exodolibs/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "tsConfig": "projects/exodolibs/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
     }
   },
   "cli": {

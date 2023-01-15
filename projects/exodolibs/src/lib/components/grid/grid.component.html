@@ -1,0 +1,68 @@
+<ng-content></ng-content>
+<div class="card table-responsive card-table" *ngIf="columns.length > 0">
+    <div class="grid-loading" [ngClass]="{'show': gridService.isLoading}">
+        <div class="grid-spinner"></div>
+    </div>
+    <div class="card-header">
+        <h4 *ngIf="caption" class="card-title mb-1">{{ caption | uppercase }}</h4>
+        <ng-content select="[header]"></ng-content>
+        <div class="input-group grid-search">
+            <input type="search"
+                   #searchField class="form-control" [placeholder]="placeholder"
+                   (keyup)="gridService.inputKey($event)"
+                   (input)="inputSearch($event)"
+                   (change)="$event.stopPropagation()"
+                   autofocus>
+            <button class="btn btn-primary" (click)="gridService.searchQuery()" [disabled]="gridService.isLoading">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table table-striped table-hover table-bordered" [attr.aria-colcount]="columns.length" #tableGrid>
+            <thead *ngIf="columns?.length > 0">
+                <tr aria-rowindex="1" class="text-center">
+                    <th *ngFor="let header of columns; index as index"  [attr.colspan]="header.colspan"
+                        [width]="header.width || 'auto'"
+                        [attr.aria-colcount]="index + 1">
+                        {{ header.text }}
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+            <ng-container *ngIf="canData() && !customBody">
+                <tr *ngFor="let row of gridService.dataSource.rows; index as rowIndex"
+                    [attr.aria-rowindex]="rowIndex + 2" role="row">
+                  <td *ngFor="let column of columns; index as columnIndex"
+                      role="gridcell" [attr.aria-colindex]="columnIndex + 1">
+                    <el-grid-cell
+                      [column]="column"
+                      [row]="row"
+                      [rowIndex]="rowIndex"
+                      [columnIndex]="columnIndex"
+                      [dataSource]="dataSource"
+                    ></el-grid-cell>
+                  </td>
+                </tr>
+            </ng-container>
+            <ng-container *ngIf="!canData()">
+                <tr aria-rowindex="2" role="row">
+                    <td [attr.colspan]="columns.length" role="gridcell" aria-colindex="1">
+                        <div class="w-100 grid-empty">
+                            {{ emptyMessage }}
+                        </div>
+                    </td>
+                </tr>
+            </ng-container>
+            </tbody>
+            <tfoot class="w-100" *ngIf="showSummary">
+                footer
+            </tfoot>
+        </table>
+    </div>
+    <div class="card-footer">
+        <exodo-pagination class="table-responsive" #pagination *ngIf="showPagination && mode === 'remote'"
+                          (onRefreshPagination)="gridService.onRefreshPagination($event)">
+        </exodo-pagination>
+    </div>
+</div>
