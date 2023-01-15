@@ -1,13 +1,13 @@
 {
   "name": "ng-exodolibs",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "build.github.lib": "ng build githubUserWidgetLib && cp -R ./projects/github-user-widget-lib/src/lib/assets ./dist/github-user-widget-lib/lib"
+    "build.lib": "ng build exodolibs && cp -R ./projects/exodolibs/src/lib/assets ./dist/exodolibs/lib"
   },
   "private": true,
   "dependencies": {
