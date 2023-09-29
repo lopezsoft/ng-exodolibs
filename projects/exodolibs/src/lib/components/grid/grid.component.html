@@ -3,7 +3,7 @@
     <div class="grid-loading" [ngClass]="{'show': gridService.isLoading}">
         <div class="grid-spinner"></div>
     </div>
-    <div class="card-header">
+    <div class="card-header mb-1">
         <h4 *ngIf="caption" class="card-title mb-1">{{ caption | uppercase }}</h4>
         <ng-content select="[header]"></ng-content>
         <div class="input-group grid-search">

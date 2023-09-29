@@ -1,21 +1,18 @@
-// table th, td padding
-
-
 table,
 th,
 td {
-  border-width: 1px !important;
-  border-color: rgba(23, 119, 177, 0.76) !important;
+  border-color: #a3c7e0 !important;
+  transition: background-color 0.5s ease, transform 0.4s ease;
 }
-
 
 th,
 td {
   border-top-width: 0 !important;
+  box-shadow: none;
 }
 
 tr:last-child td {
-  border-bottom-width: 0 !important;
+  border-bottom-width: 1px !important;
 }
 
 .table {
@@ -28,16 +25,35 @@ tr:last-child td {
   border-spacing: 0;
   border-collapse: collapse;
   table-layout: auto;
+  background-color: #eaf3f9;
+  font-family: 'Arial', sans-serif;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+
   thead {
-      tr {
-        position: sticky;
-        top: 0;
-        z-index: 99;
-        background-color: rgb(234, 234, 234);
-        background-color: #e5eff6;
-        vertical-align: bottom;
+    tr {
+      position: sticky;
+      top: 0;
+      z-index: 99;
+      background: linear-gradient(to bottom, #cde2eb, #b9d3e7);
+      vertical-align: bottom;
+      border-bottom: 2px solid #a3c7e0;
+
+      th {
+        cursor: pointer;
+
+        &:hover {
+          background-color: #b9d3e7;
+          transform: translateY(-1px);
+        }
+
+        &:active {
+          background: linear-gradient(to bottom, #F9C942, #F5B700);
+          transform: translateY(1px);
+        }
       }
+    }
   }
+
   thead,
   tfoot {
     th {
@@ -45,37 +61,49 @@ tr:last-child td {
       text-transform: uppercase;
       font-size: 12px;
       letter-spacing: 0.5px;
+      color: #333;
+      padding: $table-cell-padding 2rem;  // Padding original
     }
+
     th,
     td {
-      padding: $table-cell-padding 2rem;
       vertical-align: middle;
     }
   }
+
   tbody {
     white-space: nowrap;
-    tr:nth-child(odd) {
-      background-color: #bfe5ff;
+    tr {
+      background-color: #d6e7f2;
+
+      &:nth-child(odd) {
+        background-color: #ffffff;
+      }
+
+      &:hover {
+        background-color: #c4d8e9;
+      }
     }
+
     th,
     td {
-      padding: 0 !important;
+      padding: 0 !important;  // Padding original
       vertical-align: middle;
       font-size: 12px;
-      border-bottom-width: 0 !important;
-    }
-    tr {
-      &:hover {
-        background-color: #aadafa;
-      }
+      border-bottom: 1px solid #a3c7e0;
     }
   }
 }
-// table inside card, don't need margin bottom
+
 .table-hover {
   tbody {
     tr {
-      cursor: inherit;
+      cursor: pointer;
+      transition: background-color 0.3s ease-in-out;
+
+      &.non-interactive {
+        cursor: not-allowed;
+      }
     }
   }
 }

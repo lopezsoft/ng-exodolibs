@@ -7,38 +7,45 @@
   border-radius: 50%;
   border-left-color: #09f;
   animation: grid-spin 1s ease infinite;
+  transition: transform 0.4s ease;
 }
 
 .card-table {
   min-height: 10rem;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
   .card-header {
     padding: .5rem 1rem !important;
+    font-family: 'Arial', sans-serif;
+    border-bottom: 2px solid #a3c7e0;
   }
 }
+
 .grid-cell {
   font-size: .95rem !important;
   padding: .35rem .25rem !important;
-  span,
-  i,
-  p {
+  transition: background-color 0.5s ease;
+
+  span, i, p {
     padding: 0;
   }
+
   &:focus-visible {
     background-color: antiquewhite !important;
   }
 }
+
 .grid-empty {
   min-height: 10rem;
   font-weight: bold;
   text-align: center;
-  background-color: white;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
   justify-items: center;
   vertical-align: middle;
-  color: #919191 !important;
+  color: #333;
+  font-family: 'Arial', sans-serif;
 }
 
 @keyframes grid-spin {
@@ -62,6 +69,8 @@
   display: none;
   visibility: hidden;
   opacity: 0;
+  font-family: 'Arial', sans-serif;
+
   &.show {
     opacity: 1;
     display: flex;
@@ -69,16 +78,27 @@
     align-items: center;
     justify-content: center;
   }
+
   transition: all 0.5s ease;
 }
 
-
 .grid-search {
+  font-family: 'Arial', sans-serif;
+  background-color: #eaf3f9;
+
   input {
-    border-color: rgba(23, 119, 177, 0.76) !important;
+    border-color: #a3c7e0 !important;
     box-shadow: none;
+    transition: border-color 0.5s ease;
   }
-    button {
-      background-color: rgb(23, 119, 177) !important;
+
+  button.btn {
+    background-color: #a3c7e0;
+    border-color: #a3c7e0;
+    transition: background-color 0.5s ease;
+    &:hover, &:focus {
+      background-color: darken(#a3c7e0, 10%);
     }
+  }
 }
+

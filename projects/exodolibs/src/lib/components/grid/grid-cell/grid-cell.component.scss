@@ -15,7 +15,6 @@ input:not([type="checkbox"]) {
   font-weight: 400;
   line-height: 1.5;
   color: #212529;
-  background-color: rgb(250, 235, 215) !important;
   background-color: #fff;
   background-clip: padding-box;
   border: 1px solid #ced4da;
@@ -34,7 +33,6 @@ input:not([type="checkbox"]) {
 }
 
 input[type="checkbox"] {
-  width: 100%;
   width: $form-check-input-width;
   height: $form-check-input-width;
   // line-height minus check height
