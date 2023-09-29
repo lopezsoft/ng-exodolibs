@@ -3,8 +3,7 @@ import {PaginationOptions} from '../grid/contracts/data-source';
 
 @Component({
   selector: 'exodo-pagination',
-  templateUrl: './pagination.component.html',
-  styleUrls: ['./pagination.component.scss']
+  templateUrl: './pagination.component.html'
 })
 export class ExodoPaginationComponent implements OnInit {
   public paginationOptions: PaginationOptions = null;

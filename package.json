@@ -1,13 +1,13 @@
 {
   "name": "ng-exodolibs",
-  "version": "0.0.1",
+  "version": "0.1.5",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "build.lib": "ng build exodolibs && cp -R ./projects/exodolibs/src/lib/assets ./dist/exodolibs/lib"
+    "build-lib": "ng build exodolibs && cp -R ./projects/exodolibs/src/lib/assets ./dist/exodolibs/lib"
   },
   "private": true,
   "dependencies": {

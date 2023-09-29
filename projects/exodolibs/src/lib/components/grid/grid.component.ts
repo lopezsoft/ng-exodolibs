@@ -17,8 +17,7 @@ import {GridService} from "./grid.service";
 import {ModeType} from "./model/types-model";
 @Component({
   selector: 'exodo-grid',
-  templateUrl: './grid.component.html',
-  styleUrls: ['./grid.component.scss']
+  templateUrl: './grid.component.html'
 })
 export class ExodoGridComponent implements OnInit, AfterViewInit, OnChanges {
   public emptyMessage = 'Sin datos';

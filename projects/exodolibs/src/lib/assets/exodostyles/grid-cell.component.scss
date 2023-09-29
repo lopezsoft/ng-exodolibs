@@ -1,13 +1,11 @@
-@import "../grid.component";
 
-.input-editing {
+.exodogrid-input-editing {
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100%;
-}
-input:not([type="checkbox"]) {
+  input:not([type="checkbox"]) {
   display: block;
   width: 100%;
   padding: 0.35rem 0.25rem;
@@ -30,9 +28,9 @@ input:not([type="checkbox"]) {
     border-width: 0 !important;
     box-shadow: 0 0 0 0.05rem rgba(13, 110, 253, 0.25);
   }
-}
+  }
 
-input[type="checkbox"] {
+  input[type="checkbox"] {
   width: $form-check-input-width;
   height: $form-check-input-width;
   // line-height minus check height
@@ -105,5 +103,6 @@ input[type="checkbox"] {
       opacity: $form-check-label-disabled-opacity;
     }
   }
-}
+  }
 
+}

@@ -7,8 +7,9 @@
       "glob": "**/*.*",
       "output": "assets"
     },
-    "src/lib/assets/fontawesome/css/all.css",
-    "src/lib/assets/fontawesome/webfonts/*"
+    "./src/lib/assets/fontawesome/css/all.css",
+    "./src/lib/assets/fontawesome/webfonts/*",
+    "./src/lib/assets/**/*"
   ],
   "lib": {
     "entryFile": "src/public-api.ts"

@@ -2,7 +2,14 @@
 @import "./fontawesome/scss/solid";
 @import "./fontawesome/scss/regular";
 @import "./fontawesome/scss/brands";
+@import "./fontawesome/scss/variables";
 @import "./scss/core";
+@import "./scss/variables";
+$fa-font-path: "./fontawesome/webfonts";
+@import "exodostyles/table";
+@import "exodostyles/grid.component";
+@import "exodostyles/grid-cell.component";
+@import "exodostyles/pagination.component";
 .exodogrid-content-style {
   font-family: 'Arial', sans-serif;
   font-size: 12px;  // Tamaño de fuente base para coherencia
