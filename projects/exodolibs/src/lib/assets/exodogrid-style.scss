@@ -1,0 +1,61 @@
+.exodogrid-content-style {
+  @import "exodostyles/table";
+  @import "exodostyles/grid.component";
+  @import "exodostyles/grid-cell.component";
+  @import "exodostyles/pagination.component";
+  font-family: 'Arial', sans-serif;
+  font-size: 12px;  // Tamaño de fuente base para coherencia
+
+  .exodogrid-border {
+    border: 1px solid #a3c7e0;
+    box-shadow: none;  // Para eliminar cualquier sombra de caja que pueda interferir con la apariencia
+
+    &.border-top {
+      border-top: 1px solid #a3c7e0;
+      border-right: none;
+      border-bottom: none;
+      border-left: none;
+    }
+
+    &.border-right {
+      border-top: none;
+      border-right: 1px solid #a3c7e0;
+      border-bottom: none;
+      border-left: none;
+    }
+
+    &.border-bottom {
+      border-top: none;
+      border-right: none;
+      border-bottom: 1px solid #a3c7e0;
+      border-left: none;
+    }
+
+    &.border-left {
+      border-top: none;
+      border-right: none;
+      border-bottom: none;
+      border-left: 1px solid #a3c7e0;
+    }
+  }
+
+  .card-header {
+    padding: .5rem 1rem !important;
+    font-family: 'Arial', sans-serif;
+    border-bottom: 2px solid #a3c7e0;
+  }
+
+  input {
+    border: 1px solid #a3c7e0 !important;  // Estableciendo un borde coherente
+    transition: border-color 0.5s ease;
+  }
+
+  button.btn {
+    background-color: #a3c7e0;
+    border: 1px solid #a3c7e0;  // Estableciendo un borde coherente
+    transition: background-color 0.5s ease;
+    &:hover, &:focus {
+      background-color: darken(#a3c7e0, 10%);
+    }
+  }
+}
