@@ -3,7 +3,8 @@ import {ColumnContract, DataSourceContract} from "../contracts";
 
 @Component({
   selector: 'el-grid-cell',
-  templateUrl: './grid-cell.component.html'
+  templateUrl: './grid-cell.component.html',
+  styleUrls: ['../../../assets/exodogrid-style.scss']
 })
 export class GridCellComponent {
   protected isEditing = false;

@@ -1,2 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
-@import "./../projects/exodolibs/src/lib/assets/style.scss";
+@import "./assets/fontawesome/scss/fontawesome";
+@import "./assets/fontawesome/scss/solid";
+@import "./assets/fontawesome/scss/regular";
+@import "./assets/fontawesome/scss/brands";
+@import "./assets/fontawesome/scss/variables";
+@import "./assets/scss/core";
+@import "./assets/scss/variables";
+$fa-font-path: "./fontawesome/webfonts";

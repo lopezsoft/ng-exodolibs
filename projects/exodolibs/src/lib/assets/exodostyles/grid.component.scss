@@ -82,7 +82,7 @@
 
 .grid-search {
   font-family: 'Arial', sans-serif;
-  background-color: #eaf3f9;
+  background-color: #eaf3f9 !important;
 
   input {
     border-color: #a3c7e0 !important;
@@ -91,11 +91,11 @@
   }
 
   button.btn {
-    background-color: #a3c7e0;
-    border-color: #a3c7e0;
+    background-color: #a3c7e0 !important;
+    border-color: #a3c7e0 !important;
     transition: background-color 0.5s ease;
     &:hover, &:focus {
-      background-color: darken(#a3c7e0, 10%);
+      background-color: darken(#a3c7e0, 10%) !important;
     }
   }
 }

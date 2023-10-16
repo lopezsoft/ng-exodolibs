@@ -2,19 +2,18 @@ nav {
   display: flex;
   overflow-x: auto;
   align-items: center;
-  vertical-align: middle;
   margin-bottom: 1rem;
   padding: .25rem;
   min-width: 24rem;
+
   .span-info {
     padding: .25rem .5rem;
     display: flex;
     align-items: center;
-    vertical-align: middle;
     height: 100%;
     min-width: 10rem;
     margin-right: 1rem;
-    color: rgb(23, 119, 177) !important;
+    color: rgb(23, 119, 177);  // Color tomado de los estilos anteriores
     font-weight: bold;
   }
 
@@ -24,8 +23,9 @@ nav {
 }
 
 @media (max-width: 40rem) {
-  nav{
+  nav {
     display: block;
+
     .span-info {
       display: none;
     }
@@ -35,50 +35,47 @@ nav {
 .pagination {
   .page-item {
     .page-link {
-      border-color: #aadafa !important;
-    }
-    .page-link:not(.disabled)  {
-      &:hover {
-        background-color: #aadafa !important;
+      border-color: #aadafa;  // Color tomado de los estilos anteriores
+
+      &:not(.disabled):hover {
+        background-color: #c4d8e9;  // Color tomado de los estilos anteriores
       }
     }
-    button {
-      &:focus {
-        box-shadow: none!important;
-      }
+
+    button:focus {
+      box-shadow: none;
     }
+
     .page-link-page {
-      min-height: 2.38rem;
+      min-height: 1.38rem;
       min-width: 12rem;
       color: #2a2e30;
       display: flex;
       align-items: center;
+      padding: 5px;
       input {
-        border: 0px solid #2a2e30 !important;
+        border: 0 solid #2a2e30 !important;
         max-height: 1.35rem !important;
         padding: 2px !important;
-        margin: 0px 4px;
-        max-width: 3rem;
+        margin: 0 4px !important;
+        max-width: 3rem !important;
       }
     }
   }
+
   // For Pagination lg
   &.pagination-lg {
-    .page-item {
-      .page-link {
-        font-size: $pagination-font-size-lg;
-        min-width: 2.6rem;
-      }
+    .page-item .page-link {
+      font-size: 1.25rem;
+      min-width: 2.6rem;
     }
   }
+
   // For Pagination sm
   &.pagination-sm {
-    .page-item {
-      .page-link {
-        font-size: $pagination-font-size-sm;
-        min-width: 2rem;
-      }
+    .page-item .page-link {
+      font-size: 0.875rem;
+      min-width: 2rem;
     }
   }
 }
-

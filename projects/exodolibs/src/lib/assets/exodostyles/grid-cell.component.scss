@@ -1,108 +1,83 @@
-
 .exodogrid-input-editing {
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100%;
+
   input:not([type="checkbox"]) {
-  display: block;
-  width: 100%;
-  padding: 0.35rem 0.25rem;
-  font-size: .95rem;
-  font-weight: 400;
-  line-height: 1.5;
-  color: #212529;
-  background-color: #fff;
-  background-clip: padding-box;
-  border: 1px solid #ced4da;
-  -webkit-appearance: none;
-  appearance: none;
-  border-radius: 0;
-  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-  &:focus {
+    display: block;
+    width: 100%;
+    padding: 0.35rem 0.25rem;
+    font-size: .95rem;
+    font-weight: 400;
+    line-height: 1.5;
     color: #212529;
     background-color: #fff;
-    border-color: #86b7fe;
-    outline: 0;
-    border-width: 0 !important;
-    box-shadow: 0 0 0 0.05rem rgba(13, 110, 253, 0.25);
-  }
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    appearance: none;
+    border-radius: 0;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+    &:focus {
+      color: #212529;
+      background-color: #fff;
+      border-color: #86b7fe;
+      outline: 0;
+      border-width: 0 !important;
+      box-shadow: 0 0 0 0.05rem rgba(13, 110, 253, 0.25);
+    }
   }
 
   input[type="checkbox"] {
-  width: $form-check-input-width;
-  height: $form-check-input-width;
-  // line-height minus check height
-  margin: ($line-height-base - $form-check-input-width) * .5 0 auto;
-  vertical-align: top;
-  background-color: $form-check-input-bg;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: contain;
-  border: $form-check-input-border;
-  appearance: none;
-  print-color-adjust: exact; // Keep themed appearance for print
-  @include transition($form-check-transition);
-  @include border-radius($form-check-input-border-radius);
+    width: calc(1em + 2px);
+    height: calc(1em + 2px);
+    margin: (1.5 - 1em - 2) * .5 0 auto;  // Ajustado para el cambio en el tamaño
+    appearance: none;
+    outline: none;
+    position: relative;
+    vertical-align: middle;
+    border: 2px solid #ced4da;
+    background-color: #fff;
+    cursor: pointer;
+    transition: border-color 0.2s ease-in-out;
 
-  &:active {
-    filter: $form-check-input-active-filter;
-  }
+    &:after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0.35em;  // Ajustado para el cambio en el tamaño
+      height: 0.6em;  // Ajustado para el cambio en el tamaño
+      border: solid #fff;
+      border-width: 0 2px 2px 0;
+      transform: translateY(-50%) translateX(-50%) rotate(45deg);
+      opacity: 0;
+      transition: opacity 0.2s ease-in-out;
+    }
 
-  &:focus {
-    border-color: $form-check-input-focus-border;
-    outline: 0;
-    box-shadow: $form-check-input-focus-box-shadow;
-  }
+    &:checked {
+      border-color: #0d6efd;
+      background-color: #0d6efd;
 
-  &:checked {
-    background-color: $form-check-input-checked-bg-color;
-    border-color: $form-check-input-checked-border-color;
-
-    &[type="checkbox"] {
-      @if $enable-gradients {
-        background-image: escape-svg($form-check-input-checked-bg-image), var(--#{$prefix}gradient);
-      } @else {
-        background-image: escape-svg($form-check-input-checked-bg-image);
+      &:after {
+        opacity: 1;
       }
     }
 
-    &[type="radio"] {
-      @if $enable-gradients {
-        background-image: escape-svg($form-check-radio-checked-bg-image), var(--#{$prefix}gradient);
-      } @else {
-        background-image: escape-svg($form-check-radio-checked-bg-image);
+    &:focus {
+      border-color: #86b7fe;
+      box-shadow: 0 0 0 0.05rem rgba(13, 110, 253, 0.25);
+    }
+
+    &:disabled {
+      background-color: #f7f7f7;
+      cursor: not-allowed;
+
+      &:after {
+        border-color: #ccc;
       }
     }
   }
-
-  input[type="checkbox"]:indeterminate {
-    background-color: $form-check-input-indeterminate-bg-color;
-    border-color: $form-check-input-indeterminate-border-color;
-
-    @if $enable-gradients {
-      background-image: escape-svg($form-check-input-indeterminate-bg-image), var(--#{$prefix}gradient);
-    } @else {
-      background-image: escape-svg($form-check-input-indeterminate-bg-image);
-    }
-  }
-
-  &:disabled {
-    pointer-events: none;
-    filter: none;
-    opacity: $form-check-input-disabled-opacity;
-  }
-
-  // Use disabled attribute in addition of :disabled pseudo-class
-  // See: https://github.com/twbs/bootstrap/issues/28247
-  &[disabled],
-  &:disabled {
-    ~ .form-check-label {
-      cursor: default;
-      opacity: $form-check-label-disabled-opacity;
-    }
-  }
-  }
-
 }

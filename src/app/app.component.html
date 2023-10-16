@@ -4,7 +4,24 @@
       <exodo-grid
         [columns]="columns"
         [dataSource]="dataSource"
-        [showPagination]="true"
+        [showPagination]="false"
+        mode="local"
+        caption='caption'
+      >
+      </exodo-grid>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid">
+  <div class="card mt-2">
+    <div class="card">
+      <exodo-grid
+        [columns]="aColumns"
+        [dataSource]="aDataSource"
+        [showPagination]="false"
+        mode="local"
+        caption='caption xx'
       >
       </exodo-grid>
     </div>
