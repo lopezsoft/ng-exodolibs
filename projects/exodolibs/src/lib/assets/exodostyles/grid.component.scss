@@ -10,19 +10,25 @@
 
 .card-table {
   min-height: 10rem;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   .card-header {
     padding: .5rem 1rem !important;
     font-family: 'Arial', sans-serif;
-    border-bottom: 2px solid #a3c7e0;
+    border-bottom: 0px solid #a3c7e0;
+    .card-title {
+      font-size: 13px;
+      font-weight: bold;
+      padding-bottom: 2px;
+      color: darken(#a3c7e0, 20%);
+    }
   }
 }
 
 .grid-cell {
-  font-size: .95rem !important;
+  font-size: 13px;
   padding: .35rem .25rem !important;
   transition: background-color 0.5s ease;
-
+  min-height: 32px;
   span, i, p {
     padding: 0;
   }
@@ -88,12 +94,21 @@
     border-color: #a3c7e0 !important;
     box-shadow: none;
     transition: border-color 0.5s ease;
+    font-size: 13px;
+    min-height: 32px;
+    height: 32px;
   }
 
   button.btn {
     background-color: #a3c7e0 !important;
     border-color: #a3c7e0 !important;
     transition: background-color 0.5s ease;
+    min-height: 32px;
+    height: 32px;
+    width: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     &:hover, &:focus {
       background-color: darken(#a3c7e0, 10%) !important;
     }

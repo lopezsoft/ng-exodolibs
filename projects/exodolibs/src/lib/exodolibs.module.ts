@@ -1,14 +1,15 @@
 import { NgModule } from '@angular/core';
 import {ExodoGridModule} from "./components/grid/grid.module";
+import {DirectivesModule} from "./directives/directives.module";
 
 @NgModule({
-  declarations: [
-  ],
   imports: [
-    ExodoGridModule
+    ExodoGridModule,
+    DirectivesModule
   ],
   exports: [
     ExodoGridModule,
+    DirectivesModule
   ]
 })
 export class ExodolibsModule { }

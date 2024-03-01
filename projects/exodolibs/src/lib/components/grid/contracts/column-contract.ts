@@ -1,4 +1,4 @@
-import {AlignType, ClickToEditType, ColumnType} from "../model/types-model";
+import {AlignType, ClickToEditType, ColumnType, TooltipDirection} from "../model/types-model";
 
 export interface ColumnContract {
   text?: string;
@@ -18,7 +18,10 @@ export interface ColumnContract {
   type?: ColumnType
   format?: string;
   currency?: string;
+  tooltip?: string;
+  tooltipDirection?: TooltipDirection;
   cellRender?: (row: any, rowIndex: number, value?: string, columnIndex?: number) => string;
   cellClick?: (row: any, rowIndex: number, columnIndex?: number) => void;
   cellDbClick?: (row: any, rowIndex: number, columnIndex?: number) => void;
+  tooltipRender?: (row: any) => string;
 }

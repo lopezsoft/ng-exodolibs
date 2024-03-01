@@ -6,6 +6,8 @@
        [innerHTML]="getCellValue(column, columnIndex, rowIndex) | safeHtml"
        (click)="cellClick($event, column, row, rowIndex, columnIndex)"
        (dblclick)="cellDbClick($event, column, row, rowIndex, columnIndex)"
+       [exodoTooltip]="getTooltip(column, row)"
+       [tooltipDirection]="column?.tooltipDirection"
         >
   </div>
 </ng-container>

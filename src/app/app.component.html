@@ -1,21 +1,23 @@
-<div class="container-fluid">
-  <div class="card mt-2">
-    <div class="card">
-      <exodo-grid
-        [columns]="columns"
-        [dataSource]="dataSource"
-        [showPagination]="false"
-        mode="local"
-        caption='caption'
-      >
-      </exodo-grid>
-    </div>
+<div class="card">
+  <div class="card-body">
+    <h4 class="card-title">Grid</h4>
+    <h6 class="card-subtitle">Grid component</h6>
+    <button type="button" class="btn btn-primary"
+            exodoTooltip="Exodo libs">Add Row</button>
   </div>
+</div>
+<div class="container-fluid">
+    <exodo-grid
+      [columns]="columns"
+      [dataSource]="dataSource"
+      [showPagination]="false"
+      mode="local"
+      caption='caption'
+    >
+    </exodo-grid>
 </div>
 
 <div class="container-fluid">
-  <div class="card mt-2">
-    <div class="card">
       <exodo-grid
         [columns]="aColumns"
         [dataSource]="aDataSource"
@@ -24,6 +26,4 @@
         caption='caption xx'
       >
       </exodo-grid>
-    </div>
-  </div>
 </div>

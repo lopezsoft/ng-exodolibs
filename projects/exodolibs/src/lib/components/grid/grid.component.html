@@ -4,8 +4,8 @@
       <div class="grid-loading" [ngClass]="{'show': isLoading}">
           <div class="grid-spinner"></div>
       </div>
-      <div class="card-header mb-1">
-          <h6 *ngIf="caption" class="card-title mb-1">{{ caption | uppercase }}</h6>
+      <div class="card-header">
+          <h6 *ngIf="caption" class="card-title">{{ caption | uppercase }}</h6>
           <ng-content select="[header]"></ng-content>
           <div class="input-group grid-search">
               <input type="search"
@@ -33,7 +33,7 @@
               </thead>
               <tbody>
               <ng-container *ngIf="canData() && !customBody">
-                  <tr *ngFor="let row of dataSource.rows; index as rowIndex"
+                  <tr *ngFor="let row of dataSource?.rows; index as rowIndex"
                       [attr.aria-rowindex]="rowIndex + 2" role="row">
                     <td *ngFor="let column of columns; index as columnIndex"
                         role="gridcell" [attr.aria-colindex]="columnIndex + 1">

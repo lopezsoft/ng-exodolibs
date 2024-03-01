@@ -3,32 +3,27 @@ import {
   Component,
   ElementRef,
   Input,
-  OnChanges,
   OnInit,
-  SimpleChanges,
-  ViewChild} from '@angular/core';
+  ViewChild,
+  ViewEncapsulation,
+} from '@angular/core';
 
-import {
-  ColumnContract,
-  DataSourceContract, Proxy,
-} from './contracts';
-import { ExodoPaginationComponent } from '../pagination/pagination.component';
+import {ColumnContract, DataSourceContract, Proxy,} from './contracts';
+import {ExodoPaginationComponent} from '../pagination/pagination.component';
 import {GridService} from "./grid.service";
 import {ModeType} from "./model/types-model";
-import {JsonResponse} from "./contracts/data-source";
+import {DataRecords, JsonResponse} from "./contracts/data-source";
+
 @Component({
   selector: 'exodo-grid',
   templateUrl: './grid.component.html',
   styleUrls: ['./../../assets/exodogrid-style.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
-export class ExodoGridComponent implements OnInit, AfterViewInit, OnChanges {
-  get uuid(): string {
-    return this._uuid;
-  }
-  set uuid(value: string) {
-    this._uuid = value;
-  }
+export class ExodoGridComponent implements OnInit, AfterViewInit {
+  private afterRefreshLoadCallbacks: ((dataRecords: DataRecords) => void)[] = [];
   private _uuid = '';
+  private _dataRecords: DataRecords;
   public emptyMessage = 'Sin datos';
   public proxy: Proxy = {
     api: {
@@ -78,16 +73,18 @@ export class ExodoGridComponent implements OnInit, AfterViewInit, OnChanges {
     // implementar
   }
   canData(): boolean {
-    return ((this?.columns?.length > 0) && (this.dataSource?.rows?.length > 0))
+    if(!this.dataSource || !this.dataSource?.rows) {
+      return false;
+    }
+    return ((this.dataSource.rows.length > 0))
   }
-  ngOnChanges(changes: SimpleChanges): void {
-    // implementar
-  }
-  onLoad(params: any = {}): void {
+  onLoad(params: any = {}, force = true): void {
     const me = this;
     if (!me.proxy || !me.proxy?.api?.read) { return; }
     me.queryParams = params;
-    me.onRefreshLoad(params);
+    if (force) {
+      me.onRefreshLoad(params);
+    }
   }
   inputKey(event: any): void {
     const ts  = this;
@@ -121,20 +118,9 @@ export class ExodoGridComponent implements OnInit, AfterViewInit, OnChanges {
     me.gridService.onRefreshLoad(url, params)
       .subscribe({
         next: (response: JsonResponse) => {
-          me.isLoading  = false;
-          me.dataSource.dataRecords     = response.dataRecords;
-          me.dataSource.rows            = me.dataSource.dataRecords.data;
-          me.rows                       = me.dataSource.rows;
-          if (me.showPagination) {
-            me.pagination.onLoad({
-              currentPage : me.dataSource.dataRecords.current_page,
-              from        : me.dataSource.dataRecords.from,
-              lastPage    : me.dataSource.dataRecords.last_page,
-              to          : me.dataSource.dataRecords.to,
-              total       : me.dataSource.dataRecords.total,
-              perPage     : me.dataSource.dataRecords.per_page
-            });
-          }
+          me.isLoading    = false;
+          me.dataRecords  = response.dataRecords;
+          this.afterRefreshLoadCallbacks.forEach(callback => callback(response.dataRecords));
         },
         error: (error) => {
           me.isLoading  = false;
@@ -142,7 +128,33 @@ export class ExodoGridComponent implements OnInit, AfterViewInit, OnChanges {
         }
       })
   }
-
+  set dataRecords(dataRecords: DataRecords) {
+    const me  = this;
+    me._dataRecords           = dataRecords;
+    me.dataSource.dataRecords = dataRecords;
+    me.dataSource.rows        = me.dataSource.dataRecords.data;
+    me.rows                   = me.dataSource.rows;
+    me.setPagination(dataRecords);
+    if (this.searchField.nativeElement) {
+      this.searchField.nativeElement.focus();
+    }
+  }
+  get dataRecords(): DataRecords {
+    return this._dataRecords;
+  }
+  protected setPagination(dataRecords: DataRecords): void {
+    const me  = this;
+    if (me.showPagination && dataRecords) {
+      me.pagination.onLoad({
+        currentPage : dataRecords.current_page,
+        from        : dataRecords.from,
+        lastPage    : dataRecords.last_page,
+        to          : dataRecords.to,
+        total       : dataRecords.total,
+        perPage     : dataRecords.per_page
+      });
+    }
+  }
   inputSearch(e: Event) {
     const ele = <HTMLInputElement> e.target;
     if(this.mode  === 'remote') {
@@ -153,6 +165,12 @@ export class ExodoGridComponent implements OnInit, AfterViewInit, OnChanges {
       const table = this.tableGrid.nativeElement.tBodies[0];
       this.gridService.filterItems(ele.value, table);
     }
+  }
+  public onAfterRefreshLoad(callback: (dataRecords: DataRecords) => void) {
+    this.afterRefreshLoadCallbacks.push(callback);
+  }
+  public getDataSource(): DataSourceContract {
+    return this.dataSource;
   }
   public getSearchFieldId(): string {
     return this.searchField.nativeElement.id;
@@ -168,5 +186,11 @@ export class ExodoGridComponent implements OnInit, AfterViewInit, OnChanges {
   }
   public getTableId(): string {
     return this.tableGrid.nativeElement.id;
+  }
+  get uuid(): string {
+    return this._uuid;
+  }
+  set uuid(value: string) {
+    this._uuid = value;
   }
 }

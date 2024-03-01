@@ -35,7 +35,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     {
       text: 'Last Name',
       dataIndex: 'last_name',
-      width: '300px',
+      width: '450',
       editing: true,
       clicksToEdit: 2,
       cssCell: 'text-muted text-danger',
@@ -89,8 +89,9 @@ export class AppComponent implements OnInit, AfterViewInit {
       text: '..',
       dataIndex: 'sd',
       width: '16px',
+      tooltip: 'Hola',
       cellRender: (row, rowIndex): string => {
-        return `Hola`;
+        return `<button class="btn btn-sm btn-primary">Hola xxx</button>`;
       }
     },
     {
@@ -101,7 +102,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       clicksToEdit: 1
     },
     {
-      text: 'Last Name',
+      text: 'LastName',
       dataIndex: 'last_name',
       width: '300px',
       editing: true,

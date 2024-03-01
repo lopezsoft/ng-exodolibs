@@ -5,6 +5,7 @@ import {ExodoPaginationComponent} from '../pagination/pagination.component';
 import {FormsModule} from "@angular/forms";
 import {PipesModule} from "../../pipes/pipes.module";
 import { GridCellComponent } from './grid-cell/grid-cell.component';
+import {DirectivesModule} from "../../directives/directives.module";
 
 
 @NgModule({
@@ -16,7 +17,8 @@ import { GridCellComponent } from './grid-cell/grid-cell.component';
   imports: [
     CommonModule,
     FormsModule,
-    PipesModule
+    PipesModule,
+    DirectivesModule
   ],
   exports: [
     ExodoGridComponent,

@@ -1,10 +1,11 @@
-import {Component, ElementRef, EventEmitter, Input, Output, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, Output, ViewChild, ViewEncapsulation} from '@angular/core';
 import {ColumnContract, DataSourceContract} from "../contracts";
 
 @Component({
   selector: 'el-grid-cell',
   templateUrl: './grid-cell.component.html',
-  styleUrls: ['../../../assets/exodogrid-style.scss']
+  styleUrls: ['../../../assets/exodogrid-style.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class GridCellComponent {
   protected isEditing = false;
@@ -36,6 +37,12 @@ export class GridCellComponent {
       return numberFormat.format(parseFloat(value));
     }
     return value;
+  }
+  public getTooltip(column: ColumnContract, row: any): string {
+    if (column.tooltipRender) {
+      return column.tooltipRender(row);
+    }
+    return column?.tooltip;
   }
   public getCellValue(column: ColumnContract, columnIndex: number, rowIndex: number ): string {
     if (this.isEditing) return "";

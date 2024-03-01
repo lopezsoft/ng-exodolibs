@@ -1,0 +1,15 @@
+.exodo-tooltip {
+  background-color: #ffffff; /* Fondo blanco */
+  color: #2556a3; /* Texto en azul intenso */
+  padding: 4px 6px;
+  border-radius: 4px; /* Bordes redondeados para un aspecto elegante */
+  font-size: 14px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Sombra sutil para profundidad */
+  border: 1px solid #a3c7e0; /* Borde en un tono azul claro para complementar */
+  z-index: 99999; /* Asegura que el tooltip sea visible sobre otros elementos */
+  font-family: "Segoe UI", Arial, sans-serif; /* Fuente moderna y legible */
+  line-height: 1.4; /* Espaciado de línea para una mejor legibilidad */
+  max-width: 30rem;
+  max-height: 10rem;
+  overflow-y: auto;
+}
