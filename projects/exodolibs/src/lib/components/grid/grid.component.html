@@ -38,36 +38,36 @@
               </thead>
               <tbody>
               <ng-template #myCustomBody>
+                <ng-container *ngIf="customBody && canData()">
                   <ng-content></ng-content>
+                </ng-container>
               </ng-template>
-              <ng-template #myBody>
-              <tr *ngFor="let row of dataSource?.rows; index as rowIndex"
-                  [attr.aria-rowindex]="rowIndex + 2" role="row">
-                <td *ngFor="let column of columns; index as columnIndex"
-                    role="gridcell" [attr.aria-colindex]="columnIndex + 1">
-                  <el-grid-cell
-                    [column]="column"
-                    [row]="row"
-                    [rowIndex]="rowIndex"
-                    [columnIndex]="columnIndex"
-                    [dataSource]="dataSource"
-                  ></el-grid-cell>
-                </td>
-              </tr>
-              </ng-template>
-              <ng-container *ngIf="!customBody; else myCustomBody">
-                  <ng-container *ngIf="isAfterViewInit">
-                    <ng-container *ngIf="!canData(); else myBody">
-                    <tr aria-rowindex="2" role="row">
-                        <td [attr.colspan]="columns.length" role="gridcell" aria-colindex="1">
-                          <div class="w-100 grid-empty">
-                              {{ emptyMessage }}
-                          </div>
-                        </td>
-                    </tr>
-                    </ng-container>
-                  </ng-container>
-              </ng-container>
+              <ng-container *ngIf="isAfterViewInit">
+                <ng-container *ngIf="canData() && !customBody; else myCustomBody">
+                <tr *ngFor="let row of dataSource?.rows; index as rowIndex"
+                    [attr.aria-rowindex]="rowIndex + 2" role="row">
+                  <td *ngFor="let column of columns; index as columnIndex"
+                      role="gridcell" [attr.aria-colindex]="columnIndex + 1">
+                    <el-grid-cell
+                      [column]="column"
+                      [row]="row"
+                      [rowIndex]="rowIndex"
+                      [columnIndex]="columnIndex"
+                      [dataSource]="dataSource"
+                    ></el-grid-cell>
+                  </td>
+                </tr>
+                </ng-container>
+                <ng-container *ngIf="!canData()">
+                  <tr aria-rowindex="2" role="row">
+                      <td [attr.colspan]="columns.length" role="gridcell" aria-colindex="1">
+                        <div class="w-100 grid-empty">
+                            {{ emptyMessage }}
+                        </div>
+                      </td>
+                  </tr>
+                </ng-container>
+                </ng-container>
               </tbody>
               <tfoot class="w-100" *ngIf="showSummary">
                   footer
