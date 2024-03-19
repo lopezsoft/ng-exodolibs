@@ -21,14 +21,13 @@ export class GridCellComponent {
     return column?.cssCell;
   }
   public getClassValue(column: ColumnContract): object {
-    const style = {
+    return {
       width: column.width,
       'min-width': column.minWidth,
       minlength: column.minLength,
       maxlength: column.maxLength,
       'text-align': column.align
     };
-    return style;
   }
   public getCurrencyFormat(column: ColumnContract, value: string): string {
     if (column?.type === 'currency' && column.format && column.currency) {

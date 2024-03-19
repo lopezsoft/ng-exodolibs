@@ -22,8 +22,36 @@
         [columns]="aColumns"
         [dataSource]="aDataSource"
         [showPagination]="false"
+        [customBody]="true"
+        [customHeader]="true"
         mode="local"
         caption='caption xx'
       >
+        <tr #tableHeader>
+          <td>ss1</td>
+          <td>2</td>
+          <td>3</td>
+        </tr>
+        <tr>
+          <td>
+            <button type="button" class="btn btn-primary"
+                    exodoTooltip="Exodo libs">Add Row</button>
+          </td>
+          <td>
+            <button type="button" class="btn btn-primary"
+                    exodoTooltip="Exodo libs">Add Row</button>
+          </td>
+          <td>3</td>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>2</td>
+          <td>3</td>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>2</td>
+          <td>3</td>
+        </tr>
       </exodo-grid>
 </div>

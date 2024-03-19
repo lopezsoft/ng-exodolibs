@@ -4,8 +4,7 @@ import {
   ElementRef,
   Input,
   OnInit,
-  ViewChild,
-  ViewEncapsulation,
+  ViewChild, ViewEncapsulation,
 } from '@angular/core';
 
 import {ColumnContract, DataSourceContract, Proxy,} from './contracts';
@@ -18,12 +17,9 @@ import {DataRecords, JsonResponse} from "./contracts/data-source";
   selector: 'exodo-grid',
   templateUrl: './grid.component.html',
   styleUrls: ['./../../assets/exodogrid-style.scss'],
-  encapsulation: ViewEncapsulation.None,
+  encapsulation: ViewEncapsulation.None
 })
 export class ExodoGridComponent implements OnInit, AfterViewInit {
-  private afterRefreshLoadCallbacks: ((dataRecords: DataRecords) => void)[] = [];
-  private _uuid = '';
-  private _dataRecords: DataRecords;
   public emptyMessage = 'Sin datos';
   public proxy: Proxy = {
     api: {
@@ -34,8 +30,12 @@ export class ExodoGridComponent implements OnInit, AfterViewInit {
     }
   };
   public rows: any = [];
-  protected queryParams: any = {};
   public isLoading: boolean;
+  protected queryParams: any = {};
+  protected isAfterViewInit: boolean;
+  private afterRefreshLoadCallbacks: ((dataRecords: DataRecords) => void)[] = [];
+  private _uuid = '';
+  private _dataRecords: DataRecords;
   @ViewChild('pagination') pagination: ExodoPaginationComponent;
   @ViewChild('searchField') searchField: ElementRef<HTMLInputElement>;
   @ViewChild('tableGrid') tableGrid: ElementRef<HTMLTableElement>;
@@ -47,6 +47,7 @@ export class ExodoGridComponent implements OnInit, AfterViewInit {
   @Input() showSummary = false;
   @Input() bordered = false;
   @Input() customBody: boolean;
+  @Input() customHeader: boolean;
   @Input() headers: ColumnContract[] = [];
   @Input() columns: ColumnContract[] = [];
   @Input() dataSource: DataSourceContract = {
@@ -54,20 +55,25 @@ export class ExodoGridComponent implements OnInit, AfterViewInit {
     dataRecords: null
   };
   @Input() placeholder = 'Búsqueda';
+
   constructor(
-      private gridService: GridService,
+    private gridService: GridService,
   ) {
-    this.emptyMessage   = 'Sin datos';
-    this.placeholder    = 'Búsqueda';
-    this.minChar        = 3;
-    this.mode           = 'remote';
-    this.showSummary    = false;
+    this.emptyMessage = 'Sin datos';
+    this.placeholder = 'Búsqueda';
+    this.minChar = 3;
+    this.mode = 'remote';
+    this.showSummary = false;
     this.showPagination = true;
-    this.uuid           = this.gridService.getUniqueId('exodo-grid-');
-    this.customBody     = false;
+    this.uuid = this.gridService.getUniqueId('exodo-grid-');
+    this.customBody = false;
+    this.isAfterViewInit = false;
   }
   ngAfterViewInit(): void {
     this.searchField.nativeElement.id = this.gridService.getUniqueId('exodo-grid-search-');
+    setTimeout(() => {
+      this.isAfterViewInit = true;
+    });
   }
   ngOnInit(): void {
     // implementar

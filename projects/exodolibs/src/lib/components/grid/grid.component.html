@@ -22,7 +22,11 @@
       <div class="card-body">
           <table class="exodogrid-table table-striped table-hover table-bordered"
                  [attr.aria-colcount]="columns.length" #tableGrid [id]="uuid">
-              <thead *ngIf="columns?.length > 0">
+              <thead>
+                <ng-template #myCustomHeader>
+                  <ng-content select="[tableHeader]"></ng-content>
+                </ng-template>
+                <ng-container *ngIf="!customHeader; else myCustomHeader">
                   <tr aria-rowindex="1" class="text-center">
                       <th *ngFor="let header of columns; index as index"  [attr.colspan]="header.colspan"
                           [width]="header.width || 'auto'"
@@ -30,31 +34,39 @@
                           {{ header.text }}
                       </th>
                   </tr>
+                </ng-container>
               </thead>
               <tbody>
-              <ng-container *ngIf="canData() && !customBody">
-                  <tr *ngFor="let row of dataSource?.rows; index as rowIndex"
-                      [attr.aria-rowindex]="rowIndex + 2" role="row">
-                    <td *ngFor="let column of columns; index as columnIndex"
-                        role="gridcell" [attr.aria-colindex]="columnIndex + 1">
-                      <el-grid-cell
-                        [column]="column"
-                        [row]="row"
-                        [rowIndex]="rowIndex"
-                        [columnIndex]="columnIndex"
-                        [dataSource]="dataSource"
-                      ></el-grid-cell>
-                    </td>
-                  </tr>
-              </ng-container>
-              <ng-container *ngIf="!canData()">
-                  <tr aria-rowindex="2" role="row">
-                      <td [attr.colspan]="columns.length" role="gridcell" aria-colindex="1">
+              <ng-template #myCustomBody>
+                  <ng-content></ng-content>
+              </ng-template>
+              <ng-template #myBody>
+              <tr *ngFor="let row of dataSource?.rows; index as rowIndex"
+                  [attr.aria-rowindex]="rowIndex + 2" role="row">
+                <td *ngFor="let column of columns; index as columnIndex"
+                    role="gridcell" [attr.aria-colindex]="columnIndex + 1">
+                  <el-grid-cell
+                    [column]="column"
+                    [row]="row"
+                    [rowIndex]="rowIndex"
+                    [columnIndex]="columnIndex"
+                    [dataSource]="dataSource"
+                  ></el-grid-cell>
+                </td>
+              </tr>
+              </ng-template>
+              <ng-container *ngIf="!customBody; else myCustomBody">
+                  <ng-container *ngIf="isAfterViewInit">
+                    <ng-container *ngIf="!canData(); else myBody">
+                    <tr aria-rowindex="2" role="row">
+                        <td [attr.colspan]="columns.length" role="gridcell" aria-colindex="1">
                           <div class="w-100 grid-empty">
                               {{ emptyMessage }}
                           </div>
-                      </td>
-                  </tr>
+                        </td>
+                    </tr>
+                    </ng-container>
+                  </ng-container>
               </ng-container>
               </tbody>
               <tfoot class="w-100" *ngIf="showSummary">
