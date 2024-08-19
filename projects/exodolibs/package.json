@@ -1,6 +1,6 @@
 {
   "name": "exodolibs",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/lopezsoft/ng-exodolibs.git"
@@ -13,8 +13,8 @@
   },
   "homepage": "https://github.com/lopezsoft/ng-exodolibs#readme",
   "peerDependencies": {
-    "@angular/common": ">=14.2.0",
-    "@angular/core": ">=14.2.0"
+    "@angular/common": ">=15.2.10",
+    "@angular/core": ">=15.2.10"
   },
   "dependencies": {
     "tslib": ">=2.3.0"

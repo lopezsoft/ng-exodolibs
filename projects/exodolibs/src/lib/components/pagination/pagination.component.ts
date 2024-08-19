@@ -1,5 +1,5 @@
 import {Component, ElementRef, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
-import {PaginationOptions} from '../grid/contracts/data-source';
+import {DataRecords, PaginationOptions} from '../grid/contracts/data-source';
 
 @Component({
   selector: 'exodo-pagination',
@@ -25,5 +25,18 @@ export class ExodoPaginationComponent implements OnInit {
   }
   onLoad(options: PaginationOptions): void {
     this.paginationOptions  = options;
+  }
+  setPagination(dataRecords: DataRecords): void {
+    const me  = this;
+    if (dataRecords) {
+      me.paginationOptions = {
+        currentPage : dataRecords.current_page,
+        from        : dataRecords.from,
+        lastPage    : dataRecords.last_page,
+        to          : dataRecords.to,
+        total       : dataRecords.total,
+        perPage     : dataRecords.per_page
+      };
+    }
   }
 }

@@ -12,6 +12,8 @@ import {ExodoPaginationComponent} from '../pagination/pagination.component';
 import {GridService} from "./grid.service";
 import {ModeType} from "./model/types-model";
 import {DataRecords, JsonResponse} from "./contracts/data-source";
+import {Subject} from "rxjs";
+import {debounceTime} from "rxjs/operators";
 
 @Component({
   selector: 'exodo-grid',
@@ -36,13 +38,14 @@ export class ExodoGridComponent implements OnInit, AfterViewInit {
   private afterRefreshLoadCallbacks: ((dataRecords: DataRecords) => void)[] = [];
   private _uuid = '';
   private _dataRecords: DataRecords;
+  private searchSubject = new Subject<string>();
   @ViewChild('pagination') pagination: ExodoPaginationComponent;
   @ViewChild('searchField') searchField: ElementRef<HTMLInputElement>;
   @ViewChild('tableGrid') tableGrid: ElementRef<HTMLTableElement>;
   // Properties
   @Input() mode: ModeType = 'local';
   @Input() caption = '';
-  @Input() minChar = 3;
+  @Input() minChar = 1;
   @Input() showPagination = false;
   @Input() showSummary = false;
   @Input() bordered = false;
@@ -61,13 +64,20 @@ export class ExodoGridComponent implements OnInit, AfterViewInit {
   ) {
     this.emptyMessage = 'Sin datos';
     this.placeholder = 'Búsqueda';
-    this.minChar = 3;
+    this.minChar = 1;
     this.mode = 'remote';
     this.showSummary = false;
     this.showPagination = true;
     this.uuid = this.gridService.getUniqueId('exodo-grid-');
     this.customBody = false;
     this.isAfterViewInit = false;
+    this.searchSubject.pipe(
+      debounceTime(300) // Retrasa la búsqueda
+    ).subscribe({
+      next: (query) => {
+        this.searchQuery(query);
+      }
+    });
   }
   ngAfterViewInit(): void {
     this.searchField.nativeElement.id = this.gridService.getUniqueId('exodo-grid-search-');
@@ -165,7 +175,8 @@ export class ExodoGridComponent implements OnInit, AfterViewInit {
     const ele = <HTMLInputElement> e.target;
     if(this.mode  === 'remote') {
       if(ele.value.length === 0 || ele.value.length >= this.minChar) {
-        this.searchQuery(ele.value);
+        // this.searchQuery(ele.value);
+        this.searchSubject.next(ele.value);
       }
     }else {
       const table = this.tableGrid.nativeElement.tBodies[0];
