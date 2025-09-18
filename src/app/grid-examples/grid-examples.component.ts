@@ -52,6 +52,17 @@ export class GridExamplesComponent implements OnInit {
     }
   };
 
+  paginationLabels = {
+    first: 'First',
+    previous: 'Previous',
+    page: 'Página',
+    of: 'de',
+    next: 'Next',
+    last: 'Last',
+    refresh: 'Refresh',
+    infoTemplate: '{{from}} - {{to}} de {{total}}'
+  };
+
   // Local fallback translations used when Transloco is not available in the workspace.
   translations: Record<string, any> = {
     en: {

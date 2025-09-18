@@ -86,7 +86,11 @@
       </div>
       <div class="card-footer" *ngIf="(showPagination === true && mode === 'remote')">
           <exodo-pagination class="table-responsive" #pagination
-                            (onRefreshPagination)="onRefreshPagination($event)">
+                            (onRefreshPagination)="onRefreshPagination($event)"
+                            [labels]="labels"
+                            [lang]="lang"
+                            [theme]="theme"
+                            >
           </exodo-pagination>
       </div>
   </div>

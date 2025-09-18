@@ -29,6 +29,7 @@
     [dataSource]="staticDataSource" mode="local" [showPagination]="false"
       [theme]="currentTheme" [lang]="currentLang"
       [allowFiltering]="true" [allowSorting]="true"
+      [labels]="paginationLabels"
     ></exodo-grid>
   </section>
 
@@ -38,6 +39,7 @@
     <exodo-grid *ngIf="!loading" [columns]="columns" [dataSource]="apiDataSource" mode="local" [showPagination]="false"
       [theme]="currentTheme" [lang]="currentLang"
       [allowFiltering]="true" [allowSorting]="true"
+      [labels]="paginationLabels"
       [class.exodo-theme-modern]="currentTheme==='modern'"
       [class.exodo-theme-dark]="currentTheme==='dark'"
     ></exodo-grid>
@@ -56,6 +58,7 @@
       [allowFiltering]="true"
       [allowSorting]="true"
       [dataAdapter]="dataAdapter"
+      [labels]="paginationLabels"
       [class.exodo-theme-modern]="currentTheme==='modern'"
       [class.exodo-theme-dark]="currentTheme==='dark'"
     ></exodo-grid>

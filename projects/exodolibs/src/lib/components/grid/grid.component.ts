@@ -55,6 +55,8 @@ export class ExodoGridComponent implements OnInit, AfterViewInit {
   @Input() allowFiltering = false;
   @Input() allowSorting = false;
   @Input() dataAdapter: (response: any, params: any) => JsonResponse;
+  @Input() labels: { [key: string]: string } = {};
+  @Input() lang?: string;
   /** Theme name applied to the grid host. Expected values: 'light'|'modern'|'dark' or custom */
   @Input() theme: string = 'glacial';
 
@@ -222,23 +224,25 @@ export class ExodoGridComponent implements OnInit, AfterViewInit {
       this.sortDirection = 'asc';
     }
 
-    if (this.mode === 'remote') {
+    this.dataSource.rows.sort((a, b) => {
+      const valA = a[this.sortColumn];
+      const valB = b[this.sortColumn];
+      if (valA < valB) {
+        return this.sortDirection === 'asc' ? -1 : 1;
+      }
+      if (valA > valB) {
+        return this.sortDirection === 'asc' ? 1 : -1;
+      }
+      return 0;
+    });
+    /*
+      TODO: enable remote sorting - no delete this comment 
+      if (this.mode === 'remote') {
       const params = { ...this.queryParams, sort: this.sortColumn, dir: this.sortDirection };
       this.queryParams = params;
       this.onRefreshLoad(params);
     } else {
-      this.dataSource.rows.sort((a, b) => {
-        const valA = a[this.sortColumn];
-        const valB = b[this.sortColumn];
-        if (valA < valB) {
-          return this.sortDirection === 'asc' ? -1 : 1;
-        }
-        if (valA > valB) {
-          return this.sortDirection === 'asc' ? 1 : -1;
-        }
-        return 0;
-      });
-    }
+    } */
   }
 
   public onAfterRefreshLoad(callback: (dataRecords: DataRecords) => void) {

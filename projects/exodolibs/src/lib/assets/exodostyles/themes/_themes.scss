@@ -11,6 +11,11 @@
   box-shadow: none;
 }
 
+/* Default theme */
+:root {
+  --exodo-card-footer-bg: var(--exodo-bg-alt, #ffffff);
+  --exodo-card-radius: 6px;
+}
 
 /* Default / Glacial White theme */
 :root, .exodo-theme-glacial {
@@ -24,9 +29,9 @@
   --exodo-pagination-hover-bg: #f1f5f9;
   --exodo-pagination-text: #111827;
   --exodo-pagination-info: #0ea5a4;
-  --exodo-card-radius: 10px;
   --exodo-card-shadow: 0 6px 20px rgba(16,24,40,0.04);
   --exodo-card-title: #123b5b;
+  --exodo-card-footer-color: #343a40;
   --exodo-primary-focus: #86b7fe;
   --exodo-bg: #eaf3f9;
   --exodo-bg-alt: #ffffff;
@@ -66,9 +71,9 @@
   --exodo-pagination-hover-bg: #1f2937;
   --exodo-pagination-text: #e5e7eb;
   --exodo-pagination-info: #93c5fd;
-  --exodo-card-radius: 10px;
   --exodo-card-shadow: 0 6px 20px rgba(0,0,0,0.6);
   --exodo-card-title: #e5e7eb;
+   --exodo-card-footer-color: #cbd5e1;
   --exodo-primary-focus: #3b82f6;
   --exodo-bg: #0b1220;
   --exodo-bg-alt: #111827;
@@ -107,9 +112,9 @@
   --exodo-pagination-hover-bg: #c4d8e9;
   --exodo-pagination-text: #2a2e30;
   --exodo-pagination-info: #1777b1;
-  --exodo-card-radius: 10px;
   --exodo-card-shadow: 0 6px 20px rgba(16,24,40,0.04);
   --exodo-card-title: #123b5b;
+   --exodo-card-footer-color: #343a40;
   --exodo-primary-focus: #86b7fe;
   --exodo-bg: #ffffff;
   --exodo-bg-alt: #f9fafb;
@@ -148,9 +153,9 @@
   --exodo-pagination-hover-bg: #f1f5f9;
   --exodo-pagination-text: #111827;
   --exodo-pagination-info: #0ea5a4;
-  --exodo-card-radius: 12px;
   --exodo-card-shadow: 0 8px 24px rgba(14,165,164,0.08);
   --exodo-card-title: #1e293b;
+   --exodo-card-footer-color: #343a40;
   --exodo-primary-focus: #14b8a6;
   --exodo-bg: #ffffff;
   --exodo-bg-alt: #f8fafc;
@@ -189,10 +194,10 @@
   --exodo-pagination-hover-bg: #f0f9ff;
   --exodo-pagination-text: #0c4a6e;
   --exodo-pagination-info: #0369a1;
-  --exodo-card-radius: 12px;
   --exodo-card-shadow: 0 8px 24px rgba(2, 132, 199, 0.1);
   --exodo-card-title: #0c4a6e;
   --exodo-primary-focus: #0ea5e9;
+   --exodo-card-footer-color: #334155;
   --exodo-bg: #f0f9ff;
   --exodo-bg-alt: #ffffff;
   --exodo-row-bg: #ffffff;
@@ -230,7 +235,6 @@
   --exodo-pagination-hover-bg: #f5f5f4;
   --exodo-pagination-text: #44403c;
   --exodo-pagination-info: #78716c;
-  --exodo-card-radius: 8px;
   --exodo-card-shadow: 0 4px 16px rgba(68, 64, 60, 0.08);
   --exodo-card-title: #292524;
   --exodo-primary-focus: #a1a1aa;
@@ -243,6 +247,7 @@
   --exodo-tooltip-text: #44403c;
   --exodo-spinner-accent: #78716c;
   --exodo-spinner-bg: rgba(0, 0, 0, 0.06);
+   --exodo-card-footer-color: #343a40;
   --exodo-focus-bg: #e7e5e4;
   --exodo-loading-bg: rgba(245, 245, 244, 0.7);
   --exodo-active-start: #d6d3d1;
@@ -271,9 +276,9 @@
   --exodo-pagination-hover-bg: #f3f4f6;
   --exodo-pagination-text: #1f2937;
   --exodo-pagination-info: #4b5563;
-  --exodo-card-radius: 8px;
   --exodo-card-shadow: 0 4px 16px rgba(107, 114, 128, 0.1);
   --exodo-card-title: #111827;
+   --exodo-card-footer-color: #343a40;
   --exodo-primary-focus: #9ca3af;
   --exodo-bg: #f3f4f6;
   --exodo-bg-alt: #f9fafb;

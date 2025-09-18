@@ -18,7 +18,7 @@
 .card-table {
   min-height: 10rem;
   box-shadow: var(--exodo-card-shadow, 0 2px 4px rgba(0, 0, 0, 0.1));
-
+  border-radius: var(--exodo-card-radius, 0.25rem);
   .card-header {
     padding: .5rem 1rem !important;
     font-family: var(--exodo-font-family, 'Arial', sans-serif);
@@ -34,6 +34,17 @@
       font-weight: bold;
       color: inherit; // Hereda el color del padre (.card-header) para simplificar
     }
+  }
+  .card-body {
+    padding: 3px !important; // Elimina el padding para que la tabla ocupe todo el espacio
+  }
+  .card-footer {
+    padding: .25rem 1rem !important;
+    font-family: var(--exodo-font-family, 'Arial', sans-serif);
+    border-top: 0px solid var(--exodo-border, #e6eef5);
+    transition: background-color 0.3s ease, color 0.3s ease;  
+    background-color: var(--exodo-card-footer-bg, #f8f9fa);
+    color: var(--exodo-card-footer-color, #343a40);
   }
 }
 
@@ -100,7 +111,7 @@
     height: 32px;
   }
 
-  button.btn {
+  .btn {
     background-color: var(--exodo-bg-alt, #a3c7e0) !important;
     border-color: var(--exodo-border, #a3c7e0) !important;
     transition: background-color 0.3s ease;
@@ -110,7 +121,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-
+    i {
+      font-size: 13px;
+      color: var(--exodo-primary, #ffffff);
+    }
     &:hover, &:focus {
       background-color: var(--exodo-bg-alt-hover, #dbeafc) !important; // Usa una variable para el hover
     }

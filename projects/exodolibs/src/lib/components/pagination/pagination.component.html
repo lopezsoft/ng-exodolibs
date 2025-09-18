@@ -1,5 +1,5 @@
-<nav *ngIf="paginationOptions">
-    <span class="w-100 span-info" *ngIf="paginationOptions.from">
+<nav *ngIf="paginationOptions" class="exodo-pagination-controls" aria-label="Pagination navigation">
+    <span class="w-100 pagination-info" *ngIf="paginationOptions.from">
         {{ getInfoText() }}
     </span>
     <ul class="pagination justify-content-end w-100">
@@ -17,7 +17,7 @@
                 <i class="fas fa-angle-left" aria-hidden="true"></i>
             </button>
         </li>
-        <li class="page-item">
+        <li class="page-item pagination-page-input">
             <span class="page-link page-link-page">
                 {{ getLabel('page') }}
                 <input type="text" class="form-control"
