@@ -28,6 +28,7 @@
     <exodo-grid [columns]="columns" 
     [dataSource]="staticDataSource" mode="local" [showPagination]="false"
       [theme]="currentTheme" [lang]="currentLang"
+      [allowFiltering]="true" [allowSorting]="true"
     ></exodo-grid>
   </section>
 
@@ -36,6 +37,24 @@
     <div *ngIf="loading" class="loading">Loading data…</div>
     <exodo-grid *ngIf="!loading" [columns]="columns" [dataSource]="apiDataSource" mode="local" [showPagination]="false"
       [theme]="currentTheme" [lang]="currentLang"
+      [allowFiltering]="true" [allowSorting]="true"
+      [class.exodo-theme-modern]="currentTheme==='modern'"
+      [class.exodo-theme-dark]="currentTheme==='dark'"
+    ></exodo-grid>
+  </section>
+
+  <section class="example">
+    <h4>{{ t('examples.api') }} con paginación</h4>
+    <exodo-grid
+      [columns]="columns"
+      [dataSource]="apiDataSource"
+      [proxy]="proxy"
+      mode="remote"
+      [showPagination]="true"
+      [theme]="currentTheme"
+      [lang]="currentLang"
+      [allowFiltering]="true"
+      [allowSorting]="true"
       [class.exodo-theme-modern]="currentTheme==='modern'"
       [class.exodo-theme-dark]="currentTheme==='dark'"
     ></exodo-grid>

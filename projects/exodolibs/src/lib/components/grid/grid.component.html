@@ -30,9 +30,19 @@
                   <tr aria-rowindex="1" class="text-center">
                       <th *ngFor="let header of columns; index as index"  [attr.colspan]="header.colspan"
                           [width]="header.width || 'auto'"
-                          [attr.aria-colcount]="index + 1">
+                          [attr.aria-colcount]="index + 1"
+                          (click)="sort(header)"
+                          [class.sortable]="allowSorting && header.dataIndex">
                           {{ header.text }}
+                          <i *ngIf="allowSorting && header.dataIndex && sortColumn === header.dataIndex"
+                             class="fa"
+                             [ngClass]="{'fa-sort-asc': sortDirection === 'asc', 'fa-sort-desc': sortDirection === 'desc'}"></i>
                       </th>
+                  </tr>
+                  <tr *ngIf="allowFiltering">
+                    <th *ngFor="let column of columns">
+                      <lib-grid-filter [column]="column" (onFilter)="applyGridFilter($event)"></lib-grid-filter>
+                    </th>
                   </tr>
                 </ng-container>
               </thead>

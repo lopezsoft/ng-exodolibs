@@ -24,14 +24,6 @@ import {debounceTime} from "rxjs/operators";
 })
 export class ExodoGridComponent implements OnInit, AfterViewInit {
   public emptyMessage = 'Sin datos';
-  public proxy: Proxy = {
-    api: {
-      read: null,
-      create: null,
-      update: null,
-      destroy: null,
-    }
-  };
   public rows: any = [];
   public isLoading: boolean;
   protected queryParams: any = {};
@@ -58,9 +50,15 @@ export class ExodoGridComponent implements OnInit, AfterViewInit {
     rows: [],
     dataRecords: null
   };
+  @Input() proxy: Proxy;
   @Input() placeholder = 'Búsqueda';
+  @Input() allowFiltering = false;
+  @Input() allowSorting = false;
   /** Theme name applied to the grid host. Expected values: 'light'|'modern'|'dark' or custom */
   @Input() theme: string = 'glacial';
+
+  public sortColumn: string;
+  public sortDirection: 'asc' | 'desc' = 'asc';
 
   constructor(
     private gridService: GridService,
@@ -201,6 +199,44 @@ export class ExodoGridComponent implements OnInit, AfterViewInit {
       this.gridService.filterItems(ele.value, table);
     }
   }
+
+  applyGridFilter(event: any) {
+    const params = { ...this.queryParams, ...event };
+    this.queryParams = params;
+    this.onRefreshLoad(params);
+  }
+
+  sort(column: ColumnContract) {
+    if (!this.allowSorting || !column.dataIndex) {
+      return;
+    }
+
+    if (this.sortColumn === column.dataIndex) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortColumn = column.dataIndex;
+      this.sortDirection = 'asc';
+    }
+
+    if (this.mode === 'remote') {
+      const params = { ...this.queryParams, sort: this.sortColumn, dir: this.sortDirection };
+      this.queryParams = params;
+      this.onRefreshLoad(params);
+    } else {
+      this.dataSource.rows.sort((a, b) => {
+        const valA = a[this.sortColumn];
+        const valB = b[this.sortColumn];
+        if (valA < valB) {
+          return this.sortDirection === 'asc' ? -1 : 1;
+        }
+        if (valA > valB) {
+          return this.sortDirection === 'asc' ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+  }
+
   public onAfterRefreshLoad(callback: (dataRecords: DataRecords) => void) {
     this.afterRefreshLoadCallbacks.push(callback);
   }

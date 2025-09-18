@@ -46,6 +46,12 @@ export class GridExamplesComponent implements OnInit {
   themes = ['light', 'modern', 'dark', 'glacial', 'sky', 'bone','gray'];
   currentTheme = 'light';
 
+  proxy: any = {
+    api: {
+      read: 'https://jsonplaceholder.typicode.com/users'
+    }
+  };
+
   // Local fallback translations used when Transloco is not available in the workspace.
   translations: Record<string, any> = {
     en: {
