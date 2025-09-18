@@ -13,8 +13,8 @@
   },
   "homepage": "https://github.com/lopezsoft/ng-exodolibs#readme",
   "peerDependencies": {
-    "@angular/common": ">=15.2.10",
-    "@angular/core": ">=15.2.10"
+    "@angular/common": ">=18.0.0",
+    "@angular/core": ">=18.0.0"
   },
   "dependencies": {
     "tslib": ">=2.3.0"
