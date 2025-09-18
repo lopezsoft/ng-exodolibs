@@ -60,7 +60,7 @@ export class ExodoGridComponent implements OnInit, AfterViewInit {
   };
   @Input() placeholder = 'Búsqueda';
   /** Theme name applied to the grid host. Expected values: 'light'|'modern'|'dark' or custom */
-  @Input() theme: string | null = null;
+  @Input() theme: string = 'glacial';
 
   constructor(
     private gridService: GridService,
@@ -86,6 +86,11 @@ export class ExodoGridComponent implements OnInit, AfterViewInit {
   // Bind host classes based on the `theme` input so the grid styles are scoped per-instance
   @HostBinding('class.exodo-theme-modern') get hostModern() { return this.theme === 'modern'; }
   @HostBinding('class.exodo-theme-dark') get hostDark() { return this.theme === 'dark'; }
+  @HostBinding('class.exodo-theme-glacial') get hostGlacial() { return this.theme === 'glacial'; }
+  @HostBinding('class.exodo-theme-sky') get hostSky() { return this.theme === 'sky'; }
+  @HostBinding('class.exodo-theme-bone') get hostBone() { return this.theme === 'bone'; }
+  @HostBinding('class.exodo-theme-gray') get hostGray() { return this.theme === 'gray'; }
+
 
   // Accept theme via input — simple setter kept for API clarity
   @Input()

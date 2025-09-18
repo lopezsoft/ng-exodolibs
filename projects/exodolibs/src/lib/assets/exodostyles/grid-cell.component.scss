@@ -1,3 +1,5 @@
+// assets/exodostyles/grid-cell.component.scss
+
 .exodogrid-input-editing {
   width: 100%;
   display: flex;
@@ -12,70 +14,69 @@
     font-size: 13px;
     font-weight: 400;
     line-height: 1.5;
-  color: var(--exodo-text, #212529);
-  background-color: var(--exodo-surface, #ffffff);
-  background-clip: padding-box;
-  border: 1px solid var(--exodo-border-weak, #ced4da);
+    color: var(--exodo-text-color, #212529);
+    background-color: var(--exodo-surface, #ffffff);
+    background-clip: padding-box;
+    border: 1px solid var(--exodo-border, #ced4da);
     appearance: none;
     border-radius: 0;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 
     &:focus {
-  color: var(--exodo-text, #212529);
-  background-color: var(--exodo-surface, #ffffff);
-  border-color: var(--exodo-focus, #86b7fe);
-  outline: 0;
-  border-width: 0 !important;
-  box-shadow: 0 0 0 0.05rem var(--exodo-focus-shadow, rgba(13, 110, 253, 0.25));
+      color: var(--exodo-text-color, #212529);
+      background-color: var(--exodo-surface, #ffffff);
+      border-color: var(--exodo-primary-focus, #86b7fe);
+      outline: 0;
+      border-width: 1px !important;
+      box-shadow: 0 0 0 0.05rem var(--exodo-primary-focus, rgba(13, 110, 253, 0.25));
     }
   }
 
   input[type="checkbox"] {
-    width: calc(1em + 2px);
-    height: calc(1em + 2px);
+    width: 1.2em;
+    height: 1.2em;
     appearance: none;
     outline: none;
     position: relative;
     vertical-align: middle;
-  border: 2px solid var(--exodo-border-weak, #ced4da);
-  background-color: var(--exodo-surface, #ffffff);
+    // ✨ MEJORA: Se usan variables específicas para el checkbox
+    border: 2px solid var(--exodo-checkbox-border, #ced4da);
+    background-color: var(--exodo-surface, #ffffff);
+    border-radius: 3px;
     cursor: pointer;
-    transition: border-color 0.2s ease-in-out;
+    transition: border-color 0.2s ease-in-out, background-color 0.2s ease-in-out;
 
     &:after {
       content: "";
       position: absolute;
-      top: 50%;
+      top: 40%;
       left: 50%;
-      width: 0.35em;  // Ajustado para el cambio en el tamaño
-      height: 0.6em;  // Ajustado para el cambio en el tamaño
-  border: solid var(--exodo-surface, #fff);
+      width: 0.3em;
+      height: 0.6em;
+      border: solid var(--exodo-checkbox-check-color, #fff);
       border-width: 0 2px 2px 0;
-      transform: translateY(-50%) translateX(-50%) rotate(45deg);
+      transform: translate(-50%, -50%) rotate(45deg);
       opacity: 0;
       transition: opacity 0.2s ease-in-out;
     }
 
     &:checked {
-  border-color: var(--exodo-primary, #0d6efd);
-  background-color: var(--exodo-primary, #0d6efd);
+      // ✨ MEJORA: Se usan variables específicas para el estado 'checked'
+      border-color: var(--exodo-checkbox-checked-border, #0d6efd);
+      background-color: var(--exodo-checkbox-checked-bg, #0d6efd);
 
       &:after {
         opacity: 1;
       }
     }
 
-    &:focus {
-  border-color: var(--exodo-focus, #86b7fe);
-  box-shadow: 0 0 0 0.05rem var(--exodo-focus-shadow, rgba(13, 110, 253, 0.25));
-    }
-
     &:disabled {
-  background-color: var(--exodo-disabled-bg, #f7f7f7);
+      background-color: var(--exodo-muted, #f7f7f7);
+      border-color: var(--exodo-border, #ccc);
       cursor: not-allowed;
 
-      &:after {
-  border-color: var(--exodo-disabled-border, #ccc);
+      &:checked:after {
+        border-color: var(--exodo-surface, #fff);
       }
     }
   }

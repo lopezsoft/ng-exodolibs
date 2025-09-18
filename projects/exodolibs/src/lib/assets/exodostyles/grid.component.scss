@@ -1,25 +1,38 @@
+// assets/exodostyles/grid.component.scss
+
 .grid-spinner {
   border: 4px solid var(--exodo-spinner-bg, rgba(0, 0, 0, 0.1));
   width: 48px;
   height: 48px;
   border-radius: 50%;
   border-left-color: var(--exodo-spinner-accent, #09f);
-  animation: grid-spin 1s ease infinite;
+  animation: grid-spin 1s linear infinite; // Animación linear para un giro más suave
   transition: transform 0.4s ease;
+}
+
+@keyframes grid-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 .card-table {
   min-height: 10rem;
   box-shadow: var(--exodo-card-shadow, 0 2px 4px rgba(0, 0, 0, 0.1));
+
   .card-header {
     padding: .5rem 1rem !important;
     font-family: var(--exodo-font-family, 'Arial', sans-serif);
-    border-bottom: 0px solid var(--exodo-border, #a3c7e0);
+    border-bottom: 1px solid var(--exodo-border, #e6eef5);
+    transition: background-color 0.3s ease, color 0.3s ease;
+
+    // ✨ MEJORA: El encabezado ahora responde a los temas
+    background-color: var(--exodo-card-header-bg, #f8f9fa);
+    color: var(--exodo-card-header-color, #343a40);
+
     .card-title {
       font-size: 13px;
       font-weight: bold;
-      padding-bottom: 2px;
-      color: var(--exodo-card-title, #123b5b);
+      color: inherit; // Hereda el color del padre (.card-header) para simplificar
     }
   }
 }
@@ -27,14 +40,16 @@
 .grid-cell {
   font-size: 13px;
   padding: .35rem .25rem !important;
-  transition: background-color 0.5s ease;
+  transition: background-color 0.3s ease;
   min-height: 32px;
+
   span, i, p {
     padding: 0;
   }
 
+  // Fallback de foco por si el outline global no es suficiente
   &:focus-visible {
-    background-color: var(--exodo-focus-bg, antiquewhite) !important;
+    background-color: var(--exodo-focus-bg, #e3f2fd) !important;
   }
 }
 
@@ -43,23 +58,11 @@
   font-weight: bold;
   text-align: center;
   display: flex;
-  flex-direction: row;
+  flex-direction: column; // Mejor para alinear icono y texto
   justify-content: center;
   align-items: center;
-  justify-items: center;
-  vertical-align: middle;
   color: var(--exodo-text-color, #333);
   font-family: var(--exodo-font-family, 'Arial', sans-serif);
-}
-
-@keyframes grid-spin {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
 }
 
 .grid-loading {
@@ -70,30 +73,28 @@
   bottom: 0;
   background-color: var(--exodo-loading-bg, rgba(34, 41, 47, 0.5));
   z-index: 100;
-  display: none;
-  visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
   font-family: var(--exodo-font-family, 'Arial', sans-serif);
 
   &.show {
     opacity: 1;
-    display: flex;
-    visibility: revert;
-    align-items: center;
-    justify-content: center;
+    visibility: visible;
   }
-
-  transition: all 0.5s ease;
 }
 
-  .grid-search {
+.grid-search {
   font-family: var(--exodo-font-family, 'Arial', sans-serif);
   background-color: var(--exodo-bg-alt, #eaf3f9) !important;
 
   input {
     border-color: var(--exodo-border, #a3c7e0) !important;
     box-shadow: none;
-    transition: border-color 0.5s ease;
+    transition: border-color 0.3s ease;
     font-size: 13px;
     min-height: 32px;
     height: 32px;
@@ -102,15 +103,16 @@
   button.btn {
     background-color: var(--exodo-bg-alt, #a3c7e0) !important;
     border-color: var(--exodo-border, #a3c7e0) !important;
-    transition: background-color 0.5s ease;
+    transition: background-color 0.3s ease;
     min-height: 32px;
     height: 32px;
     width: 34px;
     display: flex;
     align-items: center;
     justify-content: center;
-      &:hover, &:focus {
-      background-color: var(--exodo-bg-alt-hover, #95b0cf) !important;
+
+    &:hover, &:focus {
+      background-color: var(--exodo-bg-alt-hover, #dbeafc) !important; // Usa una variable para el hover
     }
   }
 }
