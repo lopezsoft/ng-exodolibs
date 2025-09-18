@@ -1,5 +1,6 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
-import {ColumnContract, DataSourceContract} from "exodolibs";
+// Avoid importing runtime library types here to prevent duplicate component declarations during dev.
+// Use `any` for local demo app types.
 
 @Component({
   selector: 'app-root',
@@ -8,7 +9,7 @@ import {ColumnContract, DataSourceContract} from "exodolibs";
 })
 export class AppComponent implements OnInit, AfterViewInit {
   title = 'ng-exodolibs';
-  aColumns: ColumnContract[] = [
+  aColumns: any[] = [
     {
       text: '#',
       dataIndex: 'checked',
@@ -76,7 +77,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       clicksToEdit: 2
     }
   ];
-  columns: ColumnContract[] = [
+  columns: any[] = [
     {
       text: '#',
       dataIndex: 'term_name',

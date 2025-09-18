@@ -2,6 +2,7 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  HostBinding,
   Input,
   OnInit,
   ViewChild, ViewEncapsulation,
@@ -23,14 +24,6 @@ import {debounceTime} from "rxjs/operators";
 })
 export class ExodoGridComponent implements OnInit, AfterViewInit {
   public emptyMessage = 'Sin datos';
-  public proxy: Proxy = {
-    api: {
-      read: null,
-      create: null,
-      update: null,
-      destroy: null,
-    }
-  };
   public rows: any = [];
   public isLoading: boolean;
   protected queryParams: any = {};
@@ -57,7 +50,18 @@ export class ExodoGridComponent implements OnInit, AfterViewInit {
     rows: [],
     dataRecords: null
   };
+  @Input() proxy: Proxy;
   @Input() placeholder = 'Búsqueda';
+  @Input() allowFiltering = false;
+  @Input() allowSorting = false;
+  @Input() dataAdapter: (response: any, params: any) => JsonResponse;
+  @Input() labels: { [key: string]: string } = {};
+  @Input() lang?: string;
+  /** Theme name applied to the grid host. Expected values: 'light'|'modern'|'dark' or custom */
+  @Input() theme: string = 'glacial';
+
+  public sortColumn: string;
+  public sortDirection: 'asc' | 'desc' = 'asc';
 
   constructor(
     private gridService: GridService,
@@ -79,6 +83,21 @@ export class ExodoGridComponent implements OnInit, AfterViewInit {
       }
     });
   }
+
+  // Bind host classes based on the `theme` input so the grid styles are scoped per-instance
+  @HostBinding('class.exodo-theme-modern') get hostModern() { return this.theme === 'modern'; }
+  @HostBinding('class.exodo-theme-dark') get hostDark() { return this.theme === 'dark'; }
+  @HostBinding('class.exodo-theme-glacial') get hostGlacial() { return this.theme === 'glacial'; }
+  @HostBinding('class.exodo-theme-sky') get hostSky() { return this.theme === 'sky'; }
+  @HostBinding('class.exodo-theme-bone') get hostBone() { return this.theme === 'bone'; }
+  @HostBinding('class.exodo-theme-gray') get hostGray() { return this.theme === 'gray'; }
+
+
+  // Accept theme via input — simple setter kept for API clarity
+  @Input()
+  set themeInput(value: string | null) {
+    this.theme = value;
+  }
   ngAfterViewInit(): void {
     this.searchField.nativeElement.id = this.gridService.getUniqueId('exodo-grid-search-');
     setTimeout(() => {
@@ -86,7 +105,9 @@ export class ExodoGridComponent implements OnInit, AfterViewInit {
     });
   }
   ngOnInit(): void {
-    // implementar
+    if (this.mode === 'remote') {
+      this.onLoad();
+    }
   }
   canData(): boolean {
     if(!this.dataSource || !this.dataSource?.rows) {
@@ -133,10 +154,11 @@ export class ExodoGridComponent implements OnInit, AfterViewInit {
     me.isLoading  = true;
     me.gridService.onRefreshLoad(url, params)
       .subscribe({
-        next: (response: JsonResponse) => {
+        next: (response: any) => {
           me.isLoading    = false;
-          me.dataRecords  = response.dataRecords;
-          this.afterRefreshLoadCallbacks.forEach(callback => callback(response.dataRecords));
+          const jsonResponse = me.dataAdapter ? me.dataAdapter(response, params) : response;
+          me.dataRecords  = jsonResponse.dataRecords;
+          this.afterRefreshLoadCallbacks.forEach(callback => callback(jsonResponse.dataRecords));
         },
         error: (error) => {
           me.isLoading  = false;
@@ -183,6 +205,46 @@ export class ExodoGridComponent implements OnInit, AfterViewInit {
       this.gridService.filterItems(ele.value, table);
     }
   }
+
+  applyGridFilter(event: any) {
+    const params = { ...this.queryParams, ...event };
+    this.queryParams = params;
+    this.onRefreshLoad(params);
+  }
+
+  sort(column: ColumnContract) {
+    if (!this.allowSorting || !column.dataIndex) {
+      return;
+    }
+
+    if (this.sortColumn === column.dataIndex) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortColumn = column.dataIndex;
+      this.sortDirection = 'asc';
+    }
+
+    this.dataSource.rows.sort((a, b) => {
+      const valA = a[this.sortColumn];
+      const valB = b[this.sortColumn];
+      if (valA < valB) {
+        return this.sortDirection === 'asc' ? -1 : 1;
+      }
+      if (valA > valB) {
+        return this.sortDirection === 'asc' ? 1 : -1;
+      }
+      return 0;
+    });
+    /*
+      TODO: enable remote sorting - no delete this comment 
+      if (this.mode === 'remote') {
+      const params = { ...this.queryParams, sort: this.sortColumn, dir: this.sortDirection };
+      this.queryParams = params;
+      this.onRefreshLoad(params);
+    } else {
+    } */
+  }
+
   public onAfterRefreshLoad(callback: (dataRecords: DataRecords) => void) {
     this.afterRefreshLoadCallbacks.push(callback);
   }

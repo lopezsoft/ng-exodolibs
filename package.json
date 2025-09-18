@@ -1,34 +1,35 @@
 {
   "name": "ng-exodolibs",
-  "version": "0.7.4",
+  "version": "0.8.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --open --port 1200",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "lib": "ng build exodolibs && cp -R ./projects/exodolibs/src/lib/assets ./dist/exodolibs/lib"
+  "lib": "ng build exodolibs && cp -R ./projects/exodolibs/src/lib/assets ./dist/exodolibs/lib && cp ./projects/exodolibs/src/lib/assets/style.scss ./dist/exodolibs/lib/style.scss"
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^15.2.10",
-    "@angular/common": "^15.2.10",
-    "@angular/compiler": "^15.2.10",
-    "@angular/core": "^15.2.10",
-    "@angular/forms": "^15.2.10",
-    "@angular/platform-browser": "^15.2.10",
-    "@angular/platform-browser-dynamic": "^15.2.10",
-    "@angular/router": "^15.2.10",
+    "@angular/animations": "^18.2.14",
+    "@angular/common": "^18.2.14",
+    "@angular/compiler": "^18.2.14",
+    "@angular/core": "^18.2.14",
+    "@angular/forms": "^18.2.14",
+    "@angular/platform-browser": "^18.2.14",
+    "@angular/platform-browser-dynamic": "^18.2.14",
+    "@angular/router": "^18.2.14",
     "bootstrap": "^5.3.3",
     "clear": "^0.1.0",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
-    "zone.js": "~0.11.4"
+    "zone.js": "~0.14.10"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^15.2.11",
-    "@angular/cli": "~15.2.11",
-    "@angular/compiler-cli": "^15.2.10",
+    "@angular-devkit/build-angular": "^18.2.21",
+    "@angular/cli": "~18.2.21",
+    "@angular/compiler-cli": "^18.2.14",
+    "@ngneat/transloco": "^3.2.0",
     "@types/jasmine": "~4.0.0",
     "jasmine-core": "~4.3.0",
     "karma": "~6.4.0",
@@ -36,7 +37,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.0.0",
-    "ng-packagr": "^15.2.2",
-    "typescript": "~4.9.5"
+    "ng-packagr": "^18.2.1",
+    "typescript": "~5.4.5"
   }
 }

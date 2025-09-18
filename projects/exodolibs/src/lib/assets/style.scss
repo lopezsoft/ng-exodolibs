@@ -1,2 +1,5 @@
 @import "exodogrid-style";
 @import "exodostyles/tooltip";
+// Temas y estilos unificados
+@import "exodostyles/themes/_themes"; // Contiene todos los temas
+@import "exodostyles/pagination.component";

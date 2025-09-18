@@ -25,3 +25,20 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To u
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+
+
+## Nota sobre Traducciones (Transloco)
+
+Esta workspace mantiene `@ngneat/transloco` en `devDependencies` del proyecto raíz para facilitar el desarrollo y las demos locales (por ejemplo, los ejemplos en `src/app` utilizan Transloco). Sin embargo, la librería `exodolibs` declara `@ngneat/transloco` como `peerDependency` en `projects/exodolibs/package.json`.
+
+Consecuencia para consumidores de la librería:
+
+- Si instalas `exodolibs` en tu proyecto y quieres aprovechar las traducciones automáticas del paginador, debes instalar y configurar `@ngneat/transloco` en tu aplicación. Por ejemplo:
+
+```bash
+npm install @ngneat/transloco
+```
+
+- Si no instalas Transloco, `exodolibs` seguirá funcionando: el paginador usará los textos por defecto o los `@Input() labels` que proveas.
+
+Recomendación: mantener Transloco como dependencia de la aplicación que consuma `exodolibs` para controlar el sistema de traducciones y evitar conflictos de versión.

@@ -1,0 +1,14 @@
+{
+  "exodo": {
+    "pagination": {
+      "first": "Primera página",
+      "previous": "Página anterior",
+      "page": "Página",
+      "of": "de",
+      "next": "Siguiente página",
+      "last": "Última página",
+      "refresh": "Actualizar",
+      "infoTemplate": "{{from}} - {{to}} de {{total}}"
+    }
+  }
+}

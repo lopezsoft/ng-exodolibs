@@ -1,36 +1,36 @@
-<nav *ngIf="paginationOptions">
-    <span class="w-100 span-info" *ngIf="paginationOptions.from">
-        {{ paginationOptions.from +' - ' + paginationOptions.to + ' de ' +  paginationOptions.total  }}
+<nav *ngIf="paginationOptions" class="exodo-pagination-controls" aria-label="Pagination navigation">
+    <span class="w-100 pagination-info" *ngIf="paginationOptions.from">
+        {{ getInfoText() }}
     </span>
     <ul class="pagination justify-content-end w-100">
         <li class="page-item">
-            <button type="button" class="page-link" aria-hidden="true" data-bs-toggle="tooltip" title="Primer página"
+            <button type="button" class="page-link" aria-hidden="true" data-bs-toggle="tooltip" [title]="getLabel('first')"
                     [ngClass]="{'disabled': paginationOptions?.currentPage === paginationOptions?.from}"
                     (click)="onNextPage(1)">
                 <i class="fas fa-angle-double-left" aria-hidden="true"></i>
             </button>
         </li>
         <li class="page-item">
-            <button type="button" class="page-link" aria-hidden="true" data-bs-toggle="tooltip" title="Página anterior"
+            <button type="button" class="page-link" aria-hidden="true" data-bs-toggle="tooltip" [title]="getLabel('previous')"
                     [ngClass]="{'disabled': paginationOptions?.currentPage === paginationOptions?.from}"
                     (click)="onNextPage(paginationOptions?.currentPage - 1)">
                 <i class="fas fa-angle-left" aria-hidden="true"></i>
             </button>
         </li>
-        <li class="page-item">
+        <li class="page-item pagination-page-input">
             <span class="page-link page-link-page">
-                Página
+                {{ getLabel('page') }}
                 <input type="text" class="form-control"
                        [value]="paginationOptions.currentPage"
                        #pagInput
                        (change)="onNextPage(pagInput.value)">
-                de
+                {{ getLabel('of') }}
                 {{ paginationOptions.lastPage }}
             </span>
         </li>
 
         <li class="page-item">
-            <button type="button" class="page-link" aria-hidden="true" data-bs-toggle="tooltip" title="Siguiente página"
+            <button type="button" class="page-link" aria-hidden="true" data-bs-toggle="tooltip" [title]="getLabel('next')"
                     [ngClass]="{'disabled': paginationOptions?.lastPage === paginationOptions?.currentPage}"
                     (click)="onNextPage(paginationOptions?.currentPage + 1)">
                 <i class="fas fa-angle-right" aria-hidden="true"></i>
@@ -38,14 +38,14 @@
         </li>
 
        <li class="page-item">
-            <button type="button" class="page-link" aria-hidden="true" data-bs-toggle="tooltip" title="Última página"
+            <button type="button" class="page-link" aria-hidden="true" data-bs-toggle="tooltip" [title]="getLabel('last')"
                     [ngClass]="{'disabled': paginationOptions?.lastPage === paginationOptions?.currentPage}"
                     (click)="onNextPage(paginationOptions.lastPage)">
                 <i class="fas fa-angle-double-right" aria-hidden="true"></i>
             </button>
         </li>
         <li class="page-item">
-            <button type="button" class="page-link" aria-hidden="true" data-bs-toggle="tooltip" title="Actualizar"
+            <button type="button" class="page-link" aria-hidden="true" data-bs-toggle="tooltip" [title]="getLabel('refresh')"
                     (click)="refreshPagination(paginationOptions?.currentPage ?? 1)">
                 <i class="fa fa-sync" aria-hidden="true"></i>
             </button>

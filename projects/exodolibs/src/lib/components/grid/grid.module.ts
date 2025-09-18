@@ -6,6 +6,7 @@ import {FormsModule} from "@angular/forms";
 import {PipesModule} from "../../pipes/pipes.module";
 import { GridCellComponent } from './grid-cell/grid-cell.component';
 import {DirectivesModule} from "../../directives/directives.module";
+import {GridFilterModule} from "./filter/grid-filter.module";
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import {DirectivesModule} from "../../directives/directives.module";
     CommonModule,
     FormsModule,
     PipesModule,
-    DirectivesModule
+    DirectivesModule,
+    GridFilterModule
   ],
   exports: [
     ExodoGridComponent,

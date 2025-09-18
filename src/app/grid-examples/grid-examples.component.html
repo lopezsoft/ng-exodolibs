@@ -1,0 +1,66 @@
+<div class="grid-examples" [attr.lang]="currentLang">
+  <h3>{{ t('examples.title') }}</h3>
+  <div class="controls">
+    <div class="theme-toggle">
+      <label>
+        <input type="checkbox" 
+        (change)="toggleModernTheme($event)" 
+        [checked]="currentTheme==='modern'" />
+        {{ t('examples.useModern') }}
+      </label>
+      <label style="margin-left:1rem">Theme:
+        <select [value]="currentTheme" (change)="changeTheme($any($event.target).value)">
+          <option *ngFor="let th of themes" [value]="th">{{ th }}</option>
+        </select>
+      </label>
+    </div>
+    <div class="lang-select">
+      <label>Language:
+        <select [value]="currentLang" (change)="changeLang($any($event.target).value)">
+          <option *ngFor="let l of languages" [value]="l">{{ l }}</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <section class="example">
+  <h4>{{ t('examples.static') }}</h4>
+    <exodo-grid [columns]="columns" 
+    [dataSource]="staticDataSource" mode="local" [showPagination]="false"
+      [theme]="currentTheme" [lang]="currentLang"
+      [allowFiltering]="true" [allowSorting]="true"
+      [labels]="paginationLabels"
+    ></exodo-grid>
+  </section>
+
+  <section class="example">
+  <h4>{{ t('examples.api') }}</h4>
+    <div *ngIf="loading" class="loading">Loading data…</div>
+    <exodo-grid *ngIf="!loading" [columns]="columns" [dataSource]="apiDataSource" mode="local" [showPagination]="false"
+      [theme]="currentTheme" [lang]="currentLang"
+      [allowFiltering]="true" [allowSorting]="true"
+      [labels]="paginationLabels"
+      [class.exodo-theme-modern]="currentTheme==='modern'"
+      [class.exodo-theme-dark]="currentTheme==='dark'"
+    ></exodo-grid>
+  </section>
+
+  <section class="example">
+    <h4>{{ t('examples.api') }} con paginación</h4>
+    <exodo-grid
+      [columns]="columns"
+      [dataSource]="apiDataSource"
+      [proxy]="proxy"
+      mode="remote"
+      [showPagination]="true"
+      [theme]="currentTheme"
+      [lang]="currentLang"
+      [allowFiltering]="true"
+      [allowSorting]="true"
+      [dataAdapter]="dataAdapter"
+      [labels]="paginationLabels"
+      [class.exodo-theme-modern]="currentTheme==='modern'"
+      [class.exodo-theme-dark]="currentTheme==='dark'"
+    ></exodo-grid>
+  </section>
+</div>

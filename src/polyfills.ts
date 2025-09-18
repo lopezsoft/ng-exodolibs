@@ -51,3 +51,18 @@ import 'zone.js';  // Included with Angular CLI.
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */
+
+// Try to load Angular localize if available. Some dev environments may not have it installed
+// (it's a devDependency in this workspace). Use a require in a try/catch to avoid a build-time
+// module-not-found error when the package is not present.
+declare const require: any;
+try {
+	// Use a dynamic require (via eval) so webpack does not attempt to statically
+	// resolve this optional dependency at build time when it's not installed.
+	const _req = eval('require');
+	_req('@angular/localize/init');
+} catch (err) {
+	// @angular/localize not installed in this environment; `$localize` will be unavailable.
+	// If you need i18n support, install it with:
+	// npm install --save-dev @angular/localize
+}

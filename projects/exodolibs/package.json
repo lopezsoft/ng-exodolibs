@@ -1,11 +1,24 @@
 {
   "name": "exodolibs",
-  "version": "0.7.3",
+  "version": "0.8.0",
+  "description": "ExodoLibs es una biblioteca de componentes UI para Angular, que ofrece una variedad de elementos personalizables y fáciles de usar para mejorar la experiencia del usuario en aplicaciones web.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/lopezsoft/ng-exodolibs.git"
   },
-  "keywords": [],
+  "keywords": [
+    "angular",
+    "components",
+    "ui",
+    "library",
+    "exodolibs",
+    "ng-exodolibs",
+    "typescript",
+    "web",
+    "frontend",
+    "design",
+    "responsive"
+  ],
   "author": "Lewis Lopez Gomez <lopezsoft.com@gmail.com>",
   "license": "MIT",
   "bugs": {
@@ -13,8 +26,10 @@
   },
   "homepage": "https://github.com/lopezsoft/ng-exodolibs#readme",
   "peerDependencies": {
-    "@angular/common": ">=15.2.10",
-    "@angular/core": ">=15.2.10"
+    "@angular/common": ">=18.0.0",
+    "@angular/core": ">=18.0.0"
+    ,
+    "@ngneat/transloco": ">=3.0.0"
   },
   "dependencies": {
     "tslib": ">=2.3.0"

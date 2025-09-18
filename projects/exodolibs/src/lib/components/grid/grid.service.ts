@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {JsonResponse} from "./contracts/data-source";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import {map} from "rxjs/operators";
 
 @Injectable({
@@ -14,14 +13,14 @@ export class GridService {
   private getHeaders(): HttpHeaders {
     return  new HttpHeaders()
       .set('Accept', 'application/json')
-      .set('Access-Control-Allow-Origin', '*')
+      .set('Content-Type', 'application/json')
       .set('Access-Control-Allow-Methods', 'GET, POST, DELETE, PUT');
   }
 
   onRefreshLoad(url: string, params: any = {}) {
     const me  = this;
     return me.http.get(`${url}`, { headers : me.getHeaders(), params: params })
-      .pipe(map((resp: JsonResponse) => {
+      .pipe(map((resp: any) => {
         return resp;
       }));
   }
