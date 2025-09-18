@@ -1,15 +1,13 @@
-import { Component, OnInit, Inject, Optional } from '@angular/core';
-import { TranslocoService } from '@ngneat/transloco';
+import { Component, OnInit } from '@angular/core';
 import { of } from 'rxjs';
 import { delay } from 'rxjs/operators';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-grid-examples',
   templateUrl: './grid-examples.component.html',
   styleUrls: ['./grid-examples.component.scss'],
   // Not standalone: AppModule declares this component so it can use the application-provided
-  // modules (ExodolibsModule, TranslocoModule) without importing the packaged library here.
+  // modules (ExodolibsModule) without importing the packaged library here.
 })
 export class GridExamplesComponent implements OnInit {
   columns: any[] = [

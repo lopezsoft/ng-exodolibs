@@ -102,27 +102,17 @@ Ejemplos:
 
 La grilla usa el `dataAdapter` si está presente; si no, asumirá que la respuesta ya tiene la forma `JsonResponse` (esto mantiene compatibilidad con código en producción que no usa adapter).
 
-### Traducciones y `Transloco`
+### Traducciones
 
 El paginador intenta resolver textos en el siguiente orden de prioridad:
 
 1. `@Input() labels` (valor pasado directamente al componente)
-2. `@ngneat/transloco` — namespace `exodo.pagination` (si Transloco está instalado y configurado)
-3. Proveedor global `EXODO_I18N` (InjectionToken)
-4. Labels por defecto incluidos en la librería (español)
+2. Proveedor global `EXODO_I18N` (InjectionToken)
+3. Labels por defecto incluidos en la librería (español)
 
-Claves de Transloco soportadas:
+La librería ofrece un `InjectionToken` llamado `EXODO_I18N` que puedes proveer en tu aplicación para personalizar los textos del paginador sin necesidad de un sistema de i18n externo.
 
-- `exodo.pagination.first`
-- `exodo.pagination.previous`
-- `exodo.pagination.page`
-- `exodo.pagination.of`
-- `exodo.pagination.next`
-- `exodo.pagination.last`
-- `exodo.pagination.refresh`
-- `exodo.pagination.infoTemplate`
-
-Si usas Transloco, coloca las claves dentro de tu JSON de traducciones (p. ej. `src/assets/i18n/en.json`).
+Si quieres integrar un sistema de traducciones (p. ej. Transloco) puedes hacerlo en tu aplicación y proveer `EXODO_I18N` desde tus recursos de traducción. La integración directa con librerías externas no es obligatoria y `exodolibs` funciona correctamente con los valores por defecto.
 
 ### Ejemplo práctico (component.ts)
 
@@ -273,5 +263,7 @@ Recuerda instalar `@ngneat/transloco` en tu proyecto y configurarlo según su do
 
 Nota sobre Transloco y esta workspace:
 
-La librería `exodolibs` declara `@ngneat/transloco` como `peerDependency`. Para facilitar el desarrollo local y las demos incluidas en este repositorio, esta workspace mantiene `@ngneat/transloco` como `devDependency` en el `package.json` raíz. Si vas a usar `exodolibs` en producción, instala y configura `@ngneat/transloco` en tu aplicación si quieres usar la traducción automática del paginador.
+La integración con `@ngneat/transloco` es totalmente opcional. `exodolibs` ya funciona con sus textos por defecto y mediante el `InjectionToken` `EXODO_I18N` puedes proporcionar traducciones desde tu aplicación sin depender de un paquete externo.
+
+Si tu aplicación ya usa Transloco y quieres aprovechar traducciones automáticas para el paginador, puedes integrarlo en la aplicación y exponer las traducciones a `exodolibs` (por ejemplo, mediante un provider que lea las claves del namespace `exodo.pagination`). No es obligatorio instalar `@ngneat/transloco` para usar la librería.
 
