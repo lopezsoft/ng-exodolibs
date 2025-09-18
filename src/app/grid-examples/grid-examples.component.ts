@@ -41,7 +41,7 @@ export class GridExamplesComponent implements OnInit {
   loading = false;
   // Transloco
   languages = ['en', 'es'];
-  currentLang = 'en';
+  currentLang = 'es';
   // Themes: 'light' means default (no class), others map to body classes
   themes = ['light', 'modern', 'dark'];
   currentTheme = 'light';

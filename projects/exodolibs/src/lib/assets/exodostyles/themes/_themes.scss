@@ -1,10 +1,43 @@
-
 // This file is auto-generated. Do not edit directly.
 // To add a new theme, create a new file in this directory and then run the theme generation script.
 
 /* Blanco Glacial theme - default (very light / neutral) */
 /* Define CSS custom properties used by the library so this theme acts as the default */
 :root {
+  --exodo-primary: #0f172a; /* very dark blue/near-black for primary accents */
+  --exodo-on-primary: #ffffff;
+  --exodo-surface: #ffffff; /* card & surface backgrounds */
+  --exodo-muted: #6b7280; /* muted text */
+  --exodo-border: #e6eef5; /* subtle border */
+
+  --exodo-pagination-border: #e6eef5;
+  --exodo-pagination-hover-bg: #f1f5f9;
+  --exodo-pagination-text: #111827;
+  --exodo-pagination-info: #0ea5a4; /* teal-ish info */
+
+  --exodo-card-radius: 10px;
+  --exodo-card-shadow: 0 6px 20px rgba(16,24,40,0.04);
+  
+  --exodo-primary-focus: #86b7fe;
+  --exodo-bg-alt: #eaf3f9;
+  --exodo-thead-start: #cde2eb;
+  --exodo-thead-end: #b9d3e7;
+  --exodo-row-bg: #d6e7f2;
+  --exodo-row-alt: #ffffff;
+  --exodo-row-hover: #c4d8e9;
+  --exodo-tooltip-bg: #ffffff;
+  --exodo-tooltip-text: #2556a3;
+  --exodo-spinner-accent: #0099ff;
+  --exodo-spinner-bg: rgba(0, 0, 0, 0.1);
+  --exodo-focus-bg: antiquewhite;
+  --exodo-text-color: #333;
+  
+// This file is auto-generated. Do not edit directly.
+// To add a new theme, create a new file in this directory and then run the theme generation script.
+
+/* Blanco Glacial theme - default (very light / neutral) */
+/* Define CSS custom properties used by the library so this theme acts as the default */
+:root, .exodo-theme-blanco-glacial {
   --exodo-primary: #0f172a; /* very dark blue/near-black for primary accents */
   --exodo-on-primary: #ffffff;
   --exodo-surface: #ffffff; /* card & surface backgrounds */
@@ -41,6 +74,129 @@
 }
 
 /* Specific grid tweaks when using the default blanco-glacial theme */
+.exodo-theme-blanco-glacial .table thead th {
+  background: linear-gradient(90deg, rgba(15,23,42,0.02), rgba(15,23,42,0.01));
+  color: var(--exodo-primary);
+}
+
+// Dark theme variables for Exodo (class-based)
+.exodo-theme-dark {
+  --exodo-primary: #2563eb; /* blue-600 */
+  --exodo-on-primary: #ffffff;
+  --exodo-surface: #0b1220;
+  --exodo-muted: #9aa6b2;
+  --exodo-border: #243240;
+  --exodo-pagination-border: #334155;
+  --exodo-pagination-hover-bg: #1f2937;
+  --exodo-pagination-text: #e5e7eb;
+  --exodo-pagination-info: #93c5fd;
+  --exodo-card-radius: 10px;
+  --exodo-card-shadow: 0 6px 20px rgba(0,0,0,0.6);
+  --exodo-primary-focus: #3b82f6;
+  --exodo-bg-alt: #111827;
+  --exodo-thead-start: #1f2937;
+  --exodo-thead-end: #111827;
+  --exodo-row-bg: #1f2937;
+  --exodo-row-alt: #111827;
+  --exodo-row-hover: #374151;
+  --exodo-tooltip-bg: #1f2937;
+  --exodo-tooltip-text: #e5e7eb;
+  --exodo-spinner-accent: #3b82f6;
+  --exodo-spinner-bg: rgba(255, 255, 255, 0.1);
+  --exodo-focus-bg: #374151;
+  --exodo-text-color: #e5e7eb;
+  --exodo-loading-bg: rgba(0, 0, 0, 0.5);
+  --exodo-card-title: #e5e7eb;
+  --exodo-active-start: #F9C942;
+  --exodo-active-end: #F5B700;
+  --exodo-bg: #0b1220;
+}
+
+.exodo-theme-dark .table thead th {
+  background: linear-gradient(90deg, rgba(37,99,235,0.06), rgba(37,99,235,0.02));
+  color: var(--exodo-on-primary);
+}
+
+/* Tema light para Exodo components - variables específicas */
+.exodo-theme-light {
+  --exodo-primary: #2563eb;
+  --exodo-on-primary: #ffffff;
+  --exodo-surface: #ffffff;
+  --exodo-muted: #6b7280;
+  --exodo-border: #e5e7eb;
+  --exodo-pagination-border: #aadafa;
+  --exodo-pagination-hover-bg: #c4d8e9;
+  --exodo-pagination-text: #2a2e30;
+  --exodo-pagination-info: rgb(23, 119, 177);
+  --exodo-card-radius: 10px;
+  --exodo-card-shadow: 0 6px 20px rgba(16,24,40,0.04);
+  --exodo-primary-focus: #86b7fe;
+  --exodo-bg-alt: #f9fafb;
+  --exodo-thead-start: #f3f4f6;
+  --exodo-thead-end: #e5e7eb;
+  --exodo-row-bg: #f9fafb;
+  --exodo-row-alt: #ffffff;
+  --exodo-row-hover: #f3f4f6;
+  --exodo-tooltip-bg: #ffffff;
+  --exodo-tooltip-text: #2556a3;
+  --exodo-spinner-accent: #0099ff;
+  --exodo-spinner-bg: rgba(0, 0, 0, 0.1);
+  --exodo-focus-bg: antiquewhite;
+  --exodo-text-color: #333;
+  --exodo-loading-bg: rgba(255, 255, 255, 0.5);
+  --exodo-card-title: #123b5b;
+  --exodo-active-start: #F9C942;
+  --exodo-active-end: #F5B700;
+  --exodo-bg: #ffffff;
+}
+
+// Modern theme variables for Exodo
+.exodo-theme-modern {
+  --exodo-primary: #0ea5a4;
+  --exodo-on-primary: #ffffff;
+  --exodo-surface: #ffffff;
+  --exodo-muted: #64748b;
+  --exodo-border: #e6eef0;
+  --exodo-pagination-border: #e6eef0;
+  --exodo-pagination-hover-bg: #f1f5f9;
+  --exodo-pagination-text: #111827;
+  --exodo-pagination-info: #0ea5a4;
+  --exodo-card-radius: 12px;
+  --exodo-card-shadow: 0 8px 24px rgba(14,165,164,0.08);
+  --exodo-primary-focus: #14b8a6;
+  --exodo-bg-alt: #f8fafc;
+  --exodo-thead-start: #f1f5f9;
+  --exodo-thead-end: #e2e8f0;
+  --exodo-row-bg: #f8fafc;
+  --exodo-row-alt: #ffffff;
+  --exodo-row-hover: #f1f5f9;
+  --exodo-tooltip-bg: #ffffff;
+  --exodo-tooltip-text: #0ea5a4;
+  --exodo-spinner-accent: #0ea5a4;
+  --exodo-spinner-bg: rgba(0, 0, 0, 0.1);
+  --exodo-focus-bg: #f1f5f9;
+  --exodo-text-color: #334155;
+  --exodo-loading-bg: rgba(255, 255, 255, 0.5);
+  --exodo-card-title: #1e293b;
+  --exodo-active-start: #5eead4;
+  --exodo-active-end: #2dd4bf;
+  --exodo-bg: #ffffff;
+}
+
+// Specific tweaks for grid
+.exodo-theme-modern .table thead th {
+  background: linear-gradient(90deg, rgba(14,165,164,0.06), rgba(14,165,164,0.02));
+  color: var(--exodo-primary);
+}
+
+  --exodo-loading-bg: rgba(34, 41, 47, 0.5);
+  --exodo-card-title: #123b5b;
+  --exodo-active-start: #F9C942;
+  --exodo-active-end: #F5B700;
+  --exodo-bg: #eaf3f9;
+}
+
+/* Specific grid tweaks when using the default blanco-glacial theme */
 .exodo-theme-blanco-glacial, :root {
   .table thead th {
     background: linear-gradient(90deg, rgba(15,23,42,0.02), rgba(15,23,42,0.01));
@@ -55,13 +211,30 @@
   --exodo-surface: #0b1220;
   --exodo-muted: #9aa6b2;
   --exodo-border: #243240;
-
   --exodo-pagination-border: #334155;
   --exodo-pagination-hover-bg: #1f2937;
   --exodo-pagination-text: #e5e7eb;
   --exodo-pagination-info: #93c5fd;
   --exodo-card-radius: 10px;
   --exodo-card-shadow: 0 6px 20px rgba(0,0,0,0.6);
+  --exodo-primary-focus: #3b82f6;
+  --exodo-bg-alt: #111827;
+  --exodo-thead-start: #1f2937;
+  --exodo-thead-end: #111827;
+  --exodo-row-bg: #1f2937;
+  --exodo-row-alt: #111827;
+  --exodo-row-hover: #374151;
+  --exodo-tooltip-bg: #1f2937;
+  --exodo-tooltip-text: #e5e7eb;
+  --exodo-spinner-accent: #3b82f6;
+  --exodo-spinner-bg: rgba(255, 255, 255, 0.1);
+  --exodo-focus-bg: #374151;
+  --exodo-text-color: #e5e7eb;
+  --exodo-loading-bg: rgba(0, 0, 0, 0.5);
+  --exodo-card-title: #e5e7eb;
+  --exodo-active-start: #F9C942;
+  --exodo-active-end: #F5B700;
+  --exodo-bg: #0b1220;
 }
 
 .exodo-theme-dark .table thead th {
@@ -71,10 +244,35 @@
 
 /* Tema light para Exodo components - variables específicas */
 .exodo-theme-light {
+  --exodo-primary: #2563eb;
+  --exodo-on-primary: #ffffff;
+  --exodo-surface: #ffffff;
+  --exodo-muted: #6b7280;
+  --exodo-border: #e5e7eb;
   --exodo-pagination-border: #aadafa;
   --exodo-pagination-hover-bg: #c4d8e9;
   --exodo-pagination-text: #2a2e30;
   --exodo-pagination-info: rgb(23, 119, 177);
+  --exodo-card-radius: 10px;
+  --exodo-card-shadow: 0 6px 20px rgba(16,24,40,0.04);
+  --exodo-primary-focus: #86b7fe;
+  --exodo-bg-alt: #f9fafb;
+  --exodo-thead-start: #f3f4f6;
+  --exodo-thead-end: #e5e7eb;
+  --exodo-row-bg: #f9fafb;
+  --exodo-row-alt: #ffffff;
+  --exodo-row-hover: #f3f4f6;
+  --exodo-tooltip-bg: #ffffff;
+  --exodo-tooltip-text: #2556a3;
+  --exodo-spinner-accent: #0099ff;
+  --exodo-spinner-bg: rgba(0, 0, 0, 0.1);
+  --exodo-focus-bg: antiquewhite;
+  --exodo-text-color: #333;
+  --exodo-loading-bg: rgba(255, 255, 255, 0.5);
+  --exodo-card-title: #123b5b;
+  --exodo-active-start: #F9C942;
+  --exodo-active-end: #F5B700;
+  --exodo-bg: #ffffff;
 }
 
 // Modern theme variables for Exodo
@@ -84,9 +282,30 @@
   --exodo-surface: #ffffff;
   --exodo-muted: #64748b;
   --exodo-border: #e6eef0;
-
+  --exodo-pagination-border: #e6eef0;
+  --exodo-pagination-hover-bg: #f1f5f9;
+  --exodo-pagination-text: #111827;
+  --exodo-pagination-info: #0ea5a4;
   --exodo-card-radius: 12px;
   --exodo-card-shadow: 0 8px 24px rgba(14,165,164,0.08);
+  --exodo-primary-focus: #14b8a6;
+  --exodo-bg-alt: #f8fafc;
+  --exodo-thead-start: #f1f5f9;
+  --exodo-thead-end: #e2e8f0;
+  --exodo-row-bg: #f8fafc;
+  --exodo-row-alt: #ffffff;
+  --exodo-row-hover: #f1f5f9;
+  --exodo-tooltip-bg: #ffffff;
+  --exodo-tooltip-text: #0ea5a4;
+  --exodo-spinner-accent: #0ea5a4;
+  --exodo-spinner-bg: rgba(0, 0, 0, 0.1);
+  --exodo-focus-bg: #f1f5f9;
+  --exodo-text-color: #334155;
+  --exodo-loading-bg: rgba(255, 255, 255, 0.5);
+  --exodo-card-title: #1e293b;
+  --exodo-active-start: #5eead4;
+  --exodo-active-end: #2dd4bf;
+  --exodo-bg: #ffffff;
 }
 
 // Specific tweaks for grid
