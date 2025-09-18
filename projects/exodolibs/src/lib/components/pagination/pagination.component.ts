@@ -1,4 +1,4 @@
-import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild, HostBinding, Inject, Optional} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild, HostBinding, Inject, Optional, Injector} from '@angular/core';
 import {DataRecords, PaginationOptions} from '../grid/contracts/data-source';
 import { EXODO_I18N, ExodoI18n } from '../../i18n';
 import { TranslocoService } from '@ngneat/transloco';
@@ -43,8 +43,8 @@ export class ExodoPaginationComponent implements OnInit {
     infoTemplate: '{{from}} - {{to}} de {{total}}'
   };
   public i18n?: ExodoI18n;
-  constructor(@Optional() @Inject(EXODO_I18N) i18n?: ExodoI18n,
-              @Optional() @Inject(TranslocoService as any) private transloco?: TranslocoService) {
+  constructor(private injector: Injector,
+              @Optional() @Inject(EXODO_I18N) i18n?: ExodoI18n) {
     this.i18n = i18n;
   }
   ngOnInit(): void {
@@ -77,22 +77,18 @@ export class ExodoPaginationComponent implements OnInit {
   public getLabel(key: keyof ExodoI18n): string {
     // 1. Input override
     if ((this.labels as any)?.[key]) { return (this.labels as any)[key]; }
-    // 2. Transloco
+    // 2. Transloco (lazy-get from Injector to avoid creating a hard DI edge)
     try {
-      if (this.transloco) {
-        // If lang input is provided, try to use it (Transloco will fall back if not available)
+      const transloco = this.injector.get(TranslocoService as any, null) as TranslocoService | null;
+      if (transloco) {
         if (this.lang) {
-          try {
-            this.transloco.setActiveLang(this.lang);
-          } catch (e) {
-            // setActiveLang may not exist or fail; ignore
-          }
+          try { transloco.setActiveLang(this.lang); } catch (e) { /* ignore */ }
         }
-        const t = this.transloco.translate(`exodo.pagination.${key}`) as string;
+        const t = transloco.translate(`exodo.pagination.${key}`) as string;
         if (t) { return t; }
       }
     } catch (e) {
-      // ignore
+      // ignore - fallback to provider/defaults
     }
     // 3. provider
     if (this.i18n && (this.i18n as any)[key]) { return (this.i18n as any)[key]; }
