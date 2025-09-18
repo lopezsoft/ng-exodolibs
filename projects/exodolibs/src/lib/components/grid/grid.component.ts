@@ -101,12 +101,12 @@ export class ExodoGridComponent implements OnInit, AfterViewInit {
     this.searchField.nativeElement.id = this.gridService.getUniqueId('exodo-grid-search-');
     setTimeout(() => {
       this.isAfterViewInit = true;
+      if (this.mode === 'remote') {
+        this.onLoad();
+      }
     });
   }
   ngOnInit(): void {
-    if (this.mode === 'remote') {
-      this.onLoad();
-    }
   }
   canData(): boolean {
     if(!this.dataSource || !this.dataSource?.rows) {
