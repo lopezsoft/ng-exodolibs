@@ -77,3 +77,52 @@ Ejemplo:
 
 Nota: si no se proveen labels, se usan textos por defecto en español.
 
+4) Proveedor global de traducciones (opcional): puedes configurar traducciones globales para todos los componentes usando el `InjectionToken` `EXODO_I18N`.
+
+```typescript
+import { EXODO_I18N } from 'exodolibs';
+
+@NgModule({
+  providers: [
+    { provide: EXODO_I18N, useValue: { page: 'Page', of: 'of', infoTemplate: '{{from}}-{{to}} of {{total}}' } }
+  ]
+})
+export class AppModule {}
+```
+
+Si provees `labels` en un componente, ese valor anulará la configuración global.
+
+5) Uso con Transloco (opcional - recomendado para proyectos que ya usan Transloco)
+
+Si tu aplicación usa `@ngneat/transloco`, `ExodoPaginationComponent` intentará traducir las claves bajo el namespace `exodo.pagination` antes de usar los textos por defecto. Las keys disponibles son:
+
+- `exodo.pagination.first`
+- `exodo.pagination.previous`
+- `exodo.pagination.page`
+- `exodo.pagination.of`
+- `exodo.pagination.next`
+- `exodo.pagination.last`
+- `exodo.pagination.refresh`
+- `exodo.pagination.infoTemplate`
+
+Ejemplo (archivo de traducciones JSON):
+
+```json
+{
+  "exodo": {
+    "pagination": {
+      "first": "Primera",
+      "previous": "Anterior",
+      "page": "Página",
+      "of": "de",
+      "next": "Siguiente",
+      "last": "Última",
+      "refresh": "Actualizar",
+      "infoTemplate": "{{from}} - {{to}} de {{total}}"
+    }
+  }
+}
+```
+
+Recuerda instalar `@ngneat/transloco` en tu proyecto y configurarlo según su documentación si quieres aprovechar traducciones automáticas.
+

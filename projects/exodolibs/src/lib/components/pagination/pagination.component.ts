@@ -1,5 +1,7 @@
-import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild, HostBinding} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild, HostBinding, Inject, Optional} from '@angular/core';
 import {DataRecords, PaginationOptions} from '../grid/contracts/data-source';
+import { EXODO_I18N, ExodoI18n } from '../../i18n';
+import { TranslocoService } from '@ngneat/transloco';
 
 @Component({
   selector: 'exodo-pagination',
@@ -38,7 +40,11 @@ export class ExodoPaginationComponent implements OnInit {
     refresh: 'Actualizar',
     infoTemplate: '{{from}} - {{to}} de {{total}}'
   };
-  constructor() { }
+  public i18n?: ExodoI18n;
+  constructor(@Optional() @Inject(EXODO_I18N) i18n?: ExodoI18n,
+              @Optional() private transloco?: TranslocoService) {
+    this.i18n = i18n;
+  }
   ngOnInit(): void {
   }
   public refreshPagination(page: number): void {
@@ -58,11 +64,30 @@ export class ExodoPaginationComponent implements OnInit {
   /** Construye el texto informativo reemplazando placeholders por valores actuales */
   public getInfoText(): string {
     if (!this.paginationOptions) { return ''; }
-    const tmpl = this.labels?.infoTemplate || this.defaultLabels.infoTemplate || '';
+  const tmpl = this.labels?.infoTemplate || this.defaultLabels.infoTemplate || this.i18n?.infoTemplate || '';
     return String(tmpl)
       .replace('{{from}}', String(this.paginationOptions.from))
       .replace('{{to}}', String(this.paginationOptions.to))
       .replace('{{total}}', String(this.paginationOptions.total));
+  }
+
+  /** Devuelve el label por clave siguiendo prioridad: labels input, transloco, i18n provider, defaultLabels */
+  public getLabel(key: keyof ExodoI18n): string {
+    // 1. Input override
+    if ((this.labels as any)?.[key]) { return (this.labels as any)[key]; }
+    // 2. Transloco
+    try {
+      if (this.transloco) {
+        const t = this.transloco.translate(`exodo.pagination.${key}`) as string;
+        if (t) { return t; }
+      }
+    } catch (e) {
+      // ignore
+    }
+    // 3. provider
+    if (this.i18n && (this.i18n as any)[key]) { return (this.i18n as any)[key]; }
+    // 4. defaults
+    return (this.defaultLabels as any)[key] || '';
   }
   setPagination(dataRecords: DataRecords): void {
     const me  = this;

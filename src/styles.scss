@@ -7,3 +7,19 @@
 @import "bootstrap/scss/bootstrap";
 @import "../projects/exodolibs/src/lib/assets/style";
 $fa-font-path: "./fontawesome/webfonts";
+
+// Modern theme tweaks
+$theme-primary: #4f46e5; // indigo-600
+$theme-surface: #ffffff;
+$theme-muted: #6b7280;
+
+body {
+	background: linear-gradient(180deg, #f7f7fb 0%, #ffffff 100%);
+	color: #0f172a;
+}
+
+.card { border-radius: 12px; box-shadow: 0 6px 18px rgba(15,23,42,0.06); }
+.table { border-radius: 8px; overflow: hidden; }
+.table thead th { background: rgba(79,70,229,0.06); color: $theme-primary; }
+.btn-primary { background-color: $theme-primary; border-color: $theme-primary; }
+

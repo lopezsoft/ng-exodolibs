@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "lib": "ng build exodolibs && cp -R ./projects/exodolibs/src/lib/assets ./dist/exodolibs/lib"
+  "lib": "ng build exodolibs && cp -R ./projects/exodolibs/src/lib/assets ./dist/exodolibs/lib && cp ./projects/exodolibs/src/lib/assets/style.scss ./dist/exodolibs/lib/style.scss"
   },
   "private": true,
   "dependencies": {
@@ -29,6 +29,7 @@
     "@angular-devkit/build-angular": "^18.2.21",
     "@angular/cli": "~18.2.21",
     "@angular/compiler-cli": "^18.2.14",
+    "@ngneat/transloco": "^3.2.0",
     "@types/jasmine": "~4.0.0",
     "jasmine-core": "~4.3.0",
     "karma": "~6.4.0",

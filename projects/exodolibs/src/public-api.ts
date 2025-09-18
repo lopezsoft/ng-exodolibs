@@ -6,6 +6,7 @@ export * from './lib/exodolibs.service';
 export * from './lib/components/grid/grid.component';
 export * from './lib/components/grid/grid-cell/grid-cell.component';
 export * from './lib/components/pagination/pagination.component';
+export * from './lib/i18n';
 // Contracts
 export * from './lib/components/grid/contracts/index';
 // Directives

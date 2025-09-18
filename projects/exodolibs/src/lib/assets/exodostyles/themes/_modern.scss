@@ -1,0 +1,23 @@
+// Modern theme variables for Exodo
+$exodo-primary: #0ea5a4; // teal-500
+$exodo-on-primary: #ffffff;
+$exodo-surface: #ffffff;
+$exodo-muted: #64748b;
+$exodo-border: #e6eef0;
+
+.exodo-theme-modern {
+  --exodo-primary: #0ea5a4;
+  --exodo-on-primary: #ffffff;
+  --exodo-surface: #ffffff;
+  --exodo-muted: #64748b;
+  --exodo-border: #e6eef0;
+
+  --exodo-card-radius: 12px;
+  --exodo-card-shadow: 0 8px 24px rgba(14,165,164,0.08);
+}
+
+// Specific tweaks for grid
+.exodo-theme-modern .table thead th {
+  background: linear-gradient(90deg, rgba(14,165,164,0.06), rgba(14,165,164,0.02));
+  color: var(--exodo-primary);
+}
