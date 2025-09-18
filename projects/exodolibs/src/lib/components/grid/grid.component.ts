@@ -100,11 +100,11 @@ export class ExodoGridComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     setTimeout(() => {
       this.isAfterViewInit = true;
-      if (this.mode === 'remote') {
-        this.onLoad();
-      }
       if (this.searchField && this.searchField.nativeElement) {
         this.searchField.nativeElement.id = this.gridService.getUniqueId('exodo-grid-search-');
+      }
+      if (this.mode === 'remote') {
+        this.onLoad();
       }
     });
   }
@@ -136,7 +136,13 @@ export class ExodoGridComponent implements OnInit, AfterViewInit {
   }
   searchQuery(searchQuery: string): void {
     if (this.mode !== 'remote') { return; }
-    const params      = {...this.queryParams, query: searchQuery};
+    const params      = {
+      ...this.queryParams, 
+      query: searchQuery, 
+      search: searchQuery,
+      searchQuery: searchQuery, 
+      searchParam: searchQuery
+    };
     this.queryParams  = params;
     this.onRefreshLoad(params);
   }
