@@ -1,4 +1,4 @@
-import {Component, ElementRef, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild, HostBinding} from '@angular/core';
 import {DataRecords, PaginationOptions} from '../grid/contracts/data-source';
 
 @Component({
@@ -10,6 +10,34 @@ export class ExodoPaginationComponent implements OnInit {
   public paginationOptions: PaginationOptions = null;
   @ViewChild('pagInput') pagInput: ElementRef;
   @Output() onRefreshPagination = new EventEmitter<number>();
+  /** Theme to apply: '' | 'light' | 'dark' */
+  @Input() theme: string = '';
+  @HostBinding('class') get hostClass(): string {
+    return this.theme ? `exodo-pagination-${this.theme}` : 'exodo-pagination';
+  }
+
+  /** Labels for translations. Provide an object with keys: first, previous, page, of, next, last, refresh, infoTemplate. */
+  @Input() labels: {
+    first?: string;
+    previous?: string;
+    page?: string;
+    of?: string;
+    next?: string;
+    last?: string;
+    refresh?: string;
+    infoTemplate?: string; // e.g. "{{from}} - {{to}} of {{total}}"
+  } = {};
+
+  public defaultLabels = {
+    first: 'Primera página',
+    previous: 'Página anterior',
+    page: 'Página',
+    of: 'de',
+    next: 'Siguiente página',
+    last: 'Última página',
+    refresh: 'Actualizar',
+    infoTemplate: '{{from}} - {{to}} de {{total}}'
+  };
   constructor() { }
   ngOnInit(): void {
   }
@@ -25,6 +53,16 @@ export class ExodoPaginationComponent implements OnInit {
   }
   onLoad(options: PaginationOptions): void {
     this.paginationOptions  = options;
+  }
+
+  /** Construye el texto informativo reemplazando placeholders por valores actuales */
+  public getInfoText(): string {
+    if (!this.paginationOptions) { return ''; }
+    const tmpl = this.labels?.infoTemplate || this.defaultLabels.infoTemplate || '';
+    return String(tmpl)
+      .replace('{{from}}', String(this.paginationOptions.from))
+      .replace('{{to}}', String(this.paginationOptions.to))
+      .replace('{{total}}', String(this.paginationOptions.total));
   }
   setPagination(dataRecords: DataRecords): void {
     const me  = this;

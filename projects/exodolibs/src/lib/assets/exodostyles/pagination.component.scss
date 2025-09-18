@@ -1,3 +1,11 @@
+:root {
+  /* Variables CSS con valores por defecto para el paginador */
+  --exodo-pagination-border: #aadafa;
+  --exodo-pagination-hover-bg: #c4d8e9;
+  --exodo-pagination-text: #2a2e30;
+  --exodo-pagination-info: rgb(23, 119, 177);
+}
+
 nav {
   display: flex;
   overflow-x: auto;
@@ -13,7 +21,7 @@ nav {
     height: 100%;
     min-width: 5rem;
     margin-right: 1rem;
-    color: rgb(23, 119, 177);  // Color tomado de los estilos anteriores
+    color: var(--exodo-pagination-info);
     font-weight: bold;
   }
 
@@ -32,50 +40,67 @@ nav {
   }
 }
 
-.pagination {
-  .page-item {
-    .page-link {
-      border-color: #aadafa;  // Color tomado de los estilos anteriores
+.exodo-pagination, .exodo-pagination-light, .exodo-pagination-dark {
+  .pagination {
+    .page-item {
+      .page-link {
+        border-color: var(--exodo-pagination-border);
 
-      &:not(.disabled):hover {
-        background-color: #c4d8e9;  // Color tomado de los estilos anteriores
+        &:not(.disabled):hover {
+          background-color: var(--exodo-pagination-hover-bg);
+        }
+      }
+
+      button:focus {
+        box-shadow: none;
+      }
+
+      .page-link-page {
+        min-height: 1.38rem;
+        min-width: 12rem;
+        color: var(--exodo-pagination-text);
+        display: flex;
+        align-items: center;
+        padding: 5px;
+        input {
+          border: 0 solid var(--exodo-pagination-text) !important;
+          max-height: 1.35rem !important;
+          padding: 2px !important;
+          margin: 0 4px !important;
+          max-width: 3rem !important;
+        }
       }
     }
 
-    button:focus {
-      box-shadow: none;
+    // For Pagination lg
+    &.pagination-lg {
+      .page-item .page-link {
+        font-size: 1.25rem;
+        min-width: 2.6rem;
+      }
     }
 
-    .page-link-page {
-      min-height: 1.38rem;
-      min-width: 12rem;
-      color: #2a2e30;
-      display: flex;
-      align-items: center;
-      padding: 5px;
-      input {
-        border: 0 solid #2a2e30 !important;
-        max-height: 1.35rem !important;
-        padding: 2px !important;
-        margin: 0 4px !important;
-        max-width: 3rem !important;
+    // For Pagination sm
+    &.pagination-sm {
+      .page-item .page-link {
+        font-size: 0.875rem;
+        min-width: 2rem;
       }
     }
   }
+}
 
-  // For Pagination lg
-  &.pagination-lg {
-    .page-item .page-link {
-      font-size: 1.25rem;
-      min-width: 2.6rem;
-    }
-  }
+/* Modificadores de tema: .exodo-pagination-dark y .exodo-pagination-light */
+.exodo-pagination-dark {
+  --exodo-pagination-border: #334155;
+  --exodo-pagination-hover-bg: #1f2937;
+  --exodo-pagination-text: #e5e7eb;
+  --exodo-pagination-info: #93c5fd;
+}
 
-  // For Pagination sm
-  &.pagination-sm {
-    .page-item .page-link {
-      font-size: 0.875rem;
-      min-width: 2rem;
-    }
-  }
+.exodo-pagination-light {
+  --exodo-pagination-border: #aadafa;
+  --exodo-pagination-hover-bg: #c4d8e9;
+  --exodo-pagination-text: #2a2e30;
+  --exodo-pagination-info: rgb(23, 119, 177);
 }
