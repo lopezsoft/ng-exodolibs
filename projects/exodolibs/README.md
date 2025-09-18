@@ -89,7 +89,6 @@ import { EXODO_I18N } from 'exodolibs';
 })
 export class AppModule {}
 ```
-
 Si provees `labels` en un componente, ese valor anulará la configuración global.
 
 5) Uso con Transloco (opcional - recomendado para proyectos que ya usan Transloco)
@@ -125,4 +124,10 @@ Ejemplo (archivo de traducciones JSON):
 ```
 
 Recuerda instalar `@ngneat/transloco` en tu proyecto y configurarlo según su documentación si quieres aprovechar traducciones automáticas.
+
+---
+
+Nota sobre Transloco y esta workspace:
+
+La librería `exodolibs` declara `@ngneat/transloco` como `peerDependency`. Para facilitar el desarrollo local y las demos incluidas en este repositorio, esta workspace mantiene `@ngneat/transloco` como `devDependency` en el `package.json` raíz. Si vas a usar `exodolibs` en producción, instala y configura `@ngneat/transloco` en tu aplicación si quieres usar la traducción automática del paginador.
 

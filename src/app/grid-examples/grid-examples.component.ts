@@ -2,18 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
-import { ExodolibsModule, ColumnContract } from 'exodolibs';
-import { TranslocoModule, TranslocoService } from '@ngneat/transloco';
 
 @Component({
   selector: 'app-grid-examples',
   templateUrl: './grid-examples.component.html',
   styleUrls: ['./grid-examples.component.scss'],
-  standalone: true,
-  imports: [CommonModule, ExodolibsModule, TranslocoModule]
+  // Not standalone: AppModule declares this component so it can use the application-provided
+  // modules (ExodolibsModule, TranslocoModule) without importing the packaged library here.
 })
 export class GridExamplesComponent implements OnInit {
-  columns: ColumnContract[] = [
+  columns: any[] = [
     { text: 'ID', dataIndex: 'id', width: '64px' },
     { text: 'Name', dataIndex: 'name' },
     { text: 'Email', dataIndex: 'email' }
@@ -44,7 +42,27 @@ export class GridExamplesComponent implements OnInit {
   languages = ['en', 'es'];
   currentLang = 'en';
 
-  constructor(private transloco: TranslocoService) { }
+  // Local fallback translations used when Transloco is not available in the workspace.
+  translations: Record<string, any> = {
+    en: {
+      examples: {
+        title: 'Grid examples',
+        static: 'Static data',
+        api: 'Simulated API (delayed)',
+        useModern: 'Use modern theme'
+      }
+    },
+    es: {
+      examples: {
+        title: 'Ejemplos de Grid',
+        static: 'Datos estáticos',
+        api: 'API simulada (con delay)',
+        useModern: 'Usar tema moderno'
+      }
+    }
+  };
+
+  constructor() { }
 
   ngOnInit(): void {
     // Simulate an API call with delay
@@ -67,29 +85,11 @@ export class GridExamplesComponent implements OnInit {
       this.loading = false;
     });
 
-    // Register simple inline translations for demo
-    (this.transloco as any).setTranslation('en', {
-      examples: {
-        title: 'Grid examples',
-        static: 'Static data',
-        api: 'Simulated API (delayed)',
-        useModern: 'Use modern theme'
-      }
-    }, { merge: true });
-    (this.transloco as any).setTranslation('es', {
-      examples: {
-        title: 'Ejemplos de Grid',
-        static: 'Datos estáticos',
-        api: 'API simulada (con delay)',
-        useModern: 'Usar tema moderno'
-      }
-    }, { merge: true });
-    this.transloco.setActiveLang(this.currentLang);
+    // nothing else needed; translations are local
   }
 
   changeLang(lang: string) {
     this.currentLang = lang;
-    this.transloco.setActiveLang(lang);
   }
 
   toggleModernTheme(e: Event) {
@@ -97,5 +97,15 @@ export class GridExamplesComponent implements OnInit {
     const cls = 'exodo-theme-modern';
     if (checked) { document.body.classList.add(cls); }
     else { document.body.classList.remove(cls); }
+  }
+
+  t(path: string) {
+    const parts = path.split('.');
+    let node: any = this.translations[this.currentLang] || {};
+    for (const p of parts) {
+      node = node?.[p];
+      if (node === undefined) { return path; }
+    }
+    return node;
   }
 }

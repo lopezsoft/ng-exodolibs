@@ -1,10 +1,10 @@
-<div class="grid-examples" i18n>
-  <h3>{{ 'examples.title' | transloco }}</h3>
+<div class="grid-examples">
+  <h3>{{ t('examples.title') }}</h3>
   <div class="controls">
     <div class="theme-toggle">
       <label>
         <input type="checkbox" (change)="toggleModernTheme($event)" />
-        {{ 'examples.useModern' | transloco }}
+  {{ t('examples.useModern') }}
       </label>
     </div>
     <div class="lang-select">
@@ -17,12 +17,12 @@
   </div>
 
   <section class="example">
-    <h4>{{ 'examples.static' | transloco }}</h4>
+  <h4>{{ t('examples.static') }}</h4>
     <exodo-grid [columns]="columns" [dataSource]="staticDataSource" mode="local" [showPagination]="false"></exodo-grid>
   </section>
 
   <section class="example">
-    <h4>{{ 'examples.api' | transloco }}</h4>
+  <h4>{{ t('examples.api') }}</h4>
     <div *ngIf="loading" class="loading">Loading data…</div>
     <exodo-grid *ngIf="!loading" [columns]="columns" [dataSource]="apiDataSource" mode="local" [showPagination]="false"></exodo-grid>
   </section>
