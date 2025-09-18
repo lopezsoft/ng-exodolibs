@@ -60,7 +60,7 @@ export class ExodoGridComponent implements OnInit, AfterViewInit {
   @Input() placeholder = 'Búsqueda';
 
   constructor(
-    private gridService: GridService,
+    public gridService: GridService,
   ) {
     this.emptyMessage = 'Sin datos';
     this.placeholder = 'Búsqueda';
