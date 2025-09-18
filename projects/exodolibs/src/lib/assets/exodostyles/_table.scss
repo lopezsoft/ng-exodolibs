@@ -4,7 +4,7 @@ table {
 table,
 th,
 td {
-  border-color: #a3c7e0 !important;
+  border-color: var(--exodo-border, #a3c7e0) !important;
   transition: background-color 0.5s ease, transform 0.4s ease;
 }
 
@@ -29,7 +29,7 @@ tr:last-child td {
   border-spacing: 0;
   border-collapse: collapse;
   table-layout: auto;
-  background-color: #eaf3f9;
+  background-color: var(--exodo-bg, #eaf3f9);
   font-family: 'Arial', sans-serif;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -39,20 +39,20 @@ tr:last-child td {
     position: sticky;
     top: 0;
     z-index: 99;
-    background: linear-gradient(to bottom, #cde2eb, #b9d3e7);
-    vertical-align: bottom;
-    border-bottom: 0 solid #a3c7e0;
+  background: linear-gradient(to bottom, var(--exodo-thead-start, #cde2eb), var(--exodo-thead-end, #b9d3e7));
+  vertical-align: bottom;
+  border-bottom: 0 solid var(--exodo-border, #a3c7e0);
 
     th {
       cursor: pointer;
 
       &:hover {
-        background-color: #b9d3e7;
+        background-color: var(--exodo-thead-end, #b9d3e7);
         transform: translateY(-1px);
       }
 
       &:active {
-        background: linear-gradient(to bottom, #F9C942, #F5B700);
+        background: linear-gradient(to bottom, var(--exodo-active-start, #F9C942), var(--exodo-active-end, #F5B700));
         transform: translateY(1px);
       }
     }
@@ -80,14 +80,14 @@ tr:last-child td {
   white-space: nowrap;
 
   tr {
-    background-color: #d6e7f2;
+    background-color: var(--exodo-row, #d6e7f2);
 
     &:nth-child(odd) {
-      background-color: #ffffff;
+      background-color: var(--exodo-surface, #ffffff);
     }
 
     &:hover {
-      background-color: #c4d8e9;
+      background-color: var(--exodo-row-hover, #c4d8e9);
     }
   }
 
@@ -96,7 +96,7 @@ tr:last-child td {
     padding: 0 !important;
     vertical-align: middle;
     font-size: 12px;
-    border-bottom: 1px solid #a3c7e0;
+    border-bottom: 1px solid var(--exodo-border, #a3c7e0);
   }
 }
 

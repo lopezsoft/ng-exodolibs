@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject, Optional } from '@angular/core';
+import { TranslocoService } from '@ngneat/transloco';
 import { of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
@@ -41,6 +42,9 @@ export class GridExamplesComponent implements OnInit {
   // Transloco
   languages = ['en', 'es'];
   currentLang = 'en';
+  // Themes: 'light' means default (no class), others map to body classes
+  themes = ['light', 'modern', 'dark'];
+  currentTheme = 'light';
 
   // Local fallback translations used when Transloco is not available in the workspace.
   translations: Record<string, any> = {
@@ -86,17 +90,52 @@ export class GridExamplesComponent implements OnInit {
     });
 
     // nothing else needed; translations are local
+    // Load saved theme and language preference
+    this.loadTheme();
+    this.loadLang();
   }
 
   changeLang(lang: string) {
     this.currentLang = lang;
+    try { localStorage.setItem('exodo_lang', lang); } catch (e) { /* ignore */ }
   }
 
+  // Apply theme by name and persist selection
+  changeTheme(theme: string) {
+    this.currentTheme = theme;
+    // Persist selection; theme is applied locally in the template as a class binding
+    try { localStorage.setItem('exodo_theme', theme); } catch (e) { /* ignore */ }
+  }
+
+  // Backwards-compatible toggle for the single-checkbox UI (kept for compatibility)
   toggleModernTheme(e: Event) {
     const checked = (e.target as HTMLInputElement).checked;
-    const cls = 'exodo-theme-modern';
-    if (checked) { document.body.classList.add(cls); }
-    else { document.body.classList.remove(cls); }
+    const theme = checked ? 'modern' : 'light';
+    this.changeTheme(theme);
+  }
+
+  private applyTheme(theme: string) {
+    // Deprecated: theming is applied per-grid in the demo template via class bindings.
+    // Keep method for backwards compatibility, but do not touch global document.
+    return;
+  }
+
+  private loadTheme() {
+    try {
+      const saved = localStorage.getItem('exodo_theme');
+      if (saved && this.themes.includes(saved)) {
+        this.currentTheme = saved;
+      }
+    } catch (e) { /* ignore */ }
+  }
+
+  private loadLang() {
+    try {
+      const saved = localStorage.getItem('exodo_lang');
+      if (saved && this.languages.includes(saved)) {
+        this.currentLang = saved;
+      }
+    } catch (e) { /* ignore */ }
   }
 
   t(path: string) {

@@ -2,6 +2,7 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  HostBinding,
   Input,
   OnInit,
   ViewChild, ViewEncapsulation,
@@ -58,6 +59,8 @@ export class ExodoGridComponent implements OnInit, AfterViewInit {
     dataRecords: null
   };
   @Input() placeholder = 'Búsqueda';
+  /** Theme name applied to the grid host. Expected values: 'light'|'modern'|'dark' or custom */
+  @Input() theme: string | null = null;
 
   constructor(
     private gridService: GridService,
@@ -78,6 +81,16 @@ export class ExodoGridComponent implements OnInit, AfterViewInit {
         this.searchQuery(query);
       }
     });
+  }
+
+  // Bind host classes based on the `theme` input so the grid styles are scoped per-instance
+  @HostBinding('class.exodo-theme-modern') get hostModern() { return this.theme === 'modern'; }
+  @HostBinding('class.exodo-theme-dark') get hostDark() { return this.theme === 'dark'; }
+
+  // Accept theme via input — simple setter kept for API clarity
+  @Input()
+  set themeInput(value: string | null) {
+    this.theme = value;
   }
   ngAfterViewInit(): void {
     this.searchField.nativeElement.id = this.gridService.getUniqueId('exodo-grid-search-');

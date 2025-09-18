@@ -14,6 +14,8 @@ export class ExodoPaginationComponent implements OnInit {
   @Output() onRefreshPagination = new EventEmitter<number>();
   /** Theme to apply: '' | 'light' | 'dark' */
   @Input() theme: string = '';
+  /** Optional language code to use for translations (e.g. 'en', 'es'). If provided and Transloco is available, it will be used. */
+  @Input() lang?: string;
   @HostBinding('class') get hostClass(): string {
     return this.theme ? `exodo-pagination-${this.theme}` : 'exodo-pagination';
   }
@@ -42,7 +44,7 @@ export class ExodoPaginationComponent implements OnInit {
   };
   public i18n?: ExodoI18n;
   constructor(@Optional() @Inject(EXODO_I18N) i18n?: ExodoI18n,
-              @Optional() private transloco?: TranslocoService) {
+              @Optional() @Inject(TranslocoService as any) private transloco?: TranslocoService) {
     this.i18n = i18n;
   }
   ngOnInit(): void {
@@ -78,6 +80,14 @@ export class ExodoPaginationComponent implements OnInit {
     // 2. Transloco
     try {
       if (this.transloco) {
+        // If lang input is provided, try to use it (Transloco will fall back if not available)
+        if (this.lang) {
+          try {
+            this.transloco.setActiveLang(this.lang);
+          } catch (e) {
+            // setActiveLang may not exist or fail; ignore
+          }
+        }
         const t = this.transloco.translate(`exodo.pagination.${key}`) as string;
         if (t) { return t; }
       }

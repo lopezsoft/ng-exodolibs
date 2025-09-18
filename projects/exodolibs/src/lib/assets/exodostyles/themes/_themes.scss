@@ -1,0 +1,87 @@
+
+// This file is auto-generated. Do not edit directly.
+// To add a new theme, create a new file in this directory and then run the theme generation script.
+
+/* Blanco Glacial theme - default (very light / neutral) */
+/* Define CSS custom properties used by the library so this theme acts as the default */
+:root {
+  --exodo-primary: #0f172a; /* very dark blue/near-black for primary accents */
+  --exodo-on-primary: #ffffff;
+  --exodo-surface: #ffffff; /* card & surface backgrounds */
+  --exodo-muted: #6b7280; /* muted text */
+  --exodo-border: #e6eef5; /* subtle border */
+
+  --exodo-pagination-border: #e6eef5;
+  --exodo-pagination-hover-bg: #f1f5f9;
+  --exodo-pagination-text: #111827;
+  --exodo-pagination-info: #0ea5a4; /* teal-ish info */
+
+  --exodo-card-radius: 10px;
+  --exodo-card-shadow: 0 6px 20px rgba(16,24,40,0.04);
+  
+  --exodo-primary-focus: #86b7fe;
+  --exodo-bg-alt: #eaf3f9;
+  --exodo-thead-start: #cde2eb;
+  --exodo-thead-end: #b9d3e7;
+  --exodo-row-bg: #d6e7f2;
+  --exodo-row-alt: #ffffff;
+  --exodo-row-hover: #c4d8e9;
+  --exodo-tooltip-bg: #ffffff;
+  --exodo-tooltip-text: #2556a3;
+  --exodo-spinner-accent: #0099ff;
+}
+
+/* Specific grid tweaks when using the default blanco-glacial theme */
+.exodo-theme-blanco-glacial, :root {
+  .table thead th {
+    background: linear-gradient(90deg, rgba(15,23,42,0.02), rgba(15,23,42,0.01));
+    color: var(--exodo-primary);
+  }
+}
+
+// Dark theme variables for Exodo (class-based)
+.exodo-theme-dark {
+  --exodo-primary: #2563eb; /* blue-600 */
+  --exodo-on-primary: #ffffff;
+  --exodo-surface: #0b1220;
+  --exodo-muted: #9aa6b2;
+  --exodo-border: #243240;
+
+  --exodo-pagination-border: #334155;
+  --exodo-pagination-hover-bg: #1f2937;
+  --exodo-pagination-text: #e5e7eb;
+  --exodo-pagination-info: #93c5fd;
+  --exodo-card-radius: 10px;
+  --exodo-card-shadow: 0 6px 20px rgba(0,0,0,0.6);
+}
+
+.exodo-theme-dark .table thead th {
+  background: linear-gradient(90deg, rgba(37,99,235,0.06), rgba(37,99,235,0.02));
+  color: var(--exodo-on-primary);
+}
+
+/* Tema light para Exodo components - variables específicas */
+.exodo-theme-light {
+  --exodo-pagination-border: #aadafa;
+  --exodo-pagination-hover-bg: #c4d8e9;
+  --exodo-pagination-text: #2a2e30;
+  --exodo-pagination-info: rgb(23, 119, 177);
+}
+
+// Modern theme variables for Exodo
+.exodo-theme-modern {
+  --exodo-primary: #0ea5a4;
+  --exodo-on-primary: #ffffff;
+  --exodo-surface: #ffffff;
+  --exodo-muted: #64748b;
+  --exodo-border: #e6eef0;
+
+  --exodo-card-radius: 12px;
+  --exodo-card-shadow: 0 8px 24px rgba(14,165,164,0.08);
+}
+
+// Specific tweaks for grid
+.exodo-theme-modern .table thead th {
+  background: linear-gradient(90deg, rgba(14,165,164,0.06), rgba(14,165,164,0.02));
+  color: var(--exodo-primary);
+}

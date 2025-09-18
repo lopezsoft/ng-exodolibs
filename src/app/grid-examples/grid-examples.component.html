@@ -1,10 +1,17 @@
-<div class="grid-examples">
+<div class="grid-examples" [attr.lang]="currentLang">
   <h3>{{ t('examples.title') }}</h3>
   <div class="controls">
     <div class="theme-toggle">
       <label>
-        <input type="checkbox" (change)="toggleModernTheme($event)" />
-  {{ t('examples.useModern') }}
+        <input type="checkbox" 
+        (change)="toggleModernTheme($event)" 
+        [checked]="currentTheme==='modern'" />
+        {{ t('examples.useModern') }}
+      </label>
+      <label style="margin-left:1rem">Theme:
+        <select [value]="currentTheme" (change)="changeTheme($any($event.target).value)">
+          <option *ngFor="let th of themes" [value]="th">{{ th }}</option>
+        </select>
       </label>
     </div>
     <div class="lang-select">
@@ -18,12 +25,19 @@
 
   <section class="example">
   <h4>{{ t('examples.static') }}</h4>
-    <exodo-grid [columns]="columns" [dataSource]="staticDataSource" mode="local" [showPagination]="false"></exodo-grid>
+    <exodo-grid [columns]="columns" 
+    [dataSource]="staticDataSource" mode="local" [showPagination]="false"
+      [theme]="currentTheme" [lang]="currentLang"
+    ></exodo-grid>
   </section>
 
   <section class="example">
   <h4>{{ t('examples.api') }}</h4>
     <div *ngIf="loading" class="loading">Loading data…</div>
-    <exodo-grid *ngIf="!loading" [columns]="columns" [dataSource]="apiDataSource" mode="local" [showPagination]="false"></exodo-grid>
+    <exodo-grid *ngIf="!loading" [columns]="columns" [dataSource]="apiDataSource" mode="local" [showPagination]="false"
+      [theme]="currentTheme" [lang]="currentLang"
+      [class.exodo-theme-modern]="currentTheme==='modern'"
+      [class.exodo-theme-dark]="currentTheme==='dark'"
+    ></exodo-grid>
   </section>
 </div>

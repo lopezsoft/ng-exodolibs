@@ -12,21 +12,21 @@
     font-size: 13px;
     font-weight: 400;
     line-height: 1.5;
-    color: #212529;
-    background-color: #fff;
-    background-clip: padding-box;
-    border: 1px solid #ced4da;
+  color: var(--exodo-text, #212529);
+  background-color: var(--exodo-surface, #ffffff);
+  background-clip: padding-box;
+  border: 1px solid var(--exodo-border-weak, #ced4da);
     appearance: none;
     border-radius: 0;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 
     &:focus {
-      color: #212529;
-      background-color: #fff;
-      border-color: #86b7fe;
-      outline: 0;
-      border-width: 0 !important;
-      box-shadow: 0 0 0 0.05rem rgba(13, 110, 253, 0.25);
+  color: var(--exodo-text, #212529);
+  background-color: var(--exodo-surface, #ffffff);
+  border-color: var(--exodo-focus, #86b7fe);
+  outline: 0;
+  border-width: 0 !important;
+  box-shadow: 0 0 0 0.05rem var(--exodo-focus-shadow, rgba(13, 110, 253, 0.25));
     }
   }
 
@@ -37,8 +37,8 @@
     outline: none;
     position: relative;
     vertical-align: middle;
-    border: 2px solid #ced4da;
-    background-color: #fff;
+  border: 2px solid var(--exodo-border-weak, #ced4da);
+  background-color: var(--exodo-surface, #ffffff);
     cursor: pointer;
     transition: border-color 0.2s ease-in-out;
 
@@ -49,7 +49,7 @@
       left: 50%;
       width: 0.35em;  // Ajustado para el cambio en el tamaño
       height: 0.6em;  // Ajustado para el cambio en el tamaño
-      border: solid #fff;
+  border: solid var(--exodo-surface, #fff);
       border-width: 0 2px 2px 0;
       transform: translateY(-50%) translateX(-50%) rotate(45deg);
       opacity: 0;
@@ -57,8 +57,8 @@
     }
 
     &:checked {
-      border-color: #0d6efd;
-      background-color: #0d6efd;
+  border-color: var(--exodo-primary, #0d6efd);
+  background-color: var(--exodo-primary, #0d6efd);
 
       &:after {
         opacity: 1;
@@ -66,16 +66,16 @@
     }
 
     &:focus {
-      border-color: #86b7fe;
-      box-shadow: 0 0 0 0.05rem rgba(13, 110, 253, 0.25);
+  border-color: var(--exodo-focus, #86b7fe);
+  box-shadow: 0 0 0 0.05rem var(--exodo-focus-shadow, rgba(13, 110, 253, 0.25));
     }
 
     &:disabled {
-      background-color: #f7f7f7;
+  background-color: var(--exodo-disabled-bg, #f7f7f7);
       cursor: not-allowed;
 
       &:after {
-        border-color: #ccc;
+  border-color: var(--exodo-disabled-border, #ccc);
       }
     }
   }

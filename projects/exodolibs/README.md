@@ -46,7 +46,8 @@ La librería ahora soporta temas y traducciones para el componente `exodo-pagina
 1) Usar temas globales (SCSS): en `src/styles.scss` de tu aplicación puedes importar uno de los temas provistos antes de los estilos de Exodolibs:
 
 ```scss
-@import 'node_modules/exodolibs/assets/exodostyles/themes/_light.scss'; // o _dark.scss
+/* Blanco Glacial es ahora el theme por defecto. Si quieres usar otro theme explícitamente puedes importarlo antes: */
+@import 'node_modules/exodolibs/assets/exodostyles/themes/_light.scss'; // opcional
 @import 'node_modules/exodolibs/assets/style.scss';
 ```
 

@@ -3,7 +3,7 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  border-left-color: #09f;
+  border-left-color: var(--exodo-spinner-accent, #09f);
   animation: grid-spin 1s ease infinite;
   transition: transform 0.4s ease;
 }
@@ -14,12 +14,12 @@
   .card-header {
     padding: .5rem 1rem !important;
     font-family: 'Arial', sans-serif;
-    border-bottom: 0px solid #a3c7e0;
+    border-bottom: 0px solid var(--exodo-border, #a3c7e0);
     .card-title {
       font-size: 13px;
       font-weight: bold;
       padding-bottom: 2px;
-      color: darken(#a3c7e0, 20%);
+      color: var(--exodo-card-title, #123b5b);
     }
   }
 }
@@ -86,12 +86,12 @@
   transition: all 0.5s ease;
 }
 
-.grid-search {
+  .grid-search {
   font-family: 'Arial', sans-serif;
-  background-color: #eaf3f9 !important;
+  background-color: var(--exodo-bg-alt, #eaf3f9) !important;
 
   input {
-    border-color: #a3c7e0 !important;
+    border-color: var(--exodo-border, #a3c7e0) !important;
     box-shadow: none;
     transition: border-color 0.5s ease;
     font-size: 13px;
@@ -100,8 +100,8 @@
   }
 
   button.btn {
-    background-color: #a3c7e0 !important;
-    border-color: #a3c7e0 !important;
+    background-color: var(--exodo-bg-alt, #a3c7e0) !important;
+    border-color: var(--exodo-border, #a3c7e0) !important;
     transition: background-color 0.5s ease;
     min-height: 32px;
     height: 32px;
@@ -109,8 +109,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    &:hover, &:focus {
-      background-color: darken(#a3c7e0, 10%) !important;
+      &:hover, &:focus {
+      background-color: var(--exodo-bg-alt-hover, #95b0cf) !important;
     }
   }
 }
