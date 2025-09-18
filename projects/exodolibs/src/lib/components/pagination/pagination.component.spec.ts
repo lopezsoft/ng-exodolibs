@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ExodoPaginationComponent } from './pagination.component';
-import { TranslocoService } from '@ngneat/transloco';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -9,16 +8,9 @@ describe('ExodoPaginationComponent', () => {
   let fixture: ComponentFixture<ExodoPaginationComponent>;
 
   beforeEach(async () => {
-    const translocoMock = {
-      translate: (key: string) => key
-    } as unknown as TranslocoService;
-
     await TestBed.configureTestingModule({
       imports: [CommonModule, FormsModule],
-      declarations: [ExodoPaginationComponent],
-      providers: [
-        { provide: TranslocoService, useValue: translocoMock }
-      ]
+      declarations: [ExodoPaginationComponent]
     }).compileComponents();
   });
 

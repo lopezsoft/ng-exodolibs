@@ -27,18 +27,12 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To u
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
 
 
-## Nota sobre Traducciones (Transloco)
+## Nota sobre traducciones
 
-Esta workspace mantiene `@ngneat/transloco` en `devDependencies` del proyecto raíz para facilitar el desarrollo y las demos locales (por ejemplo, los ejemplos en `src/app` utilizan Transloco). Sin embargo, la librería `exodolibs` declara `@ngneat/transloco` como `peerDependency` en `projects/exodolibs/package.json`.
+La librería `exodolibs` funciona sin dependencias de i18n externas. El paginador busca labels en este orden:
 
-Consecuencia para consumidores de la librería:
+1. `@Input() labels` en el componente
+2. `EXODO_I18N` (InjectionToken) proporcionado por la aplicación
+3. Labels por defecto incluidos en la librería
 
-- Si instalas `exodolibs` en tu proyecto y quieres aprovechar las traducciones automáticas del paginador, debes instalar y configurar `@ngneat/transloco` en tu aplicación. Por ejemplo:
-
-```bash
-npm install @ngneat/transloco
-```
-
-- Si no instalas Transloco, `exodolibs` seguirá funcionando: el paginador usará los textos por defecto o los `@Input() labels` que proveas.
-
-Recomendación: mantener Transloco como dependencia de la aplicación que consuma `exodolibs` para controlar el sistema de traducciones y evitar conflictos de versión.
+Si deseas integrar un sistema de traducciones (por ejemplo `@ngneat/transloco`) puedes hacerlo en tu aplicación y exponer las traducciones a `exodolibs` mediante el proveedor `EXODO_I18N`. No es obligatorio instalar `Transloco` para usar la librería.

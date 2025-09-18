@@ -28,9 +28,9 @@
   "peerDependencies": {
     "@angular/common": ">=18.0.0",
     "@angular/core": ">=18.0.0"
-    ,
-    "@ngneat/transloco": ">=3.0.0"
   },
+  
+
   "dependencies": {
     "tslib": ">=2.3.0"
   }

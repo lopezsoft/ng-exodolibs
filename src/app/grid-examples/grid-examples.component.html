@@ -27,7 +27,6 @@
   <h4>{{ t('examples.static') }}</h4>
     <exodo-grid [columns]="columns" 
     [dataSource]="staticDataSource" mode="local" [showPagination]="false"
-      [theme]="currentTheme" [lang]="currentLang"
       [allowFiltering]="true" [allowSorting]="true"
       [labels]="paginationLabels"
     ></exodo-grid>
@@ -42,7 +41,9 @@
       [labels]="paginationLabels"
       [class.exodo-theme-modern]="currentTheme==='modern'"
       [class.exodo-theme-dark]="currentTheme==='dark'"
-    ></exodo-grid>
+    >
+    <h4>Titulo</h4>
+  </exodo-grid>
   </section>
 
   <section class="example">
@@ -54,13 +55,11 @@
       mode="remote"
       [showPagination]="true"
       [theme]="currentTheme"
-      [lang]="currentLang"
       [allowFiltering]="true"
       [allowSorting]="true"
       [dataAdapter]="dataAdapter"
       [labels]="paginationLabels"
-      [class.exodo-theme-modern]="currentTheme==='modern'"
-      [class.exodo-theme-dark]="currentTheme==='dark'"
-    ></exodo-grid>
+    >
+  </exodo-grid>
   </section>
 </div>
