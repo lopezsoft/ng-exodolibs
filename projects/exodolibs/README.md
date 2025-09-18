@@ -33,6 +33,32 @@ import { AppComponent } from './app.component';
 })
 export class AppModule { }
 ```
+
+## Paginación: `limit` y `skip`
+
+La versión actual soporta enviar `limit` y `skip` en las peticiones remotas para controlar paginación basada en offset.
+
+- `@Input() limit: number | null` — número de elementos por página. Si se especifica, se enviará como `limit` en las peticiones al backend.
+- `@Input() skip: number | null` — offset inicial. Si no se proporciona, el componente calculará `skip` automáticamente a partir de `page` y `limit` (por ejemplo, `page=3` y `limit=25` → `skip=50`).
+
+Comportamiento:
+
+- Al cambiar de página, el componente envía `page`, y si `limit` está definido, también enviará `limit` y `skip` calculado.
+- Al aplicar búsqueda, filtros u ordenamiento, la paginación se reinicia (se envía `page=1` y `skip=0`) para evitar inconsistencias.
+
+Ejemplo de uso:
+
+```html
+<exodo-grid
+  [mode]="'remote'"
+  [proxy]="{ api: { read: '/api/items' } }"
+  [limit]="25"
+  [allowFiltering]="true"
+  [allowSorting]="true"
+></exodo-grid>
+```
+
+En la petición al servidor deberías recibir parámetros como `limit=25` y `skip=0` (primera página), y `skip=25` para la página 2, etc.
 ### Añadir estilos
 En src/styles de la app principal importamos
 ```

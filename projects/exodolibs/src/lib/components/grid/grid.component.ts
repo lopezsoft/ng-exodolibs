@@ -54,6 +54,10 @@ export class ExodoGridComponent implements OnInit, AfterViewInit {
   @Input() placeholder = 'Búsqueda';
   @Input() allowFiltering = false;
   @Input() allowSorting = false;
+  /** Número de items por página (limit). Si se provee, se enviará como `limit` en las peticiones remotas. */
+  @Input() limit: number = 15;
+  /** Offset inicial (skip) — se calculará automáticamente a partir de `page` y `limit` si no se provee. */
+  @Input() skip: number = 0;
   @Input() dataAdapter: (response: any, params: any) => JsonResponse;
   @Input() labels: { [key: string]: string } = {};
   /** Theme name applied to the grid host. Expected values: 'light'|'modern'|'dark' or custom */
@@ -148,8 +152,16 @@ export class ExodoGridComponent implements OnInit, AfterViewInit {
   }
 
   public onRefreshPagination(page: number): void {
-    const params  = {...this.queryParams, page};
-    this.queryParams  = params;
+    // cuando se cambia la página, calcular skip si hay limit
+    const params: any = { ...this.queryParams, page };
+    if (this.limit != null) {
+      params.limit = this.limit;
+      params.skip = (Number(page) - 1) * Number(this.limit);
+    } else if (this.skip != null) {
+      // si existe skip configurado externamente, preferirlo
+      params.skip = this.skip;
+    }
+    this.queryParams = params;
     this.onRefreshLoad(params);
   }
   private onRefreshLoad(params: any) {
@@ -159,7 +171,11 @@ export class ExodoGridComponent implements OnInit, AfterViewInit {
     }
     const url     = me.proxy.api.read;
     me.isLoading  = true;
-    me.gridService.onRefreshLoad(url, params)
+    // Asegurar que siempre incluimos limit/skip en la petición cuando estén disponibles
+    const requestParams = { ...params };
+    if (this.limit != null && requestParams.limit == null) { requestParams.limit = this.limit; }
+    if (this.skip != null && requestParams.skip == null) { requestParams.skip = this.skip; }
+    me.gridService.onRefreshLoad(url, requestParams)
       .subscribe({
         next: (response: any) => {
           me.isLoading    = false;
@@ -204,6 +220,14 @@ export class ExodoGridComponent implements OnInit, AfterViewInit {
     const ele = <HTMLInputElement> e.target;
     if(this.mode  === 'remote') {
       if(ele.value.length === 0 || ele.value.length >= this.minChar) {
+        // resetear paginación al buscar
+        this.queryParams = { ...this.queryParams, page: 1 };
+        if (this.limit != null) {
+          this.queryParams.limit = this.limit;
+          this.queryParams.skip = 0;
+        } else if (this.skip != null) {
+          this.queryParams.skip = 0;
+        }
         this.searchSubject.next(ele.value);
       }
     }else {
@@ -213,7 +237,10 @@ export class ExodoGridComponent implements OnInit, AfterViewInit {
   }
 
   applyGridFilter(event: any) {
-    const params = { ...this.queryParams, ...event };
+    // Al aplicar filtros, reiniciamos la paginación (page -> 1, skip -> 0) y preservamos limit si existe
+    const params: any = { ...this.queryParams, ...event, page: 1 };
+    if (this.limit != null) { params.limit = this.limit; params.skip = 0; }
+    else if (this.skip != null) { params.skip = 0; }
     this.queryParams = params;
     this.onRefreshLoad(params);
   }
@@ -231,7 +258,10 @@ export class ExodoGridComponent implements OnInit, AfterViewInit {
     }
 
     if (this.mode === 'remote') {
-      const params = { ...this.queryParams, sort: this.sortColumn, dir: this.sortDirection };
+      const params: any = { ...this.queryParams, sort: this.sortColumn, dir: this.sortDirection, page: 1 };
+      // ordenar debe resetear la paginación para evitar inconsistencias
+      if (this.limit != null) { params.limit = this.limit; params.skip = 0; }
+      else if (this.skip != null) { params.skip = 0; }
       this.queryParams = params;
       this.onRefreshLoad(params);
     } else {

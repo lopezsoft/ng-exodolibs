@@ -36,3 +36,7 @@ La librería `exodolibs` funciona sin dependencias de i18n externas. El paginado
 3. Labels por defecto incluidos en la librería
 
 Si deseas integrar un sistema de traducciones (por ejemplo `@ngneat/transloco`) puedes hacerlo en tu aplicación y exponer las traducciones a `exodolibs` mediante el proveedor `EXODO_I18N`. No es obligatorio instalar `Transloco` para usar la librería.
+
+### Notas sobre paginación
+
+La librería ahora soporta `limit` y `skip` como `@Input()` en el componente `exodo-grid`. Consulta `projects/exodolibs/README.md` para un ejemplo de uso.

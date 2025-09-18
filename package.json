@@ -1,6 +1,6 @@
 {
   "name": "ng-exodolibs",
-  "version": "0.8.3",
+  "version": "0.8.4",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --open --port 1200",
