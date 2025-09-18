@@ -1,5 +1,5 @@
 .grid-spinner {
-  border: 4px solid rgba(0, 0, 0, 0.1);
+  border: 4px solid var(--exodo-spinner-bg, rgba(0, 0, 0, 0.1));
   width: 48px;
   height: 48px;
   border-radius: 50%;
@@ -10,10 +10,10 @@
 
 .card-table {
   min-height: 10rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--exodo-card-shadow, 0 2px 4px rgba(0, 0, 0, 0.1));
   .card-header {
     padding: .5rem 1rem !important;
-    font-family: 'Arial', sans-serif;
+    font-family: var(--exodo-font-family, 'Arial', sans-serif);
     border-bottom: 0px solid var(--exodo-border, #a3c7e0);
     .card-title {
       font-size: 13px;
@@ -34,7 +34,7 @@
   }
 
   &:focus-visible {
-    background-color: antiquewhite !important;
+    background-color: var(--exodo-focus-bg, antiquewhite) !important;
   }
 }
 
@@ -48,8 +48,8 @@
   align-items: center;
   justify-items: center;
   vertical-align: middle;
-  color: #333;
-  font-family: 'Arial', sans-serif;
+  color: var(--exodo-text-color, #333);
+  font-family: var(--exodo-font-family, 'Arial', sans-serif);
 }
 
 @keyframes grid-spin {
@@ -68,12 +68,12 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(34, 41, 47, 0.5);
+  background-color: var(--exodo-loading-bg, rgba(34, 41, 47, 0.5));
   z-index: 100;
   display: none;
   visibility: hidden;
   opacity: 0;
-  font-family: 'Arial', sans-serif;
+  font-family: var(--exodo-font-family, 'Arial', sans-serif);
 
   &.show {
     opacity: 1;
@@ -87,7 +87,7 @@
 }
 
   .grid-search {
-  font-family: 'Arial', sans-serif;
+  font-family: var(--exodo-font-family, 'Arial', sans-serif);
   background-color: var(--exodo-bg-alt, #eaf3f9) !important;
 
   input {
@@ -114,4 +114,3 @@
     }
   }
 }
-

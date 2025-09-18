@@ -1,11 +1,3 @@
-:root {
-  /* Variables CSS con valores por defecto para el paginador */
-  --exodo-pagination-border: #aadafa;
-  --exodo-pagination-hover-bg: #c4d8e9;
-  --exodo-pagination-text: #2a2e30;
-  --exodo-pagination-info: rgb(23, 119, 177);
-}
-
 nav {
   display: flex;
   overflow-x: auto;
@@ -88,19 +80,4 @@ nav {
       }
     }
   }
-}
-
-/* Modificadores de tema: .exodo-pagination-dark y .exodo-pagination-light */
-.exodo-pagination-dark {
-  --exodo-pagination-border: #334155;
-  --exodo-pagination-hover-bg: #1f2937;
-  --exodo-pagination-text: #e5e7eb;
-  --exodo-pagination-info: #93c5fd;
-}
-
-.exodo-pagination-light {
-  --exodo-pagination-border: #aadafa;
-  --exodo-pagination-hover-bg: #c4d8e9;
-  --exodo-pagination-text: #2a2e30;
-  --exodo-pagination-info: rgb(23, 119, 177);
 }
