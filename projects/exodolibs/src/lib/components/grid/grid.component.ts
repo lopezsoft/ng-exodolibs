@@ -98,11 +98,13 @@ export class ExodoGridComponent implements OnInit, AfterViewInit {
     this.theme = value;
   }
   ngAfterViewInit(): void {
-    this.searchField.nativeElement.id = this.gridService.getUniqueId('exodo-grid-search-');
     setTimeout(() => {
       this.isAfterViewInit = true;
       if (this.mode === 'remote') {
         this.onLoad();
+      }
+      if (this.searchField && this.searchField.nativeElement) {
+        this.searchField.nativeElement.id = this.gridService.getUniqueId('exodo-grid-search-');
       }
     });
   }
