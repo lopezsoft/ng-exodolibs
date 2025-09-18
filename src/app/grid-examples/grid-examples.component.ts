@@ -101,6 +101,32 @@ export class GridExamplesComponent implements OnInit {
     this.loadLang();
   }
 
+  dataAdapter(response: any[], params: any): any {
+    const page = params.page || 1;
+    const perPage = 10; // O lo puedes pasar en los parámetros
+    const total = response.length;
+    const lastPage = Math.ceil(total / perPage);
+
+    // Cortar el array para obtener solo los datos de la página actual
+    const paginatedData = response.slice((page - 1) * perPage, page * perPage);
+
+    const dataRecords = {
+      total: total,
+      per_page: perPage,
+      current_page: page,
+      last_page: lastPage,
+      from: (page - 1) * perPage + 1,
+      to: (page - 1) * perPage + paginatedData.length,
+      data: paginatedData
+    };
+
+    return {
+      success: true,
+      message: 'Datos cargados y paginados en el cliente',
+      dataRecords: dataRecords
+    };
+  }
+
   changeLang(lang: string) {
     this.currentLang = lang;
     try { localStorage.setItem('exodo_lang', lang); } catch (e) { /* ignore */ }

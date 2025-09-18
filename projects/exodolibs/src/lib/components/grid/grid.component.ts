@@ -54,6 +54,7 @@ export class ExodoGridComponent implements OnInit, AfterViewInit {
   @Input() placeholder = 'Búsqueda';
   @Input() allowFiltering = false;
   @Input() allowSorting = false;
+  @Input() dataAdapter: (response: any, params: any) => JsonResponse;
   /** Theme name applied to the grid host. Expected values: 'light'|'modern'|'dark' or custom */
   @Input() theme: string = 'glacial';
 
@@ -102,7 +103,9 @@ export class ExodoGridComponent implements OnInit, AfterViewInit {
     });
   }
   ngOnInit(): void {
-    // implementar
+    if (this.mode === 'remote') {
+      this.onLoad();
+    }
   }
   canData(): boolean {
     if(!this.dataSource || !this.dataSource?.rows) {
@@ -149,10 +152,11 @@ export class ExodoGridComponent implements OnInit, AfterViewInit {
     me.isLoading  = true;
     me.gridService.onRefreshLoad(url, params)
       .subscribe({
-        next: (response: JsonResponse) => {
+        next: (response: any) => {
           me.isLoading    = false;
-          me.dataRecords  = response.dataRecords;
-          this.afterRefreshLoadCallbacks.forEach(callback => callback(response.dataRecords));
+          const jsonResponse = me.dataAdapter ? me.dataAdapter(response, params) : response;
+          me.dataRecords  = jsonResponse.dataRecords;
+          this.afterRefreshLoadCallbacks.forEach(callback => callback(jsonResponse.dataRecords));
         },
         error: (error) => {
           me.isLoading  = false;
