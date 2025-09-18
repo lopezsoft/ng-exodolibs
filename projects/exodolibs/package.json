@@ -1,6 +1,6 @@
 {
   "name": "exodolibs",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "description": "ExodoLibs es una biblioteca de componentes UI para Angular, que ofrece una variedad de elementos personalizables y fáciles de usar para mejorar la experiencia del usuario en aplicaciones web.",
   "repository": {
     "type": "git",
