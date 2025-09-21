@@ -43,4 +43,39 @@ describe('ExodoGridComponent', () => {
     expect(el.textContent).toContain('Sin datos');
   });
 
+  it('should build header rows for nested columns', () => {
+    const cols: any[] = [
+      { text: 'A', children: [ { text: 'A1', dataIndex: 'a1' }, { text: 'A2', dataIndex: 'a2' } ] },
+      { text: 'B', dataIndex: 'b' }
+    ];
+    const rows = (component as any).buildHeaderRows(cols);
+    expect(rows.length).toBeGreaterThanOrEqual(1);
+    expect(rows[0].length).toBe(2);
+    expect(rows[1].length).toBe(2);
+    const parentA = rows[0][0];
+    expect(parentA.colspan).toBe(2);
+  });
+
+  it('should collect leaf columns in order', () => {
+    const cols: any[] = [
+      { text: 'A', children: [ { text: 'A1', dataIndex: 'a1' }, { text: 'A2', dataIndex: 'a2' } ] },
+      { text: 'B', dataIndex: 'b' }
+    ];
+    const leaves = (component as any).collectLeafColumns(cols);
+    expect(leaves.map((l: any) => l.dataIndex)).toEqual(['a1', 'a2', 'b']);
+  });
+
+  it('should sort rows locally respecting sortable flag', () => {
+    component.allowSorting = true;
+    component.dataSource = { rows: [ { id: 2, name: 'B' }, { id: 1, name: 'A' } ], dataRecords: null } as any;
+    const col: any = { text: 'Name', dataIndex: 'name', sortable: true };
+    component.sort(col);
+    expect(component.dataSource.rows[0].name).toBe('A');
+
+    component.dataSource = { rows: [ { id: 2, name: 'B' }, { id: 1, name: 'A' } ], dataRecords: null } as any;
+    const colNoSort: any = { text: 'Name', dataIndex: 'name', sortable: false };
+    component.sort(colNoSort);
+    expect(component.dataSource.rows[0].name).toBe('B');
+  });
+
 });

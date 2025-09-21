@@ -33,6 +33,13 @@
   </section>
 
   <section class="example">
+    <h4>Ejemplo: Encabezados agrupados</h4>
+    <exodo-grid [columns]="groupedColumns" [dataSource]="staticDataSource" mode="local" [showPagination]="false"
+      [allowFiltering]="true" [allowSorting]="true" [labels]="paginationLabels">
+    </exodo-grid>
+  </section>
+
+  <section class="example">
   <h4>{{ t('examples.api') }}</h4>
     <div *ngIf="loading" class="loading">Loading data…</div>
     <exodo-grid *ngIf="!loading" [columns]="columns" [dataSource]="apiDataSource" mode="local" [showPagination]="false"

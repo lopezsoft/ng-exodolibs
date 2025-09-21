@@ -16,6 +16,18 @@ export class GridExamplesComponent implements OnInit {
     { text: 'Email', dataIndex: 'email' }
   ];
 
+  // Example of grouped columns (for demo)
+  groupedColumns: any[] = [
+    {
+      text: 'Personas',
+      children: [
+        { text: 'Nombre', dataIndex: 'name', sortable: true },
+        { text: 'Email', dataIndex: 'email', sortable: true }
+      ]
+    },
+    { text: 'Meta', children: [ { text: 'Edad', dataIndex: 'age' }, { text: 'Ciudad', dataIndex: 'city' } ] }
+  ];
+
   // Static data example
   staticDataSource: any = {
     rows: [

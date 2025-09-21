@@ -24,4 +24,8 @@ export interface ColumnContract {
   cellClick?: (row: any, rowIndex: number, columnIndex?: number) => void;
   cellDbClick?: (row: any, rowIndex: number, columnIndex?: number) => void;
   tooltipRender?: (row: any) => string;
+  /** Indica si la columna es ordenable. Si se omite, se usa la configuración global `allowSorting`. */
+  sortable?: boolean;
+  /** Columnas hijas para encabezados agrupados (multi-row headers). */
+  children?: ColumnContract[];
 }

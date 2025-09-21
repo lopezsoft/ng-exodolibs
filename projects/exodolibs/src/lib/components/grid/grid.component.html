@@ -28,20 +28,25 @@
                   <ng-content select="[tableHeader]"></ng-content>
                 </ng-template>
                 <ng-container *ngIf="!customHeader; else myCustomHeader">
-                  <tr aria-rowindex="1" class="text-center">
-                      <th *ngFor="let header of columns; index as index"  [attr.colspan]="header.colspan"
+                  <!-- Render encabezados multinivel construidos desde headerRows -->
+                  <ng-container *ngFor="let headerRow of headerRows; let rowIndex = index">
+                    <tr [attr.aria-rowindex]="rowIndex + 1" class="text-center">
+                      <th *ngFor="let header of headerRow"
+                          [attr.colspan]="header.colspan || null"
+                          [attr.rowspan]="header.rowspan || null"
                           [width]="header.width || 'auto'"
-                          [attr.aria-colcount]="index + 1"
                           (click)="sort(header)"
-                          [class.sortable]="allowSorting && header.dataIndex">
-                          {{ header.text }}
-                          <i *ngIf="allowSorting && header.dataIndex && sortColumn === header.dataIndex"
-                             class="fa"
-                             [ngClass]="{'fa-sort-asc': sortDirection === 'asc', 'fa-sort-desc': sortDirection === 'desc'}"></i>
+                          [class.sortable]="allowSorting && header.dataIndex && (header.sortable !== false)">
+                        {{ header.text }}
+                        <i *ngIf="allowSorting && header.dataIndex && sortColumn === header.dataIndex"
+                           class="fa"
+                           [ngClass]="{'fa-sort-asc': sortDirection === 'asc', 'fa-sort-desc': sortDirection === 'desc'}"></i>
                       </th>
-                  </tr>
+                    </tr>
+                  </ng-container>
+                  <!-- Fila de filtros (solo para las columnas hoja) -->
                   <tr *ngIf="allowFiltering">
-                    <th *ngFor="let column of columns">
+                    <th *ngFor="let column of leafColumns">
                       <lib-grid-filter [column]="column" (onFilter)="applyGridFilter($event)"></lib-grid-filter>
                     </th>
                   </tr>
@@ -57,7 +62,7 @@
                 <ng-container *ngIf="canData() && !customBody; else myCustomBody">
                 <tr *ngFor="let row of dataSource?.rows; index as rowIndex"
                     [attr.aria-rowindex]="rowIndex + 2" role="row">
-                  <td *ngFor="let column of columns; index as columnIndex"
+                  <td *ngFor="let column of leafColumns; index as columnIndex"
                       role="gridcell" [attr.aria-colindex]="columnIndex + 1">
                     <el-grid-cell
                       [column]="column"

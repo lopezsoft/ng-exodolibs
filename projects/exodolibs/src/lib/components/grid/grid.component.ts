@@ -46,6 +46,10 @@ export class ExodoGridComponent implements OnInit, AfterViewInit {
   @Input() customHeader: boolean;
   @Input() headers: ColumnContract[] = [];
   @Input() columns: ColumnContract[] = [];
+  /** Filas de encabezado calculadas para soportar encabezados agrupados */
+  public headerRows: ColumnContract[][] = [];
+  /** Columnas hoja que se usan para renderizar celdas (sin children) */
+  public leafColumns: ColumnContract[] = [];
   @Input() dataSource: DataSourceContract = {
     rows: [],
     dataRecords: null
@@ -107,12 +111,16 @@ export class ExodoGridComponent implements OnInit, AfterViewInit {
       if (this.searchField && this.searchField.nativeElement) {
         this.searchField.nativeElement.id = this.gridService.getUniqueId('exodo-grid-search-');
       }
+      // Reconstruir headers después de inicializar la vista (por si las columnas vienen dinámicas)
+      this.rebuildHeaders();
       if (this.mode === 'remote') {
         this.onLoad();
       }
     });
   }
   ngOnInit(): void {
+    // Construir encabezados iniciales
+    this.rebuildHeaders();
   }
   canData(): boolean {
     if(!this.dataSource || !this.dataSource?.rows) {
@@ -246,7 +254,8 @@ export class ExodoGridComponent implements OnInit, AfterViewInit {
   }
 
   sort(column: ColumnContract) {
-    if (!this.allowSorting || !column.dataIndex) {
+    // validar si la columna es ordenable (propiedad de columna puede deshabilitarlo)
+    if (!this.allowSorting || !column.dataIndex || column.sortable === false) {
       return;
     }
 
@@ -277,6 +286,54 @@ export class ExodoGridComponent implements OnInit, AfterViewInit {
         return 0;
       });
     } 
+  }
+
+  /** Reconstruye las filas de encabezado y la lista de columnas hoja */
+  protected rebuildHeaders(): void {
+    this.headerRows = this.buildHeaderRows(this.columns);
+    this.leafColumns = this.collectLeafColumns(this.columns);
+  }
+
+  /** Construye una matriz de filas de encabezado a partir de columnas (soporta children) */
+  protected buildHeaderRows(columns: ColumnContract[]): ColumnContract[][] {
+    const rows: ColumnContract[][] = [];
+    const traverse = (cols: ColumnContract[], level = 0) => {
+      rows[level] = rows[level] || [];
+      cols.forEach(col => {
+        rows[level].push(col);
+        if (col.children && col.children.length > 0) {
+          traverse(col.children, level + 1);
+          if (!col.colspan) { col.colspan = this.countLeafColumns(col); }
+        }
+      });
+    };
+    traverse(columns, 0);
+    const maxLevel = rows.length;
+    for (let r = 0; r < rows.length; r++) {
+      rows[r].forEach(col => {
+        if (!col.children || col.children.length === 0) {
+          if (!col.rowspan) { col.rowspan = maxLevel - r; }
+        }
+      });
+    }
+    return rows;
+  }
+
+  protected countLeafColumns(col: ColumnContract): number {
+    if (!col.children || col.children.length === 0) { return 1; }
+    return col.children.reduce((acc, c) => acc + this.countLeafColumns(c), 0);
+  }
+
+  protected collectLeafColumns(columns: ColumnContract[]): ColumnContract[] {
+    const leaves: ColumnContract[] = [];
+    const traverse = (cols: ColumnContract[]) => {
+      cols.forEach(c => {
+        if (c.children && c.children.length > 0) { traverse(c.children); }
+        else { leaves.push(c); }
+      });
+    };
+    traverse(columns);
+    return leaves;
   }
 
   public onAfterRefreshLoad(callback: (dataRecords: DataRecords) => void) {
