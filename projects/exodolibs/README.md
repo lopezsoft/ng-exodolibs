@@ -59,6 +59,45 @@ Ejemplo de uso:
 ```
 
 En la petición al servidor deberías recibir parámetros como `limit=25` y `skip=0` (primera página), y `skip=25` para la página 2, etc.
+
+## API del Grid
+
+### Inputs principales
+
+- `columns: ColumnContract[]` — Define las columnas del grid
+- `dataSource: DataSourceContract` — Los datos a mostrar
+- `mode: 'local' | 'remote'` — Modo de operación (por defecto: 'remote')
+- `allowSorting: boolean` — Habilita ordenamiento de columnas
+- `allowFiltering: boolean` — Habilita filtros por columna
+- `showPagination: boolean` — Muestra controles de paginación
+- `limit: number` — Número de elementos por página (para paginación offset)
+- `skip: number` — Offset inicial (calculado automáticamente desde page y limit)
+
+### Métodos públicos
+
+- `rebuildGrid()` — Reconstruye completamente el grid (headers, columnas y datos). Útil cuando:
+  - Las columnas cambian dinámicamente después de la inicialización
+  - Después del refresh del navegador cuando los datos no se visualizan correctamente
+  - Se necesita forzar una reconstrucción manual del grid
+
+Ejemplo de uso programático:
+
+```typescript
+// En tu componente
+@ViewChild('myGrid') grid: ExodoGridComponent;
+
+// Reconstruir el grid manualmente
+rebuildMyGrid() {
+  this.grid.rebuildGrid();
+}
+
+// O cuando cambias las columnas dinámicamente
+updateColumns() {
+  this.columns = [...this.columns, { text: 'Nueva Columna', dataIndex: 'new' }];
+  // No es necesario llamar rebuildGrid() aquí - se detecta automáticamente via ngOnChanges
+}
+```
+
 ### Añadir estilos
 En src/styles de la app principal importamos
 ```

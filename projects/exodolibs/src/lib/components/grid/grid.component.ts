@@ -4,7 +4,9 @@ import {
   ElementRef,
   HostBinding,
   Input,
+  OnChanges,
   OnInit,
+  SimpleChanges,
   ViewChild, ViewEncapsulation,
 } from '@angular/core';
 
@@ -22,7 +24,7 @@ import {debounceTime} from "rxjs/operators";
   styleUrls: ['./../../assets/exodogrid-style.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class ExodoGridComponent implements OnInit, AfterViewInit {
+export class ExodoGridComponent implements OnInit, OnChanges, AfterViewInit {
   public emptyMessage = 'Sin datos';
   public rows: any = [];
   public isLoading: boolean;
@@ -121,6 +123,18 @@ export class ExodoGridComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     // Construir encabezados iniciales
     this.rebuildHeaders();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    // Detectar cambios en columnas o dataSource y reconstruir el grid
+    if (changes['columns'] || changes['dataSource']) {
+      if (changes['columns'] && changes['columns'].currentValue) {
+        this.rebuildGrid();
+      }
+      if (changes['dataSource'] && changes['dataSource'].currentValue) {
+        this.refreshDataRows();
+      }
+    }
   }
   canData(): boolean {
     if(!this.dataSource || !this.dataSource?.rows) {
@@ -290,8 +304,43 @@ export class ExodoGridComponent implements OnInit, AfterViewInit {
 
   /** Reconstruye las filas de encabezado y la lista de columnas hoja */
   protected rebuildHeaders(): void {
+    if (!this.columns || this.columns.length === 0) {
+      this.headerRows = [];
+      this.leafColumns = [];
+      return;
+    }
     this.headerRows = this.buildHeaderRows(this.columns);
     this.leafColumns = this.collectLeafColumns(this.columns);
+  }
+
+  /**
+   * Método público para reconstruir completamente el grid.
+   * Útil cuando las columnas cambian dinámicamente o después de refresh del navegador.
+   */
+  public rebuildGrid(): void {
+    // Reconstruir headers y columnas
+    this.rebuildHeaders();
+    // Refrescar datos si existen
+    this.refreshDataRows();
+    // Forzar detección de cambios si estamos en AfterViewInit
+    if (this.isAfterViewInit && this.mode === 'remote' && this.proxy) {
+      // Si hay proxy configurado y estamos en modo remoto, recargar datos
+      this.onLoad({}, true);
+    }
+  }
+
+  /**
+   * Método auxiliar para refrescar las filas de datos desde dataSource
+   */
+  private refreshDataRows(): void {
+    if (this.dataSource && this.dataSource.rows) {
+      this.rows = this.dataSource.rows;
+      if (this.dataSource.dataRecords) {
+        this.setPagination(this.dataSource.dataRecords);
+      }
+    } else {
+      this.rows = [];
+    }
   }
 
   /** Construye una matriz de filas de encabezado a partir de columnas (soporta children) */
