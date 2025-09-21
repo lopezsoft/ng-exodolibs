@@ -175,6 +175,35 @@ dataAdapter(response: any[], params: any) {
 }
 ```
 
+### Ejemplo: columnas agrupadas y ordenables
+
+```typescript
+// Ejemplo de columnas con agrupación (encabezados multinivel) y sortable
+columns = [
+  {
+    text: 'Personas',
+    children: [
+      { text: 'Nombre', dataIndex: 'firstName', sortable: true },
+      { text: 'Apellido', dataIndex: 'lastName', sortable: true }
+    ]
+  },
+  {
+    text: 'Contacto',
+    children: [
+      { text: 'Email', dataIndex: 'email', sortable: false },
+      { text: 'Teléfono', dataIndex: 'phone' }
+    ]
+  },
+  { text: 'Registrado', dataIndex: 'createdAt', sortable: true }
+];
+
+// En el template
+// <exodo-grid [columns]="columns" [allowSorting]="true" ...></exodo-grid>
+```
+
+En este ejemplo, `Personas` y `Contacto` son encabezados que agrupan columnas hoja. Las columnas hoja con `sortable: true` mostrarán el icono de orden y podrán activar orden asc/desc cuando `allowSorting` esté activado en el grid.
+
+
 ### Tests
 
 Para ejecutar los tests del workspace (ejecuta esto en la raíz del repo):
