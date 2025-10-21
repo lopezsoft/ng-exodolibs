@@ -1,6 +1,25 @@
 # Exodolibs
+
 Es una librería que permite automatizar el uso de DataGrid, Selects para el consumo de datos desde el lado
 del servidor, inicialmente solo tiene un DataGrid Básico
+
+## Compatibilidad
+
+**Versiones de Angular soportadas:** 18.x, 19.x, 20.x
+
+Esta librería es compatible con Angular 18 en adelante. Si tienes proyectos en Angular 18 que aún no puedes migrar, puedes usar esta librería sin problemas.
+
+```bash
+# Angular 18.x
+npm install exodolibs
+
+# Angular 19.x
+npm install exodolibs
+
+# Angular 20.x
+npm install exodolibs
+```
+
 ## Instrucciones
 
 Hay que seguir las siguientes instrucciones para un correcto uso de la librería
