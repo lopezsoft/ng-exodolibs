@@ -84,6 +84,14 @@ export class ExodoGridComponent implements OnInit, OnChanges, AfterViewInit {
     this.uuid = this.gridService.getUniqueId('exodo-grid-');
     this.customBody = false;
     this.isAfterViewInit = false;
+    this.proxy = {
+      api: { 
+        read: '',
+        create: '',
+        update: '',
+        destroy: ''
+      }
+    }
     this.searchSubject.pipe(
       debounceTime(300) // Retrasa la búsqueda
     ).subscribe({
