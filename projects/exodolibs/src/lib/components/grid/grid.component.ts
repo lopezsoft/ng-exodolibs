@@ -29,6 +29,8 @@ export class ExodoGridComponent implements OnInit, OnChanges, AfterViewInit {
   public rows: any = [];
   public isLoading: boolean;
   protected queryParams: any = {};
+  /** Parámetros base que deben persistir a través de todas las operaciones del grid */
+  protected baseParams: any = {};
   protected isAfterViewInit: boolean;
   private afterRefreshLoadCallbacks: ((dataRecords: DataRecords) => void)[] = [];
   private _uuid = '';
@@ -153,9 +155,11 @@ export class ExodoGridComponent implements OnInit, OnChanges, AfterViewInit {
   onLoad(params: any = {}, force = true): void {
     const me = this;
     if (!me.proxy || !me.proxy?.api?.read) { return; }
-    me.queryParams = params;
+    // Guardar los parámetros base que deben persistir
+    me.baseParams = { ...params };
+    me.queryParams = { ...me.baseParams };
     if (force) {
-      me.onRefreshLoad(params);
+      me.onRefreshLoad(me.queryParams);
     }
   }
   inputKey(event: any): void {
@@ -170,20 +174,22 @@ export class ExodoGridComponent implements OnInit, OnChanges, AfterViewInit {
   }
   searchQuery(searchQuery: string): void {
     if (this.mode !== 'remote') { return; }
-    const params      = {
-      ...this.queryParams, 
+    // Preservar los parámetros base y agregar los de búsqueda
+    const params = {
+      ...this.baseParams,
       query: searchQuery, 
       search: searchQuery,
       searchQuery: searchQuery, 
       searchParam: searchQuery
     };
-    this.queryParams  = params;
+    this.queryParams = params;
     this.onRefreshLoad(params);
   }
 
   public onRefreshPagination(page: number): void {
     // cuando se cambia la página, calcular skip si hay limit
-    const params: any = { ...this.queryParams, page };
+    // Preservar los parámetros base y agregar los de paginación
+    const params: any = { ...this.baseParams, ...this.queryParams, page };
     if (this.limit != null) {
       params.limit = this.limit;
       params.skip = (Number(page) - 1) * Number(this.limit);
@@ -250,8 +256,8 @@ export class ExodoGridComponent implements OnInit, OnChanges, AfterViewInit {
     const ele = <HTMLInputElement> e.target;
     if(this.mode  === 'remote') {
       if(ele.value.length === 0 || ele.value.length >= this.minChar) {
-        // resetear paginación al buscar
-        this.queryParams = { ...this.queryParams, page: 1 };
+        // resetear paginación al buscar, preservando los parámetros base
+        this.queryParams = { ...this.baseParams, page: 1 };
         if (this.limit != null) {
           this.queryParams.limit = this.limit;
           this.queryParams.skip = 0;
@@ -268,7 +274,8 @@ export class ExodoGridComponent implements OnInit, OnChanges, AfterViewInit {
 
   applyGridFilter(event: any) {
     // Al aplicar filtros, reiniciamos la paginación (page -> 1, skip -> 0) y preservamos limit si existe
-    const params: any = { ...this.queryParams, ...event, page: 1 };
+    // Preservar los parámetros base y agregar los filtros
+    const params: any = { ...this.baseParams, ...event, page: 1 };
     if (this.limit != null) { params.limit = this.limit; params.skip = 0; }
     else if (this.skip != null) { params.skip = 0; }
     this.queryParams = params;
@@ -289,7 +296,8 @@ export class ExodoGridComponent implements OnInit, OnChanges, AfterViewInit {
     }
 
     if (this.mode === 'remote') {
-      const params: any = { ...this.queryParams, sort: this.sortColumn, dir: this.sortDirection, page: 1 };
+      // Preservar los parámetros base y agregar ordenamiento
+      const params: any = { ...this.baseParams, ...this.queryParams, sort: this.sortColumn, dir: this.sortDirection, page: 1 };
       // ordenar debe resetear la paginación para evitar inconsistencias
       if (this.limit != null) { params.limit = this.limit; params.skip = 0; }
       else if (this.skip != null) { params.skip = 0; }
