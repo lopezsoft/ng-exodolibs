@@ -127,9 +127,7 @@ export class ExodoGridComponent implements OnInit, OnChanges, AfterViewInit {
       // Reconstruir headers después de inicializar la vista (por si las columnas vienen dinámicas)
       this.rebuildHeaders();
       if (this.mode === 'remote') {
-        this.onLoad(
-          ...this.baseParams
-        );
+        this.onLoad(this.baseParams);
       }
     });
   }
@@ -218,8 +216,10 @@ export class ExodoGridComponent implements OnInit, OnChanges, AfterViewInit {
     }
     const url     = this.proxy.api.read;
     this.isLoading  = true;
+    if(!params) {
+      params = {};
+    }
     // Asegurar que siempre incluimos limit/skip en la petición cuando estén disponibles
-    console.log('onRefreshLoad params:', params);
     const requestParams = { ...params, ...this.baseParams};
     if (this.limit != null && requestParams.limit == null) { requestParams.limit = this.limit; }
     if (this.skip != null && requestParams.skip == null) { requestParams.skip = this.skip; }
@@ -361,9 +361,7 @@ export class ExodoGridComponent implements OnInit, OnChanges, AfterViewInit {
     // Forzar detección de cambios si estamos en AfterViewInit
     if (this.isAfterViewInit && this.mode === 'remote' && this.proxy) {
       // Si hay proxy configurado y estamos en modo remoto, recargar datos
-      this.onLoad({
-        ...this.baseParams
-      }, true);
+      this.onLoad(this.baseParams, true);
     }
   }
 
