@@ -127,7 +127,9 @@ export class ExodoGridComponent implements OnInit, OnChanges, AfterViewInit {
       // Reconstruir headers después de inicializar la vista (por si las columnas vienen dinámicas)
       this.rebuildHeaders();
       if (this.mode === 'remote') {
-        this.onLoad();
+        this.onLoad(
+          ...this.baseParams
+        );
       }
     });
   }
@@ -154,30 +156,31 @@ export class ExodoGridComponent implements OnInit, OnChanges, AfterViewInit {
     return ((this.dataSource.rows.length > 0))
   }
   onLoad(params: any = {}, force = true): void {
-    const me = this;
-    if (!me.proxy || !me.proxy?.api?.read) { return; }
+    if (!this.proxy || !this.proxy?.api?.read) { return; }
     // Guardar los parámetros base inmutables
-    me.baseParams = { ...params };
+    this.baseParams = { ...params };
     // Inicializar queryParams vacío (solo tendrá parámetros variables)
-    me.queryParams = {};
+    this.queryParams = {};
     if (force) {
-      // Combinar baseParams + queryParams para la petición
-      const requestParams = { ...me.baseParams, ...me.queryParams };
-      me.onRefreshLoad(requestParams);
+      this.onRefreshLoad(this.queryParams);
     }
   }
   inputKey(event: any): void {
-    const ts  = this;
-    if (!ts.isLoading && ts.mode === 'remote') {
+    if (!this.isLoading && this.mode === 'remote') {
       const ele = <HTMLInputElement> event.target;
       const searchString  = ele.value;
       if (event.keyCode === 13 && searchString.length >= 0) {
-        ts.searchQuery(searchString);
+        this.searchQuery(searchString);
       }
     }
   }
   searchQuery(searchQuery: string): void {
     if (this.mode !== 'remote') { return; }
+    // Limpiar parámetros de búsqueda
+    delete this.queryParams.query;
+    delete this.queryParams.search;
+    delete this.queryParams.searchQuery;
+    delete this.queryParams.searchParam;
     
     // Actualizar solo los parámetros variables en queryParams
     if (searchQuery && searchQuery.length > 0) {
@@ -185,12 +188,6 @@ export class ExodoGridComponent implements OnInit, OnChanges, AfterViewInit {
       this.queryParams.search = searchQuery;
       this.queryParams.searchQuery = searchQuery;
       this.queryParams.searchParam = searchQuery;
-    } else {
-      // Limpiar parámetros de búsqueda si está vacío
-      delete this.queryParams.query;
-      delete this.queryParams.search;
-      delete this.queryParams.searchQuery;
-      delete this.queryParams.searchParam;
     }
     
     // Resetear paginación
@@ -200,9 +197,7 @@ export class ExodoGridComponent implements OnInit, OnChanges, AfterViewInit {
       this.queryParams.skip = 0;
     }
     
-    // Combinar baseParams + queryParams para la petición
-    const params = { ...this.baseParams, ...this.queryParams };
-    this.onRefreshLoad(params);
+    this.onRefreshLoad(this.queryParams);
   }
 
   public onRefreshPagination(page: number): void {
@@ -214,32 +209,30 @@ export class ExodoGridComponent implements OnInit, OnChanges, AfterViewInit {
     } else if (this.skip != null) {
       this.queryParams.skip = this.skip;
     }
-    
-    // Combinar baseParams + queryParams para la petición
-    const params = { ...this.baseParams, ...this.queryParams };
-    this.onRefreshLoad(params);
+
+    this.onRefreshLoad(this.queryParams);
   }
   private onRefreshLoad(params: any) {
-    const me  = this;
-    if (me.isLoading || me.mode !== 'remote') {
+    if (this.isLoading || this.mode !== 'remote') {
       return;
     }
-    const url     = me.proxy.api.read;
-    me.isLoading  = true;
+    const url     = this.proxy.api.read;
+    this.isLoading  = true;
     // Asegurar que siempre incluimos limit/skip en la petición cuando estén disponibles
-    const requestParams = { ...params };
+    console.log('onRefreshLoad params:', params);
+    const requestParams = { ...params, ...this.baseParams};
     if (this.limit != null && requestParams.limit == null) { requestParams.limit = this.limit; }
     if (this.skip != null && requestParams.skip == null) { requestParams.skip = this.skip; }
-    me.gridService.onRefreshLoad(url, requestParams)
+    this.gridService.onRefreshLoad(url, requestParams)
       .subscribe({
         next: (response: any) => {
-          me.isLoading    = false;
-          const jsonResponse = me.dataAdapter ? me.dataAdapter(response, params) : response;
-          me.dataRecords  = jsonResponse.dataRecords;
+          this.isLoading    = false;
+          const jsonResponse = this.dataAdapter ? this.dataAdapter(response, params) : response;
+          this.dataRecords  = jsonResponse.dataRecords;
           this.afterRefreshLoadCallbacks.forEach(callback => callback(jsonResponse.dataRecords));
         },
         error: (error) => {
-          me.isLoading  = false;
+          this.isLoading  = false;
           console.error(error);
         }
       })
@@ -298,9 +291,7 @@ export class ExodoGridComponent implements OnInit, OnChanges, AfterViewInit {
       this.queryParams.skip = 0; 
     }
     
-    // Combinar baseParams + queryParams para la petición
-    const params = { ...this.baseParams, ...this.queryParams };
-    this.onRefreshLoad(params);
+    this.onRefreshLoad(this.queryParams);
   }
 
   sort(column: ColumnContract) {
@@ -331,8 +322,7 @@ export class ExodoGridComponent implements OnInit, OnChanges, AfterViewInit {
       }
       
       // Combinar baseParams + queryParams para la petición
-      const params = { ...this.baseParams, ...this.queryParams };
-      this.onRefreshLoad(params);
+      this.onRefreshLoad(this.queryParams);
     } else {
       this.dataSource.rows.sort((a, b) => {
         const valA = a[this.sortColumn];
@@ -371,7 +361,9 @@ export class ExodoGridComponent implements OnInit, OnChanges, AfterViewInit {
     // Forzar detección de cambios si estamos en AfterViewInit
     if (this.isAfterViewInit && this.mode === 'remote' && this.proxy) {
       // Si hay proxy configurado y estamos en modo remoto, recargar datos
-      this.onLoad({}, true);
+      this.onLoad({
+        ...this.baseParams
+      }, true);
     }
   }
 
@@ -447,8 +439,7 @@ export class ExodoGridComponent implements OnInit, OnChanges, AfterViewInit {
     this.sortColumn = null;
     this.sortDirection = 'asc';
     
-    const params = { ...this.baseParams, ...this.queryParams };
-    this.onRefreshLoad(params);
+    this.onRefreshLoad(this.queryParams);
   }
   
   /**
