@@ -28,8 +28,9 @@ export class ExodoGridComponent implements OnInit, OnChanges, AfterViewInit {
   public emptyMessage = 'Sin datos';
   public rows: any = [];
   public isLoading: boolean;
+  /** Parámetros variables: búsqueda, filtros, ordenamiento, paginación */
   protected queryParams: any = {};
-  /** Parámetros base que deben persistir a través de todas las operaciones del grid */
+  /** Parámetros base inmutables que deben persistir en todas las operaciones */
   protected baseParams: any = {};
   protected isAfterViewInit: boolean;
   private afterRefreshLoadCallbacks: ((dataRecords: DataRecords) => void)[] = [];
@@ -155,11 +156,14 @@ export class ExodoGridComponent implements OnInit, OnChanges, AfterViewInit {
   onLoad(params: any = {}, force = true): void {
     const me = this;
     if (!me.proxy || !me.proxy?.api?.read) { return; }
-    // Guardar los parámetros base que deben persistir
+    // Guardar los parámetros base inmutables
     me.baseParams = { ...params };
-    me.queryParams = { ...me.baseParams };
+    // Inicializar queryParams vacío (solo tendrá parámetros variables)
+    me.queryParams = {};
     if (force) {
-      me.onRefreshLoad(me.queryParams);
+      // Combinar baseParams + queryParams para la petición
+      const requestParams = { ...me.baseParams, ...me.queryParams };
+      me.onRefreshLoad(requestParams);
     }
   }
   inputKey(event: any): void {
@@ -174,41 +178,45 @@ export class ExodoGridComponent implements OnInit, OnChanges, AfterViewInit {
   }
   searchQuery(searchQuery: string): void {
     if (this.mode !== 'remote') { return; }
-    // Preservar baseParams y queryParams acumulados, solo actualizar búsqueda
-    const params = {
-      ...this.baseParams,
-      ...this.queryParams,
-      query: searchQuery, 
-      search: searchQuery,
-      searchQuery: searchQuery, 
-      searchParam: searchQuery,
-      page: 1 // resetear a página 1 al buscar
-    };
-    // Recalcular skip si hay limit
-    if (this.limit != null) {
-      params.limit = this.limit;
-      params.skip = 0;
+    
+    // Actualizar solo los parámetros variables en queryParams
+    if (searchQuery && searchQuery.length > 0) {
+      this.queryParams.query = searchQuery;
+      this.queryParams.search = searchQuery;
+      this.queryParams.searchQuery = searchQuery;
+      this.queryParams.searchParam = searchQuery;
+    } else {
+      // Limpiar parámetros de búsqueda si está vacío
+      delete this.queryParams.query;
+      delete this.queryParams.search;
+      delete this.queryParams.searchQuery;
+      delete this.queryParams.searchParam;
     }
-    this.queryParams = params;
+    
+    // Resetear paginación
+    this.queryParams.page = 1;
+    if (this.limit != null) {
+      this.queryParams.limit = this.limit;
+      this.queryParams.skip = 0;
+    }
+    
+    // Combinar baseParams + queryParams para la petición
+    const params = { ...this.baseParams, ...this.queryParams };
     this.onRefreshLoad(params);
   }
 
   public onRefreshPagination(page: number): void {
-    // cuando se cambia la página, calcular skip si hay limit
-    // Preservar TODOS los parámetros (base + acumulados) y solo actualizar paginación
-    const params: any = { 
-      ...this.baseParams, 
-      ...this.queryParams, 
-      page 
-    };
+    // Actualizar solo la paginación en queryParams
+    this.queryParams.page = page;
     if (this.limit != null) {
-      params.limit = this.limit;
-      params.skip = (Number(page) - 1) * Number(this.limit);
+      this.queryParams.limit = this.limit;
+      this.queryParams.skip = (Number(page) - 1) * Number(this.limit);
     } else if (this.skip != null) {
-      // si existe skip configurado externamente, preferirlo
-      params.skip = this.skip;
+      this.queryParams.skip = this.skip;
     }
-    this.queryParams = params;
+    
+    // Combinar baseParams + queryParams para la petición
+    const params = { ...this.baseParams, ...this.queryParams };
     this.onRefreshLoad(params);
   }
   private onRefreshLoad(params: any) {
@@ -278,21 +286,20 @@ export class ExodoGridComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   applyGridFilter(event: any) {
-    // Al aplicar filtros, reiniciamos la paginación (page -> 1, skip -> 0)
-    // Preservar baseParams y queryParams previos, agregar/actualizar filtros
-    const params: any = { 
-      ...this.baseParams, 
-      ...this.queryParams,
-      ...event, 
-      page: 1 
-    };
+    // Agregar/actualizar filtros en queryParams
+    Object.assign(this.queryParams, event);
+    
+    // Resetear paginación
+    this.queryParams.page = 1;
     if (this.limit != null) { 
-      params.limit = this.limit; 
-      params.skip = 0; 
+      this.queryParams.limit = this.limit; 
+      this.queryParams.skip = 0; 
     } else if (this.skip != null) { 
-      params.skip = 0; 
+      this.queryParams.skip = 0; 
     }
-    this.queryParams = params;
+    
+    // Combinar baseParams + queryParams para la petición
+    const params = { ...this.baseParams, ...this.queryParams };
     this.onRefreshLoad(params);
   }
 
@@ -310,22 +317,21 @@ export class ExodoGridComponent implements OnInit, OnChanges, AfterViewInit {
     }
 
     if (this.mode === 'remote') {
-      // Preservar TODOS los parámetros (base + acumulados) y agregar/actualizar ordenamiento
-      const params: any = { 
-        ...this.baseParams, 
-        ...this.queryParams, 
-        sort: this.sortColumn, 
-        dir: this.sortDirection, 
-        page: 1 
-      };
-      // ordenar debe resetear la paginación para evitar inconsistencias
+      // Actualizar ordenamiento en queryParams
+      this.queryParams.sort = this.sortColumn;
+      this.queryParams.dir = this.sortDirection;
+      
+      // Resetear paginación
+      this.queryParams.page = 1;
       if (this.limit != null) { 
-        params.limit = this.limit; 
-        params.skip = 0; 
+        this.queryParams.limit = this.limit; 
+        this.queryParams.skip = 0; 
       } else if (this.skip != null) { 
-        params.skip = 0; 
+        this.queryParams.skip = 0; 
       }
-      this.queryParams = params;
+      
+      // Combinar baseParams + queryParams para la petición
+      const params = { ...this.baseParams, ...this.queryParams };
       this.onRefreshLoad(params);
     } else {
       this.dataSource.rows.sort((a, b) => {
@@ -428,6 +434,37 @@ export class ExodoGridComponent implements OnInit, OnChanges, AfterViewInit {
   public onAfterRefreshLoad(callback: (dataRecords: DataRecords) => void) {
     this.afterRefreshLoadCallbacks.push(callback);
   }
+  
+  /**
+   * Limpia todos los parámetros variables (búsqueda, filtros, ordenamiento)
+   * pero mantiene los parámetros base inmutables
+   */
+  public clearFilters(): void {
+    this.queryParams = {};
+    if (this.searchField && this.searchField.nativeElement) {
+      this.searchField.nativeElement.value = '';
+    }
+    this.sortColumn = null;
+    this.sortDirection = 'asc';
+    
+    const params = { ...this.baseParams, ...this.queryParams };
+    this.onRefreshLoad(params);
+  }
+  
+  /**
+   * Obtiene los parámetros base inmutables (los que se pasaron en onLoad)
+   */
+  public getBaseParams(): any {
+    return { ...this.baseParams };
+  }
+  
+  /**
+   * Obtiene todos los parámetros actuales (base + variables)
+   */
+  public getQueryParams(): any {
+    return { ...this.baseParams, ...this.queryParams };
+  }
+  
   public getDataSource(): DataSourceContract {
     return this.dataSource;
   }
