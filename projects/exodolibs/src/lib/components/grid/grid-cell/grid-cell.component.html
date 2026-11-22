@@ -17,6 +17,7 @@
     <input
       type="checkbox"
       [disabled]="column?.editing === false"
+      [attr.disabled]="column?.editing === false ? '' : null"
       [attr.aria-label]="column?.text || column?.dataIndex"
       [(ngModel)]="row[column.dataIndex]"
       (change)="onInputChange($event)">

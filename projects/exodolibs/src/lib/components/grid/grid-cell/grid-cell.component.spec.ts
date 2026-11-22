@@ -124,7 +124,7 @@ describe('GridCellComponent', () => {
     expect(fixture.nativeElement.querySelector('input')).toBeNull();
   });
 
-  it('should disable boolean checkbox when column.editing is explicitly false', () => {
+  it('should disable boolean checkbox when column.editing is explicitly false', async () => {
     const column: ColumnContract = {
       text: 'Activo',
       dataIndex: 'active',
@@ -135,6 +135,8 @@ describe('GridCellComponent', () => {
     component.column = column;
     component.row = row;
     component.dataSource = { rows: [row] };
+    fixture.detectChanges();
+    await fixture.whenStable();
     fixture.detectChanges();
 
     const checkbox = fixture.nativeElement.querySelector('input[type="checkbox"]') as HTMLInputElement;
