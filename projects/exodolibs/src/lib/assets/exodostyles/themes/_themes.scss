@@ -4,17 +4,21 @@
   Homogenized theme file for Exodo.
 */
 
-/* Global focus style for improved accessibility */
-*:focus-visible {
+/* Scoped focus style for improved accessibility without bleeding into host apps */
+.exodogrid-content-style :focus-visible,
+exodo-pagination :focus-visible,
+.exodo-pagination-controls :focus-visible {
   outline: 2px solid var(--exodo-primary-focus, #86b7fe);
   outline-offset: 2px;
   box-shadow: none;
 }
 
-/* Default theme */
+/* Global layout and z-index tokens */
 :root {
-  --exodo-card-footer-bg: var(--exodo-bg-alt, #ffffff);
   --exodo-card-radius: 6px;
+  --exodo-z-sticky: 10;
+  --exodo-z-loading: 20;
+  --exodo-z-tooltip: 1080;
 }
 
 /* Default / Glacial White theme */
@@ -29,12 +33,14 @@
   --exodo-pagination-hover-bg: #f1f5f9;
   --exodo-pagination-text: #111827;
   --exodo-pagination-info: #0ea5a4;
-  --exodo-card-shadow: 0 6px 20px rgba(16,24,40,0.04);
+  --exodo-card-shadow: 0 6px 20px rgba(16, 24, 40, 0.04);
   --exodo-card-title: #123b5b;
+  --exodo-card-footer-bg: #ffffff;
   --exodo-card-footer-color: #343a40;
   --exodo-primary-focus: #86b7fe;
   --exodo-bg: #eaf3f9;
   --exodo-bg-alt: #ffffff;
+  --exodo-bg-alt-hover: #dbeafc;
   --exodo-row-bg: #ffffff;
   --exodo-row-alt: #f8fafc;
   --exodo-row-hover: #f1f5f9;
@@ -47,12 +53,11 @@
   --exodo-font-family: 'Arial', sans-serif;
   --exodo-active-start: #F9C942;
   --exodo-active-end: #F5B700;
-  --exodo-grid-header-bg: linear-gradient(90deg, rgba(15,23,42,0.02), rgba(15,23,42,0.01));
+  --exodo-grid-header-bg: linear-gradient(90deg, rgba(15, 23, 42, 0.02), rgba(15, 23, 42, 0.01));
   --exodo-grid-header-color: var(--exodo-primary);
   --exodo-card-header-bg: var(--exodo-bg-alt);
   --exodo-card-header-color: var(--exodo-text-color);
 
-  // ✨ NUEVO: Checkbox Variables
   --exodo-checkbox-border: #b8c5d0;
   --exodo-checkbox-checked-bg: var(--exodo-primary);
   --exodo-checkbox-checked-border: var(--exodo-primary);
@@ -71,29 +76,30 @@
   --exodo-pagination-hover-bg: #1f2937;
   --exodo-pagination-text: #e5e7eb;
   --exodo-pagination-info: #93c5fd;
-  --exodo-card-shadow: 0 6px 20px rgba(0,0,0,0.6);
+  --exodo-card-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
   --exodo-card-title: #e5e7eb;
-   --exodo-card-footer-color: #cbd5e1;
+  --exodo-card-footer-bg: #111827;
+  --exodo-card-footer-color: #cbd5e1;
   --exodo-primary-focus: #3b82f6;
   --exodo-bg: #0b1220;
   --exodo-bg-alt: #111827;
+  --exodo-bg-alt-hover: #1f2937;
   --exodo-row-bg: #1f2937;
   --exodo-row-alt: #111827;
   --exodo-row-hover: #374151;
   --exodo-tooltip-bg: #1f2937;
   --exodo-tooltip-text: #e5e7eb;
   --exodo-spinner-accent: #3b82f6;
-  --exodo-spinner-bg: rgba(255,255,255,0.06);
+  --exodo-spinner-bg: rgba(255, 255, 255, 0.06);
   --exodo-focus-bg: #374151;
-  --exodo-loading-bg: rgba(0,0,0,0.5);
+  --exodo-loading-bg: rgba(0, 0, 0, 0.5);
   --exodo-active-start: #F9C942;
   --exodo-active-end: #F5B700;
-  --exodo-grid-header-bg: linear-gradient(90deg, rgba(59,130,246,0.1), rgba(59,130,246,0.05));
+  --exodo-grid-header-bg: linear-gradient(90deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05));
   --exodo-grid-header-color: var(--exodo-on-primary);
   --exodo-card-header-bg: var(--exodo-bg-alt);
   --exodo-card-header-color: var(--exodo-text-color);
 
-  // ✨ NUEVO: Checkbox Variables
   --exodo-checkbox-border: var(--exodo-muted);
   --exodo-checkbox-checked-bg: var(--exodo-primary);
   --exodo-checkbox-checked-border: var(--exodo-primary);
@@ -112,21 +118,23 @@
   --exodo-pagination-hover-bg: #c4d8e9;
   --exodo-pagination-text: #2a2e30;
   --exodo-pagination-info: #1777b1;
-  --exodo-card-shadow: 0 6px 20px rgba(16,24,40,0.04);
+  --exodo-card-shadow: 0 6px 20px rgba(16, 24, 40, 0.04);
   --exodo-card-title: #123b5b;
-   --exodo-card-footer-color: #343a40;
+  --exodo-card-footer-bg: #f9fafb;
+  --exodo-card-footer-color: #343a40;
   --exodo-primary-focus: #86b7fe;
   --exodo-bg: #ffffff;
   --exodo-bg-alt: #f9fafb;
+  --exodo-bg-alt-hover: #e5e7eb;
   --exodo-row-bg: #ffffff;
   --exodo-row-alt: #f9fafb;
   --exodo-row-hover: #f3f4f6;
   --exodo-tooltip-bg: #ffffff;
   --exodo-tooltip-text: #2556a3;
   --exodo-spinner-accent: #0099ff;
-  --exodo-spinner-bg: rgba(0,0,0,0.06);
+  --exodo-spinner-bg: rgba(0, 0, 0, 0.06);
   --exodo-focus-bg: #e0eafc;
-  --exodo-loading-bg: rgba(255,255,255,0.5);
+  --exodo-loading-bg: rgba(255, 255, 255, 0.5);
   --exodo-active-start: #F9C942;
   --exodo-active-end: #F5B700;
   --exodo-grid-header-bg: #f3f4f6;
@@ -134,7 +142,6 @@
   --exodo-card-header-bg: var(--exodo-bg-alt);
   --exodo-card-header-color: var(--exodo-text-color);
 
-  // ✨ NUEVO: Checkbox Variables
   --exodo-checkbox-border: #a8b0b9;
   --exodo-checkbox-checked-bg: var(--exodo-primary);
   --exodo-checkbox-checked-border: var(--exodo-primary);
@@ -153,29 +160,30 @@
   --exodo-pagination-hover-bg: #f1f5f9;
   --exodo-pagination-text: #111827;
   --exodo-pagination-info: #0ea5a4;
-  --exodo-card-shadow: 0 8px 24px rgba(14,165,164,0.08);
+  --exodo-card-shadow: 0 8px 24px rgba(14, 165, 164, 0.08);
   --exodo-card-title: #1e293b;
-   --exodo-card-footer-color: #343a40;
+  --exodo-card-footer-bg: #f8fafc;
+  --exodo-card-footer-color: #343a40;
   --exodo-primary-focus: #14b8a6;
   --exodo-bg: #ffffff;
   --exodo-bg-alt: #f8fafc;
+  --exodo-bg-alt-hover: #e2e8f0;
   --exodo-row-bg: #ffffff;
   --exodo-row-alt: #f8fafc;
   --exodo-row-hover: #f1f5f9;
   --exodo-tooltip-bg: #ffffff;
   --exodo-tooltip-text: #0ea5a4;
   --exodo-spinner-accent: #0ea5a4;
-  --exodo-spinner-bg: rgba(0,0,0,0.06);
+  --exodo-spinner-bg: rgba(0, 0, 0, 0.06);
   --exodo-focus-bg: #f1f5f9;
-  --exodo-loading-bg: rgba(255,255,255,0.5);
+  --exodo-loading-bg: rgba(255, 255, 255, 0.5);
   --exodo-active-start: #5eead4;
   --exodo-active-end: #2dd4bf;
-  --exodo-grid-header-bg: linear-gradient(90deg, rgba(14,165,164,0.06), rgba(14,165,164,0.02));
+  --exodo-grid-header-bg: linear-gradient(90deg, rgba(14, 165, 164, 0.06), rgba(14, 165, 164, 0.02));
   --exodo-grid-header-color: var(--exodo-primary);
   --exodo-card-header-bg: var(--exodo-bg-alt);
   --exodo-card-header-color: var(--exodo-text-color);
 
-  // ✨ NUEVO: Checkbox Variables
   --exodo-checkbox-border: #a9b5c0;
   --exodo-checkbox-checked-bg: var(--exodo-primary);
   --exodo-checkbox-checked-border: var(--exodo-primary);
@@ -197,9 +205,11 @@
   --exodo-card-shadow: 0 8px 24px rgba(2, 132, 199, 0.1);
   --exodo-card-title: #0c4a6e;
   --exodo-primary-focus: #0ea5e9;
-   --exodo-card-footer-color: #334155;
+  --exodo-card-footer-bg: #ffffff;
+  --exodo-card-footer-color: #334155;
   --exodo-bg: #f0f9ff;
   --exodo-bg-alt: #ffffff;
+  --exodo-bg-alt-hover: #e0f2fe;
   --exodo-row-bg: #ffffff;
   --exodo-row-alt: #f0f9ff;
   --exodo-row-hover: #e0f2fe;
@@ -216,9 +226,8 @@
   --exodo-card-header-bg: var(--exodo-bg-alt);
   --exodo-card-header-color: var(--exodo-text-color);
 
-  // ✨ NUEVO: Checkbox Variables
   --exodo-checkbox-border: #a2d5f7;
-  --exodo-checkbox-checked-bg: #0ea5e9; // Un azul un poco más brillante
+  --exodo-checkbox-checked-bg: #0ea5e9;
   --exodo-checkbox-checked-border: #0ea5e9;
   --exodo-checkbox-check-color: var(--exodo-on-primary);
 }
@@ -238,8 +247,11 @@
   --exodo-card-shadow: 0 4px 16px rgba(68, 64, 60, 0.08);
   --exodo-card-title: #292524;
   --exodo-primary-focus: #a1a1aa;
+  --exodo-card-footer-bg: #ffffff;
+  --exodo-card-footer-color: #343a40;
   --exodo-bg: #f5f5f4;
   --exodo-bg-alt: #ffffff;
+  --exodo-bg-alt-hover: #e7e5e4;
   --exodo-row-bg: #ffffff;
   --exodo-row-alt: #f5f5f4;
   --exodo-row-hover: #e7e5e4;
@@ -247,7 +259,6 @@
   --exodo-tooltip-text: #44403c;
   --exodo-spinner-accent: #78716c;
   --exodo-spinner-bg: rgba(0, 0, 0, 0.06);
-   --exodo-card-footer-color: #343a40;
   --exodo-focus-bg: #e7e5e4;
   --exodo-loading-bg: rgba(245, 245, 244, 0.7);
   --exodo-active-start: #d6d3d1;
@@ -257,9 +268,8 @@
   --exodo-card-header-bg: var(--exodo-bg-alt);
   --exodo-card-header-color: var(--exodo-text-color);
 
-  // ✨ NUEVO: Checkbox Variables
   --exodo-checkbox-border: var(--exodo-muted);
-  --exodo-checkbox-checked-bg: #78716c; // Un gris piedra
+  --exodo-checkbox-checked-bg: #78716c;
   --exodo-checkbox-checked-border: #78716c;
   --exodo-checkbox-check-color: var(--exodo-on-primary);
 }
@@ -278,10 +288,12 @@
   --exodo-pagination-info: #4b5563;
   --exodo-card-shadow: 0 4px 16px rgba(107, 114, 128, 0.1);
   --exodo-card-title: #111827;
-   --exodo-card-footer-color: #343a40;
+  --exodo-card-footer-bg: #f9fafb;
+  --exodo-card-footer-color: #343a40;
   --exodo-primary-focus: #9ca3af;
   --exodo-bg: #f3f4f6;
   --exodo-bg-alt: #f9fafb;
+  --exodo-bg-alt-hover: #e5e7eb;
   --exodo-row-bg: #ffffff;
   --exodo-row-alt: #f9fafb;
   --exodo-row-hover: #f3f4f6;
@@ -298,7 +310,6 @@
   --exodo-card-header-bg: var(--exodo-bg-alt);
   --exodo-card-header-color: var(--exodo-text-color);
 
-  // ✨ NUEVO: Checkbox Variables
   --exodo-checkbox-border: #b9c0c7;
   --exodo-checkbox-checked-bg: var(--exodo-primary);
   --exodo-checkbox-checked-border: var(--exodo-primary);

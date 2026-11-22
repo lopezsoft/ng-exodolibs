@@ -6,7 +6,7 @@
   height: 48px;
   border-radius: 50%;
   border-left-color: var(--exodo-spinner-accent, #09f);
-  animation: grid-spin 1s linear infinite; // Animación linear para un giro más suave
+  animation: grid-spin 1s linear infinite;
   transition: transform 0.4s ease;
 }
 
@@ -19,38 +19,39 @@
   min-height: 10rem;
   box-shadow: var(--exodo-card-shadow, 0 2px 4px rgba(0, 0, 0, 0.1));
   border-radius: var(--exodo-card-radius, 0.25rem);
+
   .card-header {
-    padding: .5rem 1rem !important;
+    padding: 0.5rem 1rem;
     font-family: var(--exodo-font-family, 'Arial', sans-serif);
     border-bottom: 1px solid var(--exodo-border, #e6eef5);
     transition: background-color 0.3s ease, color 0.3s ease;
-
-    // ✨ MEJORA: El encabezado ahora responde a los temas
     background-color: var(--exodo-card-header-bg, #f8f9fa);
     color: var(--exodo-card-header-color, #343a40);
 
     .card-title {
       font-size: 13px;
       font-weight: bold;
-      color: inherit; // Hereda el color del padre (.card-header) para simplificar
+      color: var(--exodo-card-title, inherit);
     }
   }
+
   .card-body {
-    padding: 3px !important; // Elimina el padding para que la tabla ocupe todo el espacio
+    padding: 3px;
   }
+
   .card-footer {
-    padding: .25rem 1rem !important;
+    padding: 0.25rem 1rem;
     font-family: var(--exodo-font-family, 'Arial', sans-serif);
-    border-top: 0px solid var(--exodo-border, #e6eef5);
-    transition: background-color 0.3s ease, color 0.3s ease;  
-    background-color: var(--exodo-card-footer-bg, #f8f9fa);
+    border-top: 0 solid var(--exodo-border, #e6eef5);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    background-color: var(--exodo-card-footer-bg, var(--exodo-bg-alt, #f8f9fa));
     color: var(--exodo-card-footer-color, #343a40);
   }
 }
 
 .grid-cell {
   font-size: 13px;
-  padding: .35rem .25rem !important;
+  padding: 0.35rem 0.25rem;
   transition: background-color 0.3s ease;
   min-height: 32px;
 
@@ -58,9 +59,8 @@
     padding: 0;
   }
 
-  // Fallback de foco por si el outline global no es suficiente
   &:focus-visible {
-    background-color: var(--exodo-focus-bg, #e3f2fd) !important;
+    background-color: var(--exodo-focus-bg, #e3f2fd);
   }
 }
 
@@ -69,7 +69,7 @@
   font-weight: bold;
   text-align: center;
   display: flex;
-  flex-direction: column; // Mejor para alinear icono y texto
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   color: var(--exodo-text-color, #333);
@@ -83,7 +83,7 @@
   right: 0;
   bottom: 0;
   background-color: var(--exodo-loading-bg, rgba(34, 41, 47, 0.5));
-  z-index: 100;
+  z-index: var(--exodo-z-loading, 20);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -100,20 +100,26 @@
 
 .grid-search {
   font-family: var(--exodo-font-family, 'Arial', sans-serif);
-  background-color: var(--exodo-bg-alt, #eaf3f9) !important;
+  background-color: var(--exodo-bg-alt, #eaf3f9);
 
   input {
-    border-color: var(--exodo-border, #a3c7e0) !important;
+    border-color: var(--exodo-border, #a3c7e0);
+    background-color: var(--exodo-surface, #ffffff);
+    color: var(--exodo-text-color, #333333);
     box-shadow: none;
     transition: border-color 0.3s ease;
     font-size: 13px;
     min-height: 32px;
     height: 32px;
+
+    &::placeholder {
+      color: var(--exodo-muted, #6b7280);
+    }
   }
 
   .btn {
-    background-color: var(--exodo-bg-alt, #a3c7e0) !important;
-    border-color: var(--exodo-border, #a3c7e0) !important;
+    background-color: var(--exodo-bg-alt, #a3c7e0);
+    border-color: var(--exodo-border, #a3c7e0);
     transition: background-color 0.3s ease;
     min-height: 32px;
     height: 32px;
@@ -121,12 +127,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
+
     i {
       font-size: 13px;
       color: var(--exodo-primary, #ffffff);
     }
-    &:hover, &:focus {
-      background-color: var(--exodo-bg-alt-hover, #dbeafc) !important; // Usa una variable para el hover
+
+    &:hover,
+    &:focus {
+      background-color: var(--exodo-bg-alt-hover, #dbeafc);
     }
   }
 }

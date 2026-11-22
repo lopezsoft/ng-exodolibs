@@ -1,53 +1,75 @@
-<nav *ngIf="paginationOptions" class="exodo-pagination-controls" aria-label="Pagination navigation">
-    <span class="w-100 pagination-info" *ngIf="paginationOptions.from">
+<nav *ngIf="paginationOptions" class="exodo-pagination-nav exodo-pagination-controls" [attr.aria-label]="getLabel('navigation')">
+    <span class="w-100 pagination-info" *ngIf="paginationOptions.from != null">
         {{ getInfoText() }}
     </span>
     <ul class="pagination justify-content-end w-100">
-        <li class="page-item">
-            <button type="button" class="page-link" aria-hidden="true" data-bs-toggle="tooltip" [title]="getLabel('first')"
-                    [ngClass]="{'disabled': paginationOptions?.currentPage === paginationOptions?.from}"
-                    (click)="onNextPage(1)">
+        <li class="page-item" [class.disabled]="isFirstPage">
+            <button type="button"
+                    class="page-link"
+                    [attr.aria-label]="getLabel('first')"
+                    [exodoTooltip]="getLabel('first')"
+                    [disabled]="isFirstPage"
+                    [ngClass]="{'disabled': isFirstPage}"
+                    (click)="goToFirstPage()">
                 <i class="fas fa-angle-double-left" aria-hidden="true"></i>
             </button>
         </li>
-        <li class="page-item">
-            <button type="button" class="page-link" aria-hidden="true" data-bs-toggle="tooltip" [title]="getLabel('previous')"
-                    [ngClass]="{'disabled': paginationOptions?.currentPage === paginationOptions?.from}"
-                    (click)="onNextPage(paginationOptions?.currentPage - 1)">
+        <li class="page-item" [class.disabled]="isFirstPage">
+            <button type="button"
+                    class="page-link"
+                    [attr.aria-label]="getLabel('previous')"
+                    [exodoTooltip]="getLabel('previous')"
+                    [disabled]="isFirstPage"
+                    [ngClass]="{'disabled': isFirstPage}"
+                    (click)="goToPreviousPage()">
                 <i class="fas fa-angle-left" aria-hidden="true"></i>
             </button>
         </li>
         <li class="page-item pagination-page-input">
             <span class="page-link page-link-page">
                 {{ getLabel('page') }}
-                <input type="text" class="form-control"
-                       [value]="paginationOptions.currentPage"
+                <input type="text"
+                       inputmode="numeric"
+                       class="form-control"
+                       [attr.aria-label]="getLabel('page')"
+                       [value]="normalizedCurrentPage"
                        #pagInput
                        (change)="onNextPage(pagInput.value)">
                 {{ getLabel('of') }}
-                {{ paginationOptions.lastPage }}
+                {{ normalizedLastPage }}
             </span>
         </li>
 
-        <li class="page-item">
-            <button type="button" class="page-link" aria-hidden="true" data-bs-toggle="tooltip" [title]="getLabel('next')"
-                    [ngClass]="{'disabled': paginationOptions?.lastPage === paginationOptions?.currentPage}"
-                    (click)="onNextPage(paginationOptions?.currentPage + 1)">
+        <li class="page-item" [class.disabled]="isLastPage">
+            <button type="button"
+                    class="page-link"
+                    [attr.aria-label]="getLabel('next')"
+                    [exodoTooltip]="getLabel('next')"
+                    [disabled]="isLastPage"
+                    [ngClass]="{'disabled': isLastPage}"
+                    (click)="goToNextPage()">
                 <i class="fas fa-angle-right" aria-hidden="true"></i>
             </button>
         </li>
 
-       <li class="page-item">
-            <button type="button" class="page-link" aria-hidden="true" data-bs-toggle="tooltip" [title]="getLabel('last')"
-                    [ngClass]="{'disabled': paginationOptions?.lastPage === paginationOptions?.currentPage}"
-                    (click)="onNextPage(paginationOptions.lastPage)">
+       <li class="page-item" [class.disabled]="isLastPage">
+            <button type="button"
+                    class="page-link"
+                    [attr.aria-label]="getLabel('last')"
+                    [exodoTooltip]="getLabel('last')"
+                    [disabled]="isLastPage"
+                    [ngClass]="{'disabled': isLastPage}"
+                    (click)="goToLastPage()">
                 <i class="fas fa-angle-double-right" aria-hidden="true"></i>
             </button>
         </li>
         <li class="page-item">
-            <button type="button" class="page-link" aria-hidden="true" data-bs-toggle="tooltip" [title]="getLabel('refresh')"
-                    (click)="refreshPagination(paginationOptions?.currentPage ?? 1)">
-                <i class="fa fa-sync" aria-hidden="true"></i>
+            <button type="button"
+                    class="page-link"
+                    [attr.aria-label]="getLabel('refresh')"
+                    [exodoTooltip]="getLabel('refresh')"
+                    (click)="refreshPagination(normalizedCurrentPage)">
+                <i class="fas fa-sync" aria-hidden="true"></i>
             </button>
         </li>
     </ul>

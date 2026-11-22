@@ -1,7 +1,9 @@
-<ng-content></ng-content>
-@if(isAfterViewInit) {
+<ng-template #projectedContent>
+  <ng-content></ng-content>
+</ng-template>
+<ng-container *ngIf="!customBody" [ngTemplateOutlet]="projectedContent"></ng-container>
 <div class="exodogrid-content-style">
-  <div class="card table-responsive card-table mb-1" *ngIf="columns.length > 0">
+  <div class="card table-responsive card-table mb-1" *ngIf="leafColumns.length > 0 || columns.length > 0">
       <div class="grid-loading" [ngClass]="{'show': isLoading}">
           <div class="grid-spinner"></div>
       </div>
@@ -10,83 +12,93 @@
           <ng-content select="[header]"></ng-content>
           <div class="input-group grid-search">
               <input type="search"
-                     #searchField class="form-control" [placeholder]="placeholder"
+                     #searchField
+                     [id]="searchFieldId"
+                     class="form-control"
+                     [placeholder]="placeholder"
+                     [attr.aria-label]="placeholder"
                      (keyup)="inputKey($event)"
                      (input)="inputSearch($event)"
-                     (change)="$event.stopPropagation()"
-                     autofocus>
-              <button class="btn btn-primary" (click)="searchQuery(searchField.value)" [disabled]="isLoading || mode === 'local'">
-                <i class="fa-solid fa-magnifying-glass"></i>
+                     (change)="$event.stopPropagation()">
+              <button type="button"
+                      class="btn btn-primary"
+                      [attr.aria-label]="placeholder"
+                      (click)="searchQuery(searchField.value)"
+                      [disabled]="isLoading || mode === 'local'">
+                <i class="fas fa-search" aria-hidden="true"></i>
               </button>
           </div>
       </div>
       <div class="card-body">
-          <table class="exodogrid-table table-striped table-hover table-bordered"
-                 [attr.aria-colcount]="columns.length" #tableGrid [id]="uuid">
+          <table class="exodogrid-table table-striped table-hover"
+                 [class.table-bordered]="bordered"
+                 [attr.aria-colcount]="leafColumns.length || columns.length"
+                 #tableGrid
+                 [id]="uuid">
               <thead>
                 <ng-template #myCustomHeader>
                   <ng-content select="[tableHeader]"></ng-content>
                 </ng-template>
                 <ng-container *ngIf="!customHeader; else myCustomHeader">
                   <!-- Render encabezados multinivel construidos desde headerRows -->
-                  <ng-container *ngFor="let headerRow of headerRows; let rowIndex = index">
+                  <ng-container *ngFor="let headerRow of headerRows; let rowIndex = index; trackBy: trackByIndex">
                     <tr [attr.aria-rowindex]="rowIndex + 1" class="text-center">
-                      <th *ngFor="let header of headerRow"
+                      <th *ngFor="let header of headerRow; trackBy: trackByColumn"
                           [attr.colspan]="header.colspan || null"
                           [attr.rowspan]="header.rowspan || null"
-                          [width]="header.width || 'auto'"
+                          [style.width]="normalizeWidth(header.width)"
                           (click)="sort(header)"
                           [class.sortable]="allowSorting && header.dataIndex && (header.sortable !== false)">
                         {{ header.text }}
                         <i *ngIf="allowSorting && header.dataIndex && sortColumn === header.dataIndex"
-                           class="fa"
-                           [ngClass]="{'fa-sort-asc': sortDirection === 'asc', 'fa-sort-desc': sortDirection === 'desc'}"></i>
+                           class="fas"
+                           aria-hidden="true"
+                           [ngClass]="{'fa-sort-up': sortDirection === 'asc', 'fa-sort-down': sortDirection === 'desc'}"></i>
                       </th>
                     </tr>
                   </ng-container>
-                  <!-- Fila de filtros (solo para las columnas hoja) -->
+                  <!-- Fila de filtros (solo para las columnas hoja visibles) -->
                   <tr *ngIf="allowFiltering">
-                    <th *ngFor="let column of leafColumns">
+                    <th *ngFor="let column of leafColumns; trackBy: trackByColumn">
                       <lib-grid-filter [column]="column" (onFilter)="applyGridFilter($event)"></lib-grid-filter>
                     </th>
                   </tr>
                 </ng-container>
               </thead>
               <tbody>
-              <ng-template #myCustomBody>
-                <ng-container *ngIf="customBody && canData()">
-                  <ng-content></ng-content>
-                </ng-container>
-              </ng-template>
-              <ng-container *ngIf="isAfterViewInit">
+                <ng-template #myCustomBody>
+                  <ng-container *ngIf="customBody && canData()" [ngTemplateOutlet]="projectedContent"></ng-container>
+                </ng-template>
                 <ng-container *ngIf="canData() && !customBody; else myCustomBody">
-                <tr *ngFor="let row of dataSource?.rows; index as rowIndex"
-                    [attr.aria-rowindex]="rowIndex + 2" role="row">
-                  <td *ngFor="let column of leafColumns; index as columnIndex"
-                      role="gridcell" [attr.aria-colindex]="columnIndex + 1">
-                    <el-grid-cell
-                      [column]="column"
-                      [row]="row"
-                      [rowIndex]="rowIndex"
-                      [columnIndex]="columnIndex"
-                      [dataSource]="dataSource"
-                    ></el-grid-cell>
-                  </td>
-                </tr>
-                </ng-container>
-                <ng-container *ngIf="!canData()">
-                  <tr aria-rowindex="2" role="row">
-                      <td [attr.colspan]="columns.length" role="gridcell" aria-colindex="1">
-                        <div class="w-100 grid-empty">
-                            {{ emptyMessage }}
-                        </div>
-                      </td>
+                  <tr *ngFor="let row of displayedRows; index as rowIndex; trackBy: trackByRow"
+                      [attr.aria-rowindex]="rowIndex + headerRowOffset"
+                      role="row">
+                    <td *ngFor="let column of leafColumns; index as columnIndex; trackBy: trackByColumn"
+                        role="gridcell"
+                        [attr.aria-colindex]="columnIndex + 1">
+                      <el-grid-cell
+                        [column]="column"
+                        [row]="row"
+                        [rowIndex]="rowIndex"
+                        [columnIndex]="columnIndex"
+                        [dataSource]="dataSource"
+                        (onChange)="onCellChange($event, row, column, rowIndex, columnIndex)"
+                      ></el-grid-cell>
+                    </td>
                   </tr>
                 </ng-container>
+                <ng-container *ngIf="!canData()">
+                  <tr [attr.aria-rowindex]="headerRowOffset" role="row">
+                    <td [attr.colspan]="leafColumns.length || columns.length || 1" role="gridcell" aria-colindex="1">
+                      <div class="w-100 grid-empty">
+                        {{ emptyMessage }}
+                      </div>
+                    </td>
+                  </tr>
                 </ng-container>
               </tbody>
               <tfoot class="w-100" *ngIf="showSummary">
-                  footer
+                <ng-content select="[tableFooter]"></ng-content>
               </tfoot>
           </table>
       </div>
@@ -94,10 +106,8 @@
           <exodo-pagination class="table-responsive" #pagination
                             (onRefreshPagination)="onRefreshPagination($event)"
                             [labels]="labels"
-                            [theme]="theme"
-                            >
+                            [theme]="theme">
           </exodo-pagination>
       </div>
   </div>
 </div>
-}

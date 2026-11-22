@@ -1,15 +1,15 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {ExodoTooltipDirective} from "./exodo-tooltip.directive";
+import { ExodoTooltipDirective } from './exodo-tooltip.directive';
+import { ExodoCustomHtmlDirective } from './exodo-custom-html.directive';
+
 @NgModule({
   declarations: [
     ExodoTooltipDirective,
-  ],
-  imports: [
-    CommonModule
+    ExodoCustomHtmlDirective
   ],
   exports: [
     ExodoTooltipDirective,
+    ExodoCustomHtmlDirective
   ]
 })
 export class DirectivesModule { }

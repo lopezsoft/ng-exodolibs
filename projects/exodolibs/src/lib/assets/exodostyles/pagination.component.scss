@@ -1,36 +1,32 @@
 // assets/exodostyles/pagination.component.scss
 
-nav.exodo-pagination-nav {
+nav.exodo-pagination-nav,
+nav.exodo-pagination-controls {
   display: flex;
   align-items: center;
-  justify-content: space-between; // Alinea los elementos a los extremos
-  flex-wrap: wrap; // Permite que se ajuste en pantallas pequeñas
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
   padding: 0.5rem 0.25rem;
-  min-width: 24rem;
-  border-top: 1px solid var(--exodo-border, #e5e7eb); // Separador visual
-  background-color: var(--exodo-surface, #ffffff);
+  min-width: 0;
+  border-top: 1px solid var(--exodo-border, #e5e7eb);
+  background-color: var(--exodo-card-footer-bg, var(--exodo-surface, #ffffff));
 }
 
-.pagination-info {
-  padding: 0.25rem 0.5rem;
-  color: var(--exodo-pagination-text, #6b7280);
-  font-size: 0.875rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-weight: 550;
-}
-
-// Contenedor principal para los controles de paginación
 .exodo-pagination-controls {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem; // Espacio entre grupos de controles
+  .pagination-info {
+    padding: 0.25rem 0.5rem;
+    color: var(--exodo-pagination-text, #6b7280);
+    font-size: 0.875rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 550;
+  }
 
   .pagination {
     margin: 0;
     display: flex;
-    // gap: 0.25rem; // Espacio entre botones
     vertical-align: middle;
   }
 
@@ -43,17 +39,24 @@ nav.exodo-pagination-nav {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 2.25rem; // Ancho mínimo para botones de íconos
-    height: 2.25rem; // Altura fija para alinear todo
+    min-width: 2.25rem;
+    height: 2.25rem;
 
-    &:hover:not(.disabled) {
+    &:hover:not(.disabled):not(:disabled) {
       background-color: var(--exodo-pagination-hover-bg, #f1f5f9);
     }
 
     &:focus {
       box-shadow: none;
-      outline: 2px solid var(--exodo-primary-focus);
+      outline: 2px solid var(--exodo-primary-focus, #86b7fe);
       outline-offset: 1px;
+    }
+
+    &.disabled,
+    &:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      pointer-events: none;
     }
   }
 
@@ -62,43 +65,43 @@ nav.exodo-pagination-nav {
     border-color: var(--exodo-primary, #0d6efd);
     color: var(--exodo-on-primary, #ffffff);
   }
-}
 
-// Estilos para el componente "Página X de Y"
-.pagination-page-input {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.875rem;
-  color: var(--exodo-pagination-text, #212529);
-  min-width: 9.4rem; // Ancho mínimo para el contenedor
-
-  input {
-    width: 2.5rem; // Ancho fijo para el input
-    height: 1.5rem; // Misma altura que los botones
-    text-align: center;
-    border: 0px solid var(--exodo-pagination-border, #dee2e6);
-    border-radius: 0.25rem;
-    background-color: var(--exodo-surface, #ffffff);
+  .pagination-page-input {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
     color: var(--exodo-pagination-text, #212529);
-    padding: 0.25rem;
-    margin: 2px;
-    &:focus {
-      border-color: var(--exodo-primary-focus);
-      outline: none;
-      box-shadow: none;
+    min-width: 9.4rem;
+
+    input {
+      width: 2.5rem;
+      height: 1.5rem;
+      text-align: center;
+      border: 0 solid var(--exodo-pagination-border, #dee2e6);
+      border-radius: 0.25rem;
+      background-color: var(--exodo-surface, #ffffff);
+      color: var(--exodo-pagination-text, #212529);
+      padding: 0.25rem;
+      margin: 2px;
+
+      &:focus {
+        border-color: var(--exodo-primary-focus, #86b7fe);
+        outline: none;
+        box-shadow: none;
+      }
     }
   }
 }
 
-// Ajustes para responsividad
 @media (max-width: 640px) {
-  nav.exodo-pagination-nav {
-    justify-content: center; // Centra todo en pantallas pequeñas
+  nav.exodo-pagination-nav,
+  nav.exodo-pagination-controls {
+    justify-content: center;
     gap: 1rem;
   }
 
-  .pagination-info {
+  .exodo-pagination-controls .pagination-info {
     width: 100%;
     text-align: center;
   }

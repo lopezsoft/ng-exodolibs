@@ -49,6 +49,6 @@ export interface PaginationOptions {
 }
 export interface DataSourceContract {
     rows: any[];
-    dataRecords?: DataRecords;
+    dataRecords?: DataRecords | null;
 }
 

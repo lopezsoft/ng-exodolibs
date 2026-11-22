@@ -1,28 +1,8 @@
 // assets/exodostyles/_table.scss
 
-table {
-  border-width: 0 !important;
-}
-
-table,
-th,
-td {
-  border-color: var(--exodo-border, #a3c7e0) !important;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-th,
-td {
-  border-top-width: 0 !important;
-  box-shadow: none;
-  min-height: 32px;
-}
-
-tr:last-child td {
-  border-bottom-width: 1px !important;
-}
-
 .exodogrid-table {
+  border-width: 0;
+  border-color: var(--exodo-border, #a3c7e0);
   border-radius: var(--exodo-card-radius, 0.25rem);
   width: 100%;
   max-height: calc(100vh - 23.5rem);
@@ -35,14 +15,31 @@ tr:last-child td {
   background-color: var(--exodo-bg, #eaf3f9);
   font-family: var(--exodo-font-family, 'Arial', sans-serif);
   box-shadow: var(--exodo-card-shadow, 0 2px 4px rgba(0, 0, 0, 0.1));
+  transition: background-color 0.3s ease, transform 0.2s ease;
+
+  > thead > tr > th,
+  > tbody > tr > th,
+  > tbody > tr > td,
+  > tfoot > tr > th,
+  > tfoot > tr > td {
+    border-color: var(--exodo-border, #a3c7e0);
+    border-top-width: 0;
+    box-shadow: none;
+    min-height: 32px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+
+  > tbody > tr:last-child > td {
+    border-bottom-width: 1px;
+  }
 }
 
 .exodogrid-table thead tr {
   position: sticky;
   top: 0;
-  z-index: 99;
+  z-index: var(--exodo-z-sticky, 10);
   vertical-align: bottom;
-  border-bottom: 2px solid var(--exodo-border, #a3c7e0); // Borde inferior más pronunciado
+  border-bottom: 2px solid var(--exodo-border, #a3c7e0);
 
   th {
     background: var(--exodo-grid-header-bg, #f1f5f9);
@@ -80,7 +77,6 @@ tr:last-child td {
 
 .exodogrid-table tbody {
   white-space: nowrap;
-  // ✨ FIX: Se asegura que el texto de las celdas herede el color correcto del tema.
   color: var(--exodo-text-color);
 
   tr {
@@ -95,9 +91,9 @@ tr:last-child td {
     }
   }
 
-  th,
-  td {
-    padding: 0 !important;
+  > tr > th,
+  > tr > td {
+    padding: 0;
     vertical-align: middle;
     font-size: 12px;
     border-bottom: 1px solid var(--exodo-border, #a3c7e0);

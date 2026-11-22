@@ -4,12 +4,20 @@
   "assets": [
     {
       "input": "src/lib/assets",
-      "glob": "**/*.*",
+      "glob": "**/*",
       "output": "assets"
     },
-    "./src/lib/assets/fontawesome/css/all.css",
-    "./src/lib/assets/fontawesome/webfonts/*",
-    "./src/lib/assets/**/*"
+    {
+      "input": "src/lib/assets",
+      "glob": "**/*",
+      "output": "lib/assets"
+    },
+    {
+      "input": "src/lib",
+      "glob": "style.scss",
+      "output": "lib"
+    },
+    "LICENSE"
   ],
   "lib": {
     "entryFile": "src/public-api.ts"

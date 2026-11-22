@@ -5,10 +5,20 @@ on:
     tags:
       - 'v*'
 
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   build-and-publish:
-    name: Build, Test and Publish
+    name: Verify, Test, Build and Publish
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
 
     steps:
       - name: Checkout repository
@@ -19,19 +29,42 @@ jobs:
         with:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
+
+      - name: Verify tag matches package versions
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          ROOT_VERSION=$(node -p "require('./package.json').version")
+          LIB_VERSION=$(node -p "require('./projects/exodolibs/package.json').version")
+          if [ "$TAG_VERSION" != "$ROOT_VERSION" ] || [ "$TAG_VERSION" != "$LIB_VERSION" ]; then
+            echo "Version mismatch: tag=$TAG_VERSION root=$ROOT_VERSION lib=$LIB_VERSION"
+            exit 1
+          fi
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Run tests
-        run: npm run test --if-present
+      - name: Run unit tests (library and demo app)
+        run: npm run test:ci
 
       - name: Build library
         run: npm run lib
 
+      - name: Verify packaged stylesheet assets
+        run: |
+          test -f dist/exodolibs/assets/style.scss
+          test -f dist/exodolibs/lib/style.scss
+          test -f dist/exodolibs/lib/assets/style.scss
+          test -f dist/exodolibs/LICENSE
+
       - name: Publish to npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          IS_PRIVATE: ${{ github.event.repository.private }}
         run: |
           cd dist/exodolibs
-          npm publish --access public
+          if [ "$IS_PRIVATE" = "false" ]; then
+            npm publish --provenance --access public
+          else
+            npm publish --access public
+          fi

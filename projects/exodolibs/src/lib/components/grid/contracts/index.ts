@@ -1,2 +1,10 @@
- export {DataSourceContract, Proxy, ProxyApi} from './data-source';
- export {ColumnContract} from './column-contract';
+export {
+  DataSourceContract,
+  DataRecords,
+  JsonResponse,
+  LinksContract,
+  PaginationOptions,
+  Proxy,
+  ProxyApi
+} from './data-source';
+export { ColumnContract } from './column-contract';

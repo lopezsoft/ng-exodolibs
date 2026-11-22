@@ -43,11 +43,9 @@
   <h4>{{ t('examples.api') }}</h4>
     <div *ngIf="loading" class="loading">Loading data…</div>
     <exodo-grid *ngIf="!loading" [columns]="columns" [dataSource]="apiDataSource" mode="local" [showPagination]="false"
-      [theme]="currentTheme" [lang]="currentLang"
+      [theme]="currentTheme"
       [allowFiltering]="true" [allowSorting]="true"
       [labels]="paginationLabels"
-      [class.exodo-theme-modern]="currentTheme==='modern'"
-      [class.exodo-theme-dark]="currentTheme==='dark'"
     >
     <h4>Titulo</h4>
   </exodo-grid>
@@ -57,7 +55,7 @@
     <h4>{{ t('examples.api') }} con paginación</h4>
     <exodo-grid
       [columns]="columns"
-      [dataSource]="apiDataSource"
+      [dataSource]="remoteApiDataSource"
       [proxy]="proxy"
       mode="remote"
       [showPagination]="true"

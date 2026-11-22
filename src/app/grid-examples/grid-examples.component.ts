@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { of } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { of, Subscription } from 'rxjs';
 import { delay } from 'rxjs/operators';
 
 @Component({
@@ -9,7 +9,7 @@ import { delay } from 'rxjs/operators';
   // Not standalone: AppModule declares this component so it can use the application-provided
   // modules (ExodolibsModule) without importing the packaged library here.
 })
-export class GridExamplesComponent implements OnInit {
+export class GridExamplesComponent implements OnInit, OnDestroy {
   columns: any[] = [
     { text: 'ID', dataIndex: 'id', width: '64px' },
     { text: 'Name', dataIndex: 'name' },
@@ -48,6 +48,9 @@ export class GridExamplesComponent implements OnInit {
 
   // Dynamic (simulated API) data
   apiDataSource: any = { rows: [], dataRecords: null };
+  // Separate dataSource for remote paginated example
+  remoteApiDataSource: any = { rows: [], dataRecords: null };
+  private demoSub?: Subscription;
   loading = false;
   // Transloco
   languages = ['en', 'es'];
@@ -98,7 +101,7 @@ export class GridExamplesComponent implements OnInit {
   ngOnInit(): void {
     // Simulate an API call with delay
     this.loading = true;
-    of([
+    this.demoSub = of([
       { id: 11, name: 'Xavier', email: 'xavier@example.com' },
       { id: 12, name: 'Yara', email: 'yara@example.com' },
       { id: 13, name: 'Zoe', email: 'zoe@example.com' }
@@ -120,6 +123,10 @@ export class GridExamplesComponent implements OnInit {
     // Load saved theme and language preference
     this.loadTheme();
     this.loadLang();
+  }
+
+  ngOnDestroy(): void {
+    this.demoSub?.unsubscribe();
   }
 
   dataAdapter(response: any[], params: any): any {

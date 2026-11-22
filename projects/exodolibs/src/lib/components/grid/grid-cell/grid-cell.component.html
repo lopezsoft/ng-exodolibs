@@ -1,39 +1,44 @@
 <div class="exodogrid-content-style">
-<ng-container *ngIf="!isEditing && column.type !== 'boolean'">
+<ng-container *ngIf="!isEditing && column?.type !== 'boolean'">
   <div class="w-100 h-100 grid-cell"
        [ngClass]="getCssCell(column)"
-       [style]="getClassValue(column)"
+       [style.width]="normalizeDimension(column?.width)"
+       [style.min-width]="normalizeDimension(column?.minWidth)"
+       [style.text-align]="column?.align || null"
        [innerHTML]="getCellValue(column, columnIndex, rowIndex) | safeHtml"
        (click)="cellClick($event, column, row, rowIndex, columnIndex)"
        (dblclick)="cellDbClick($event, column, row, rowIndex, columnIndex)"
        [exodoTooltip]="getTooltip(column, row)"
-       [tooltipDirection]="column?.tooltipDirection"
-        >
+       [tooltipDirection]="column?.tooltipDirection">
   </div>
 </ng-container>
-<ng-container *ngIf="column.type === 'boolean'">
+<ng-container *ngIf="column?.type === 'boolean' && row && column?.dataIndex">
   <div class="exodogrid-input-editing">
     <input
       type="checkbox"
+      [disabled]="column?.editing === false"
+      [attr.aria-label]="column?.text || column?.dataIndex"
       [(ngModel)]="row[column.dataIndex]"
-      (change)="onInputChange($event)"
-    >
+      (change)="onInputChange($event)">
   </div>
 </ng-container>
-<ng-container *ngIf="isEditing && column.type !== 'boolean'">
-<div class="exodogrid-input-editing">
-  <input
-    [type]="onTypeInput()"
-    [ngClass]="getCssCell(column)"
-    [style]="getClassValue(column)"
-    [attr.inputmode]="onInputMode()"
-    (blur)="onBlur($event)"
-    (keydown)="onKeyDown($event)"
-    [(ngModel)]="row[column.dataIndex]"
-    (change)="onInputChange($event)"
-    autofocus
-    #inputElement
-    >
-</div>
+<ng-container *ngIf="isEditing && column?.type !== 'boolean' && row && column?.dataIndex">
+  <div class="exodogrid-input-editing">
+    <input
+      [type]="onTypeInput()"
+      [ngClass]="getCssCell(column)"
+      [style.width]="normalizeDimension(column?.width)"
+      [style.min-width]="normalizeDimension(column?.minWidth)"
+      [style.text-align]="column?.align || null"
+      [attr.minlength]="column?.minLength ?? null"
+      [attr.maxlength]="column?.maxLength ?? null"
+      [attr.aria-label]="column?.text || column?.dataIndex"
+      [attr.inputmode]="onInputMode()"
+      (blur)="onBlur($event)"
+      (keydown)="onKeyDown($event)"
+      [(ngModel)]="row[column.dataIndex]"
+      (change)="onInputChange($event)"
+      #inputElement>
+  </div>
 </ng-container>
 </div>

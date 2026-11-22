@@ -6,4 +6,19 @@ input {
   width: 100%;
   padding: 5px;
   box-sizing: border-box;
+  font-size: 12px;
+  color: var(--exodo-text-color, #333333);
+  background-color: var(--exodo-surface, #ffffff);
+  border: 1px solid var(--exodo-border, #e6eef5);
+  border-radius: 3px;
+  transition: border-color 0.2s ease;
+
+  &::placeholder {
+    color: var(--exodo-muted, #6b7280);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--exodo-primary-focus, #86b7fe);
+  }
 }

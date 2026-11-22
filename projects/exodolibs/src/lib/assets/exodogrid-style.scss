@@ -1,18 +1,20 @@
-@import "exodostyles/tooltip";
-@import "exodostyles/pagination.component"; // moved out so :root variables are global
+@use "sass:meta";
+@use "exodostyles/tooltip";
+
 .exodogrid-content-style {
-  @import "exodostyles/table";
-  @import "exodostyles/grid.component";
-  @import "exodostyles/grid-cell.component";
-  font-family: 'Arial', sans-serif;
-  font-size: 12px;  // Tamaño de fuente base para coherencia
+  font-family: var(--exodo-font-family, 'Arial', sans-serif);
+  font-size: 12px;
+
+  @include meta.load-css("exodostyles/table");
+  @include meta.load-css("exodostyles/grid.component");
+  @include meta.load-css("exodostyles/grid-cell.component");
 
   .exodogrid-border {
     border: 1px solid var(--exodo-border, #a3c7e0);
-    box-shadow: none;  // Para eliminar cualquier sombra de caja que pueda interferir con la apariencia
+    box-shadow: none;
 
     &.border-top {
-  border-top: 1px solid var(--exodo-border, #a3c7e0);
+      border-top: 1px solid var(--exodo-border, #a3c7e0);
       border-right: none;
       border-bottom: none;
       border-left: none;
@@ -20,7 +22,7 @@
 
     &.border-right {
       border-top: none;
-  border-right: 1px solid var(--exodo-border, #a3c7e0);
+      border-right: 1px solid var(--exodo-border, #a3c7e0);
       border-bottom: none;
       border-left: none;
     }
@@ -28,7 +30,7 @@
     &.border-bottom {
       border-top: none;
       border-right: none;
-  border-bottom: 1px solid var(--exodo-border, #a3c7e0);
+      border-bottom: 1px solid var(--exodo-border, #a3c7e0);
       border-left: none;
     }
 
@@ -36,29 +38,31 @@
       border-top: none;
       border-right: none;
       border-bottom: none;
-  border-left: 1px solid var(--exodo-border, #a3c7e0);
+      border-left: 1px solid var(--exodo-border, #a3c7e0);
     }
   }
+
   .exodogrid-custom-style {
-      .card-header {
-      padding: .5rem 1rem !important;
-      font-family: 'Arial', sans-serif;
+    .card-header {
+      padding: 0.5rem 1rem;
+      font-family: var(--exodo-font-family, 'Arial', sans-serif);
       border-bottom: 2px solid var(--exodo-border, #a3c7e0);
     }
 
     input {
-      border: 1px solid var(--exodo-border, #a3c7e0) !important;  // Estableciendo un borde coherente
+      border: 1px solid var(--exodo-border, #a3c7e0);
       transition: border-color 0.5s ease;
     }
 
     button.btn {
       background-color: var(--exodo-bg-alt, #a3c7e0);
-      border: 1px solid var(--exodo-border, #a3c7e0);  // Estableciendo un borde coherente
+      border: 1px solid var(--exodo-border, #a3c7e0);
       transition: background-color 0.5s ease;
-      &:hover, &:focus {
+
+      &:hover,
+      &:focus {
         background-color: var(--exodo-bg-alt-hover, #95b0cf);
       }
     }
   }
-  @import "exodostyles/pagination.component";
 }

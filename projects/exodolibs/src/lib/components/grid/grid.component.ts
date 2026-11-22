@@ -2,58 +2,93 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  EventEmitter,
   HostBinding,
   Input,
   OnChanges,
+  OnDestroy,
   OnInit,
+  Output,
+  QueryList,
   SimpleChanges,
-  ViewChild, ViewEncapsulation,
+  TrackByFunction,
+  ViewChild,
+  ViewChildren,
+  ViewEncapsulation
 } from '@angular/core';
+import { EMPTY, Subject, timer } from 'rxjs';
+import { catchError, finalize, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 
-import {ColumnContract, DataSourceContract, Proxy,} from './contracts';
-import {ExodoPaginationComponent} from '../pagination/pagination.component';
-import {GridService} from "./grid.service";
-import {ModeType} from "./model/types-model";
-import {DataRecords, JsonResponse} from "./contracts/data-source";
-import {Subject} from "rxjs";
-import {debounceTime} from "rxjs/operators";
+import { ColumnContract, DataSourceContract, Proxy } from './contracts';
+import { DataRecords, JsonResponse } from './contracts/data-source';
+import { ExodoPaginationComponent } from '../pagination/pagination.component';
+import { GridFilterComponent } from './filter/grid-filter.component';
+import { GridService } from './grid.service';
+import { ModeType } from './model/types-model';
+import { ExodoI18n } from '../../i18n';
+
+export interface GridCellChangeEvent {
+  row: any;
+  column: ColumnContract;
+  rowIndex: number;
+  columnIndex: number;
+  value: string;
+}
 
 @Component({
   selector: 'exodo-grid',
   templateUrl: './grid.component.html',
   styleUrls: ['./../../assets/exodogrid-style.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  standalone: false
 })
-export class ExodoGridComponent implements OnInit, OnChanges, AfterViewInit {
+export class ExodoGridComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
   public emptyMessage = 'Sin datos';
-  public rows: any = [];
-  public isLoading: boolean;
-  /** Parámetros variables: búsqueda, filtros, ordenamiento, paginación */
-  protected queryParams: any = {};
-  /** Parámetros base inmutables que deben persistir en todas las operaciones */
-  protected baseParams: any = {};
-  protected isAfterViewInit: boolean;
-  private afterRefreshLoadCallbacks: ((dataRecords: DataRecords) => void)[] = [];
+  public isLoading = false;
+  /** ID estable para el campo de búsqueda, disponible desde la creación del componente. */
+  public readonly searchFieldId: string;
+  /** Parámetros variables: búsqueda, filtros, ordenamiento, paginación. */
+  protected queryParams: Record<string, any> = {};
+  /** Parámetros base inmutables que deben persistir en todas las operaciones. */
+  protected baseParams: Record<string, any> = {};
+  protected isAfterViewInit = false;
+
+  private afterRefreshLoadCallbacks: Array<(dataRecords: DataRecords) => void> = [];
   private _uuid = '';
-  private _dataRecords: DataRecords;
-  private searchSubject = new Subject<string>();
-  @ViewChild('pagination') pagination: ExodoPaginationComponent;
-  @ViewChild('searchField') searchField: ElementRef<HTMLInputElement>;
-  @ViewChild('tableGrid') tableGrid: ElementRef<HTMLTableElement>;
-  // Properties
-  @Input() mode: ModeType = 'local';
+  private _dataRecords: DataRecords | null = null;
+  private readonly destroy$ = new Subject<void>();
+  private readonly searchSubject = new Subject<string>();
+  private readonly cancelPendingSearch$ = new Subject<void>();
+  private readonly loadTrigger$ = new Subject<{
+    url: string;
+    requestParams: Record<string, any>;
+    requestId: number;
+  }>();
+  private activeRequestId = 0;
+  private hasInitiatedLoad = false;
+  private initTimer: ReturnType<typeof setTimeout> | null = null;
+  private localSearchTerm = '';
+  private localColumnFilters: Record<string, string> = {};
+
+  @ViewChild('pagination') pagination?: ExodoPaginationComponent;
+  @ViewChild('searchField') searchField?: ElementRef<HTMLInputElement>;
+  @ViewChild('tableGrid') tableGrid?: ElementRef<HTMLTableElement>;
+  @ViewChildren(GridFilterComponent) filterComponents?: QueryList<GridFilterComponent>;
+
+  @Input() mode: ModeType = 'remote';
   @Input() caption = '';
   @Input() minChar = 1;
-  @Input() showPagination = false;
+  @Input() showPagination = true;
   @Input() showSummary = false;
-  @Input() bordered = false;
-  @Input() customBody: boolean;
-  @Input() customHeader: boolean;
+  @Input() bordered = true;
+  @Input() customBody = false;
+  @Input() customHeader = false;
+  /** @deprecated Utilice `columns` en su lugar. */
   @Input() headers: ColumnContract[] = [];
   @Input() columns: ColumnContract[] = [];
-  /** Filas de encabezado calculadas para soportar encabezados agrupados */
+  /** Filas de encabezado calculadas para soportar encabezados agrupados. */
   public headerRows: ColumnContract[][] = [];
-  /** Columnas hoja que se usan para renderizar celdas (sin children) */
+  /** Columnas hoja visibles que se usan para renderizar celdas (sin children). */
   public leafColumns: ColumnContract[] = [];
   @Input() dataSource: DataSourceContract = {
     rows: [],
@@ -67,236 +102,383 @@ export class ExodoGridComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() limit: number = 15;
   /** Offset inicial (skip) — se calculará automáticamente a partir de `page` y `limit` si no se provee. */
   @Input() skip: number = 0;
-  @Input() dataAdapter: (response: any, params: any) => JsonResponse;
-  @Input() labels: { [key: string]: string } = {};
-  /** Theme name applied to the grid host. Expected values: 'light'|'modern'|'dark' or custom */
-  @Input() theme: string = 'glacial';
+  @Input() dataAdapter?: (response: any, params: any) => JsonResponse;
+  @Input() labels: ExodoI18n | null | undefined = {};
+  /** Nombre del tema aplicado al host: 'glacial' | 'dark' | 'light' | 'modern' | 'sky' | 'bone' | 'gray'. */
+  @Input() theme: string | null = 'glacial';
+  /** Si es `true`, devuelve el foco al campo de búsqueda tras cada carga remota (por defecto `false` para no robar foco). */
+  @Input() autoFocusSearch = false;
+  /** Función opcional `trackBy` para optimizar renderizado de filas. */
+  @Input() trackBy?: TrackByFunction<any>;
 
-  public sortColumn: string;
+  /** Evento emitido cuando falla una petición HTTP remota. */
+  @Output() loadError = new EventEmitter<any>();
+  /** Evento emitido cuando se modifica una celda editable. */
+  @Output() cellChange = new EventEmitter<GridCellChangeEvent>();
+
+  public sortColumn: string | null = null;
   public sortDirection: 'asc' | 'desc' = 'asc';
 
-  constructor(
-    private gridService: GridService,
-  ) {
-    this.emptyMessage = 'Sin datos';
-    this.placeholder = 'Búsqueda';
-    this.minChar = 1;
-    this.mode = 'remote';
-    this.showSummary = false;
-    this.showPagination = true;
+  constructor(private gridService: GridService) {
     this.uuid = this.gridService.getUniqueId('exodo-grid-');
-    this.customBody = false;
-    this.isAfterViewInit = false;
+    this.searchFieldId = this.gridService.getUniqueId('exodo-grid-search-');
     this.proxy = {
-      api: { 
+      api: {
         read: '',
         create: '',
         update: '',
         destroy: ''
       }
-    }
+    };
+
+    // Debounce cancelable cuando el usuario presiona Enter inmediatamente
     this.searchSubject.pipe(
-      debounceTime(300) // Retrasa la búsqueda
-    ).subscribe({
-      next: (query) => {
-        this.searchQuery(query);
+      switchMap((query) => timer(300).pipe(
+        takeUntil(this.cancelPendingSearch$),
+        map(() => query)
+      )),
+      takeUntil(this.destroy$)
+    ).subscribe((query) => {
+      this.searchQuery(query);
+    });
+
+    // Flujo de carga con switchMap para cancelar peticiones obsoletas y garantizar cierre de isLoading
+    this.loadTrigger$.pipe(
+      switchMap(({ url, requestParams, requestId }) => {
+        const request$ = this.gridService?.onRefreshLoad?.(url, requestParams);
+        if (!request$) {
+          if (this.activeRequestId === requestId) {
+            this.isLoading = false;
+          }
+          return EMPTY;
+        }
+        return request$.pipe(
+          tap((response: any) => {
+            if (this.activeRequestId === requestId) {
+              this.isLoading = false;
+            }
+            const jsonResponse = this.dataAdapter
+              ? this.dataAdapter(response, { ...requestParams })
+              : response;
+            const records = jsonResponse?.dataRecords;
+            if (records) {
+              this.dataRecords = records;
+            } else {
+              this._dataRecords = null;
+              if (!this.dataSource) {
+                this.dataSource = { rows: [], dataRecords: null };
+              } else {
+                this.dataSource.dataRecords = null;
+                this.dataSource.rows = [];
+              }
+            }
+            this.afterRefreshLoadCallbacks.forEach((callback) => callback(records));
+          }),
+          catchError((error) => {
+            if (this.activeRequestId === requestId) {
+              this.isLoading = false;
+            }
+            this.loadError.emit(error);
+            return EMPTY;
+          }),
+          finalize(() => {
+            if (this.activeRequestId === requestId) {
+              this.isLoading = false;
+            }
+          })
+        );
+      }),
+      takeUntil(this.destroy$)
+    ).subscribe();
+  }
+
+  /** Getter/setter sincronizado con `dataSource.rows` para mantener compatibilidad con accesos existentes. */
+  public get rows(): any[] {
+    return this.dataSource?.rows ?? [];
+  }
+  public set rows(value: any[]) {
+    if (!this.dataSource) {
+      this.dataSource = { rows: [], dataRecords: null };
+    }
+    this.dataSource.rows = Array.isArray(value) ? value : [];
+  }
+
+  /** Filas visibles considerando búsqueda y filtros locales sin mutar `dataSource.rows`. */
+  public get displayedRows(): any[] {
+    const sourceRows = this.dataSource?.rows;
+    if (!Array.isArray(sourceRows) || sourceRows.length === 0) {
+      return [];
+    }
+    if (this.mode !== 'local' || this.customBody) {
+      return sourceRows;
+    }
+
+    const search = this.localSearchTerm.trim().toLowerCase();
+    const filterEntries = Object.entries(this.localColumnFilters).filter(([, val]) => val.trim().length > 0);
+
+    if (!search && filterEntries.length === 0) {
+      return sourceRows;
+    }
+
+    const searchableKeys = this.leafColumns
+      .map((c) => c.dataIndex)
+      .filter((key): key is string => Boolean(key));
+
+    return sourceRows.filter((row) => {
+      if (!row) {
+        return false;
       }
+      // 1. Validar filtros por columna
+      for (const [field, filterVal] of filterEntries) {
+        const cellStr = String(row[field] ?? '').toLowerCase();
+        if (cellStr.indexOf(filterVal.trim().toLowerCase()) === -1) {
+          return false;
+        }
+      }
+      // 2. Validar búsqueda global local
+      if (search) {
+        const keysToSearch = searchableKeys.length > 0 ? searchableKeys : Object.keys(row);
+        const matchesGlobal = keysToSearch.some((key) =>
+          String(row[key] ?? '').toLowerCase().indexOf(search) !== -1
+        );
+        if (!matchesGlobal) {
+          return false;
+        }
+      }
+      return true;
     });
   }
 
-  // Bind host classes based on the `theme` input so the grid styles are scoped per-instance
-  @HostBinding('class.exodo-theme-modern') get hostModern() { return this.theme === 'modern'; }
-  @HostBinding('class.exodo-theme-dark') get hostDark() { return this.theme === 'dark'; }
-  @HostBinding('class.exodo-theme-glacial') get hostGlacial() { return this.theme === 'glacial'; }
-  @HostBinding('class.exodo-theme-sky') get hostSky() { return this.theme === 'sky'; }
-  @HostBinding('class.exodo-theme-bone') get hostBone() { return this.theme === 'bone'; }
-  @HostBinding('class.exodo-theme-gray') get hostGray() { return this.theme === 'gray'; }
+  public get headerRowOffset(): number {
+    return this.headerRows.length + (this.allowFiltering ? 1 : 0) + 1;
+  }
 
+  // Enlace de clases de tema por instancia en el host
+  @HostBinding('class.exodo-theme-light') get hostLight(): boolean { return this.theme === 'light'; }
+  @HostBinding('class.exodo-theme-modern') get hostModern(): boolean { return this.theme === 'modern'; }
+  @HostBinding('class.exodo-theme-dark') get hostDark(): boolean { return this.theme === 'dark'; }
+  @HostBinding('class.exodo-theme-glacial') get hostGlacial(): boolean { return this.theme === 'glacial'; }
+  @HostBinding('class.exodo-theme-sky') get hostSky(): boolean { return this.theme === 'sky'; }
+  @HostBinding('class.exodo-theme-bone') get hostBone(): boolean { return this.theme === 'bone'; }
+  @HostBinding('class.exodo-theme-gray') get hostGray(): boolean { return this.theme === 'gray'; }
 
-  // Accept theme via input — simple setter kept for API clarity
   @Input()
   set themeInput(value: string | null) {
     this.theme = value;
   }
+
+  ngOnInit(): void {
+    this.rebuildHeaders();
+  }
+
   ngAfterViewInit(): void {
-    setTimeout(() => {
-      this.isAfterViewInit = true;
-      if (this.searchField && this.searchField.nativeElement) {
-        this.searchField.nativeElement.id = this.gridService.getUniqueId('exodo-grid-search-');
-      }
-      // Reconstruir headers después de inicializar la vista (por si las columnas vienen dinámicas)
-      this.rebuildHeaders();
-      if (this.mode === 'remote') {
+    this.isAfterViewInit = true;
+    if (this.dataSource?.dataRecords && this.showPagination) {
+      this.setPagination(this.dataSource.dataRecords);
+    }
+    this.initTimer = setTimeout(() => {
+      this.initTimer = null;
+      if (this.mode === 'remote' && !this.hasInitiatedLoad && this.proxy?.api?.read) {
         this.onLoad(this.baseParams);
       }
     });
   }
-  ngOnInit(): void {
-    // Construir encabezados iniciales
-    this.rebuildHeaders();
-  }
 
   ngOnChanges(changes: SimpleChanges): void {
-    // Detectar cambios en columnas o dataSource y reconstruir el grid
-    if (changes['columns'] || changes['dataSource']) {
-      if (changes['columns'] && changes['columns'].currentValue) {
-        this.rebuildGrid();
-      }
-      if (changes['dataSource'] && changes['dataSource'].currentValue) {
-        this.refreshDataRows();
-      }
+    if (changes['columns'] || changes['headers']) {
+      this.rebuildHeaders();
+    }
+    if (changes['dataSource']) {
+      this.refreshDataRows();
     }
   }
+
+  ngOnDestroy(): void {
+    if (this.initTimer !== null) {
+      clearTimeout(this.initTimer);
+      this.initTimer = null;
+    }
+    this.cancelPendingSearch$.next();
+    this.cancelPendingSearch$.complete();
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.searchSubject.complete();
+    this.loadTrigger$.complete();
+    this.afterRefreshLoadCallbacks = [];
+  }
+
   canData(): boolean {
-    if(!this.dataSource || !this.dataSource?.rows) {
+    if (!this.dataSource || !Array.isArray(this.dataSource.rows)) {
       return false;
     }
-    return ((this.dataSource.rows.length > 0))
+    if (this.customBody) {
+      return this.dataSource.rows.length > 0;
+    }
+    return this.displayedRows.length > 0;
   }
+
   onLoad(params: any = {}, force = true): void {
-    if (!this.proxy || !this.proxy?.api?.read) { return; }
+    if (!this.proxy || !this.proxy?.api?.read) {
+      return;
+    }
+    this.hasInitiatedLoad = true;
     // Guardar los parámetros base inmutables
-    this.baseParams = { ...params };
+    this.baseParams = params && typeof params === 'object' ? { ...params } : {};
     // Inicializar queryParams vacío (solo tendrá parámetros variables)
     this.queryParams = {};
     if (force) {
       this.onRefreshLoad(this.queryParams);
     }
   }
-  inputKey(event: any): void {
-    if (!this.isLoading && this.mode === 'remote') {
-      const ele = <HTMLInputElement> event.target;
-      const searchString  = ele.value;
-      if (event.keyCode === 13 && searchString.length >= 0) {
-        this.searchQuery(searchString);
-      }
+
+  inputKey(event: KeyboardEvent): void {
+    if (this.mode !== 'remote') {
+      return;
+    }
+    const isEnter = event.key === 'Enter' || event.keyCode === 13;
+    if (!isEnter) {
+      return;
+    }
+    const ele = event.target as HTMLInputElement;
+    const searchString = ele?.value ?? '';
+    if (searchString.length === 0 || searchString.length >= this.minChar) {
+      // Cancelar debounce pendiente para evitar doble petición HTTP
+      this.cancelPendingSearch$.next();
+      this.searchQuery(searchString);
     }
   }
+
   searchQuery(searchQuery: string): void {
-    if (this.mode !== 'remote') { return; }
-    // Limpiar parámetros de búsqueda
-    delete this.queryParams.query;
-    delete this.queryParams.search;
-    delete this.queryParams.searchQuery;
-    delete this.queryParams.searchParam;
-    
-    // Actualizar solo los parámetros variables en queryParams
+    if (this.mode !== 'remote') {
+      return;
+    }
+    delete this.queryParams['query'];
+    delete this.queryParams['search'];
+    delete this.queryParams['searchQuery'];
+    delete this.queryParams['searchParam'];
+
     if (searchQuery && searchQuery.length > 0) {
-      this.queryParams.query = searchQuery;
-      this.queryParams.search = searchQuery;
-      this.queryParams.searchQuery = searchQuery;
-      this.queryParams.searchParam = searchQuery;
+      this.queryParams['query'] = searchQuery;
+      this.queryParams['search'] = searchQuery;
+      this.queryParams['searchQuery'] = searchQuery;
+      this.queryParams['searchParam'] = searchQuery;
     }
-    
-    // Resetear paginación
-    this.queryParams.page = 1;
-    if (this.limit != null) {
-      this.queryParams.limit = this.limit;
-      this.queryParams.skip = 0;
-    }
-    
+
+    this.resetPaginationParams();
     this.onRefreshLoad(this.queryParams);
   }
 
   public onRefreshPagination(page: number): void {
-    // Actualizar solo la paginación en queryParams
-    this.queryParams.page = page;
+    const safePage = Math.max(1, Math.trunc(Number(page) || 1));
+    this.queryParams['page'] = safePage;
     if (this.limit != null) {
-      this.queryParams.limit = this.limit;
-      this.queryParams.skip = (Number(page) - 1) * Number(this.limit);
+      this.queryParams['limit'] = this.limit;
+      this.queryParams['skip'] = (safePage - 1) * Number(this.limit);
     } else if (this.skip != null) {
-      this.queryParams.skip = this.skip;
+      this.queryParams['skip'] = this.skip;
     }
 
     this.onRefreshLoad(this.queryParams);
   }
-  private onRefreshLoad(params: any) {
-    if (this.isLoading || this.mode !== 'remote') {
+
+  private onRefreshLoad(params: any): void {
+    if (this.mode !== 'remote' || !this.proxy?.api?.read) {
       return;
     }
-    const url     = this.proxy.api.read;
-    this.isLoading  = true;
-    if(!params) {
-      params = {};
+    const url = this.proxy.api.read;
+    const variableParams = params && typeof params === 'object' ? params : {};
+    // Combinar respetando prioridad: baseParams como base + parámetros variables actualizados encima
+    const requestParams: Record<string, any> = { ...this.baseParams, ...variableParams };
+    if (this.limit != null && requestParams['limit'] == null) {
+      requestParams['limit'] = this.limit;
     }
-    // Asegurar que siempre incluimos limit/skip en la petición cuando estén disponibles
-    const requestParams = { ...params, ...this.baseParams};
-    if (this.limit != null && requestParams.limit == null) { requestParams.limit = this.limit; }
-    if (this.skip != null && requestParams.skip == null) { requestParams.skip = this.skip; }
-    this.gridService.onRefreshLoad(url, requestParams)
-      .subscribe({
-        next: (response: any) => {
-          this.isLoading    = false;
-          const jsonResponse = this.dataAdapter ? this.dataAdapter(response, params) : response;
-          this.dataRecords  = jsonResponse.dataRecords;
-          this.afterRefreshLoadCallbacks.forEach(callback => callback(jsonResponse.dataRecords));
-        },
-        error: (error) => {
-          this.isLoading  = false;
-          console.error(error);
-        }
-      })
+    if (this.skip != null && requestParams['skip'] == null) {
+      requestParams['skip'] = this.skip;
+    }
+
+    const requestId = ++this.activeRequestId;
+    this.isLoading = true;
+    this.loadTrigger$.next({ url, requestParams, requestId });
   }
-  set dataRecords(dataRecords: DataRecords) {
-    const me  = this;
-    me._dataRecords           = dataRecords;
-    me.dataSource.dataRecords = dataRecords;
-    me.dataSource.rows        = me.dataSource.dataRecords.data;
-    me.rows                   = me.dataSource.rows;
-    me.setPagination(dataRecords);
-    if (this.searchField.nativeElement) {
+
+  set dataRecords(dataRecords: DataRecords | null) {
+    this._dataRecords = dataRecords ?? null;
+    if (!this.dataSource) {
+      this.dataSource = { rows: [], dataRecords: null };
+    }
+    this.dataSource.dataRecords = this._dataRecords;
+    this.dataSource.rows = Array.isArray(dataRecords?.data) ? dataRecords.data : [];
+    if (dataRecords) {
+      this.setPagination(dataRecords);
+    }
+    if (this.autoFocusSearch && this.searchField?.nativeElement) {
       this.searchField.nativeElement.focus();
     }
   }
-  get dataRecords(): DataRecords {
+
+  get dataRecords(): DataRecords | null {
     return this._dataRecords;
   }
-  protected setPagination(dataRecords: DataRecords): void {
-    const me  = this;
-    if (me.showPagination && dataRecords) {
-      me.pagination.onLoad({
-        currentPage : dataRecords.current_page,
-        from        : dataRecords.from,
-        lastPage    : dataRecords.last_page,
-        to          : dataRecords.to,
-        total       : dataRecords.total,
-        perPage     : dataRecords.per_page
+
+  protected setPagination(dataRecords: DataRecords | null | undefined): void {
+    if (this.showPagination && dataRecords && this.pagination) {
+      this.pagination.onLoad({
+        currentPage: dataRecords.current_page,
+        from: dataRecords.from,
+        lastPage: dataRecords.last_page,
+        to: dataRecords.to,
+        total: dataRecords.total,
+        perPage: dataRecords.per_page
       });
     }
   }
-  inputSearch(e: Event) {
-    const ele = <HTMLInputElement> e.target;
-    if(this.mode  === 'remote') {
-      if(ele.value.length === 0 || ele.value.length >= this.minChar) {
-        // Al iniciar búsqueda, resetear solo la paginación pero mantener otros parámetros
-        // NO resetear queryParams aquí, lo hará searchQuery con el debounce
-        this.searchSubject.next(ele.value);
+
+  inputSearch(e: Event): void {
+    const ele = e.target as HTMLInputElement;
+    const value = ele?.value ?? '';
+    if (this.mode === 'remote') {
+      if (value.length === 0 || value.length >= this.minChar) {
+        this.searchSubject.next(value);
       }
-    }else {
-      const table = this.tableGrid.nativeElement.tBodies[0];
-      this.gridService.filterItems(ele.value, table);
+    } else if (this.customBody) {
+      const tbody = this.tableGrid?.nativeElement?.tBodies?.[0];
+      if (tbody) {
+        this.gridService.filterItems(value, tbody);
+      }
+    } else {
+      this.localSearchTerm = value;
     }
   }
 
-  applyGridFilter(event: any) {
-    // Agregar/actualizar filtros en queryParams
-    Object.assign(this.queryParams, event);
-    
-    // Resetear paginación
-    this.queryParams.page = 1;
-    if (this.limit != null) { 
-      this.queryParams.limit = this.limit; 
-      this.queryParams.skip = 0; 
-    } else if (this.skip != null) { 
-      this.queryParams.skip = 0; 
+  applyGridFilter(event: { field?: string; value?: any } | null | undefined): void {
+    if (!event || !event.field) {
+      return;
     }
-    
+    const rawValue = event.value === null || event.value === undefined ? '' : String(event.value);
+
+    if (this.mode === 'local') {
+      if (rawValue.trim().length === 0) {
+        delete this.localColumnFilters[event.field];
+      } else {
+        this.localColumnFilters[event.field] = rawValue;
+      }
+      return;
+    }
+
+    if (rawValue.trim().length === 0) {
+      delete this.queryParams['field'];
+      delete this.queryParams['value'];
+    } else {
+      this.queryParams['field'] = event.field;
+      this.queryParams['value'] = rawValue;
+    }
+
+    this.resetPaginationParams();
     this.onRefreshLoad(this.queryParams);
   }
 
-  sort(column: ColumnContract) {
-    // validar si la columna es ordenable (propiedad de columna puede deshabilitarlo)
-    if (!this.allowSorting || !column.dataIndex || column.sortable === false) {
+  sort(column: ColumnContract): void {
+    if (!this.allowSorting || !column?.dataIndex || column.sortable === false) {
       return;
     }
 
@@ -308,174 +490,249 @@ export class ExodoGridComponent implements OnInit, OnChanges, AfterViewInit {
     }
 
     if (this.mode === 'remote') {
-      // Actualizar ordenamiento en queryParams
-      this.queryParams.sort = this.sortColumn;
-      this.queryParams.dir = this.sortDirection;
-      
-      // Resetear paginación
-      this.queryParams.page = 1;
-      if (this.limit != null) { 
-        this.queryParams.limit = this.limit; 
-        this.queryParams.skip = 0; 
-      } else if (this.skip != null) { 
-        this.queryParams.skip = 0; 
-      }
-      
-      // Combinar baseParams + queryParams para la petición
+      this.queryParams['sort'] = this.sortColumn;
+      this.queryParams['dir'] = this.sortDirection;
+      this.resetPaginationParams();
       this.onRefreshLoad(this.queryParams);
     } else {
-      this.dataSource.rows.sort((a, b) => {
-        const valA = a[this.sortColumn];
-        const valB = b[this.sortColumn];
-        if (valA < valB) {
-          return this.sortDirection === 'asc' ? -1 : 1;
+      const rows = this.dataSource?.rows;
+      if (!Array.isArray(rows) || rows.length <= 1) {
+        return;
+      }
+      const sortKey = this.sortColumn;
+      const multiplier = this.sortDirection === 'asc' ? 1 : -1;
+      this.dataSource.rows = [...rows].sort((a, b) => {
+        const valA = a?.[sortKey];
+        const valB = b?.[sortKey];
+        if (valA === valB) {
+          return 0;
         }
-        if (valA > valB) {
-          return this.sortDirection === 'asc' ? 1 : -1;
+        if (valA === null || valA === undefined) {
+          return 1;
         }
-        return 0;
+        if (valB === null || valB === undefined) {
+          return -1;
+        }
+        if (typeof valA === 'number' && typeof valB === 'number') {
+          return (valA - valB) * multiplier;
+        }
+        return String(valA).localeCompare(String(valB), undefined, { numeric: true, sensitivity: 'base' }) * multiplier;
       });
-    } 
+    }
   }
 
-  /** Reconstruye las filas de encabezado y la lista de columnas hoja */
+  /** Reconstruye las filas de encabezado y la lista de columnas hoja visibles sin mutar el input. */
   protected rebuildHeaders(): void {
-    if (!this.columns || this.columns.length === 0) {
+    const sourceColumns = Array.isArray(this.columns) && this.columns.length > 0
+      ? this.columns
+      : (Array.isArray(this.headers) ? this.headers : []);
+
+    if (sourceColumns.length === 0) {
       this.headerRows = [];
       this.leafColumns = [];
       return;
     }
-    this.headerRows = this.buildHeaderRows(this.columns);
-    this.leafColumns = this.collectLeafColumns(this.columns);
+    this.headerRows = this.buildHeaderRows(sourceColumns);
+    this.leafColumns = this.collectLeafColumns(sourceColumns);
   }
 
   /**
    * Método público para reconstruir completamente el grid.
-   * Útil cuando las columnas cambian dinámicamente o después de refresh del navegador.
+   * Útil cuando las columnas cambian dinámicamente o después de un refresh manual.
    */
   public rebuildGrid(): void {
-    // Reconstruir headers y columnas
     this.rebuildHeaders();
-    // Refrescar datos si existen
     this.refreshDataRows();
-    // Forzar detección de cambios si estamos en AfterViewInit
-    if (this.isAfterViewInit && this.mode === 'remote' && this.proxy) {
-      // Si hay proxy configurado y estamos en modo remoto, recargar datos
+    if (this.isAfterViewInit && this.mode === 'remote' && this.proxy?.api?.read) {
       this.onLoad(this.baseParams, true);
     }
   }
 
-  /**
-   * Método auxiliar para refrescar las filas de datos desde dataSource
-   */
   private refreshDataRows(): void {
-    if (this.dataSource && this.dataSource.rows) {
-      this.rows = this.dataSource.rows;
+    if (this.dataSource && Array.isArray(this.dataSource.rows)) {
       if (this.dataSource.dataRecords) {
         this.setPagination(this.dataSource.dataRecords);
       }
-    } else {
-      this.rows = [];
     }
   }
 
-  /** Construye una matriz de filas de encabezado a partir de columnas (soporta children) */
+  /** Construye una matriz de filas de encabezado clonando nodos (sin mutar `columns`). */
   protected buildHeaderRows(columns: ColumnContract[]): ColumnContract[][] {
     const rows: ColumnContract[][] = [];
-    const traverse = (cols: ColumnContract[], level = 0) => {
-      rows[level] = rows[level] || [];
-      cols.forEach(col => {
-        rows[level].push(col);
+
+    const traverse = (cols: ColumnContract[], level = 0): void => {
+      for (const col of cols) {
+        if (!col || col.hidden) {
+          continue;
+        }
+        const visibleLeafCount = this.countLeafColumns(col);
+        if (visibleLeafCount === 0) {
+          continue;
+        }
+        rows[level] = rows[level] || [];
+        const cloned: ColumnContract = { ...col };
         if (col.children && col.children.length > 0) {
+          cloned.colspan = col.colspan || visibleLeafCount;
+          rows[level].push(cloned);
           traverse(col.children, level + 1);
-          if (!col.colspan) { col.colspan = this.countLeafColumns(col); }
+        } else {
+          rows[level].push(cloned);
         }
-      });
+      }
     };
+
     traverse(columns, 0);
+
     const maxLevel = rows.length;
-    for (let r = 0; r < rows.length; r++) {
-      rows[r].forEach(col => {
+    for (let r = 0; r < maxLevel; r++) {
+      for (const col of rows[r]) {
         if (!col.children || col.children.length === 0) {
-          if (!col.rowspan) { col.rowspan = maxLevel - r; }
+          col.rowspan = col.rowspan || (maxLevel - r);
         }
-      });
+      }
     }
+
     return rows;
   }
 
   protected countLeafColumns(col: ColumnContract): number {
-    if (!col.children || col.children.length === 0) { return 1; }
-    return col.children.reduce((acc, c) => acc + this.countLeafColumns(c), 0);
+    if (!col || col.hidden) {
+      return 0;
+    }
+    if (!col.children || col.children.length === 0) {
+      return 1;
+    }
+    return col.children.reduce((acc, child) => acc + this.countLeafColumns(child), 0);
   }
 
   protected collectLeafColumns(columns: ColumnContract[]): ColumnContract[] {
     const leaves: ColumnContract[] = [];
-    const traverse = (cols: ColumnContract[]) => {
-      cols.forEach(c => {
-        if (c.children && c.children.length > 0) { traverse(c.children); }
-        else { leaves.push(c); }
-      });
+    const traverse = (cols: ColumnContract[]): void => {
+      for (const col of cols) {
+        if (!col || col.hidden) {
+          continue;
+        }
+        if (col.children && col.children.length > 0) {
+          traverse(col.children);
+        } else {
+          leaves.push(col);
+        }
+      }
     };
     traverse(columns);
     return leaves;
   }
 
-  public onAfterRefreshLoad(callback: (dataRecords: DataRecords) => void) {
+  public onAfterRefreshLoad(callback: (dataRecords: DataRecords) => void): () => void {
     this.afterRefreshLoadCallbacks.push(callback);
+    return () => {
+      const idx = this.afterRefreshLoadCallbacks.indexOf(callback);
+      if (idx !== -1) {
+        this.afterRefreshLoadCallbacks.splice(idx, 1);
+      }
+    };
   }
-  
+
   /**
-   * Limpia todos los parámetros variables (búsqueda, filtros, ordenamiento)
-   * pero mantiene los parámetros base inmutables
+   * Limpia todos los parámetros variables (búsqueda, filtros y ordenamiento)
+   * preservando los parámetros base inmutables.
    */
   public clearFilters(): void {
+    this.cancelPendingSearch$.next();
     this.queryParams = {};
-    if (this.searchField && this.searchField.nativeElement) {
+    this.localSearchTerm = '';
+    this.localColumnFilters = {};
+    if (this.searchField?.nativeElement) {
       this.searchField.nativeElement.value = '';
     }
+    this.filterComponents?.forEach((filter) => filter.reset());
     this.sortColumn = null;
     this.sortDirection = 'asc';
-    
-    this.onRefreshLoad(this.queryParams);
+
+    if (this.mode === 'remote') {
+      this.onRefreshLoad(this.queryParams);
+    } else if (this.customBody) {
+      const tbody = this.tableGrid?.nativeElement?.tBodies?.[0];
+      if (tbody) {
+        this.gridService.filterItems('', tbody);
+      }
+    }
   }
-  
-  /**
-   * Obtiene los parámetros base inmutables (los que se pasaron en onLoad)
-   */
-  public getBaseParams(): any {
+
+  public getBaseParams(): Record<string, any> {
     return { ...this.baseParams };
   }
-  
-  /**
-   * Obtiene todos los parámetros actuales (base + variables)
-   */
-  public getQueryParams(): any {
+
+  public getQueryParams(): Record<string, any> {
     return { ...this.baseParams, ...this.queryParams };
   }
-  
+
   public getDataSource(): DataSourceContract {
     return this.dataSource;
   }
+
   public getSearchFieldId(): string {
-    return this.searchField.nativeElement.id;
+    return this.searchField?.nativeElement?.id || this.searchFieldId;
   }
-  public getSearchField(): ElementRef<HTMLInputElement> {
+
+  public getSearchField(): ElementRef<HTMLInputElement> | undefined {
     return this.searchField;
   }
+
   public getSearchFieldValue(): string {
-    return this.searchField.nativeElement.value;
+    return this.searchField?.nativeElement?.value ?? '';
   }
-  public getTable(): ElementRef<HTMLTableElement> {
+
+  public getTable(): ElementRef<HTMLTableElement> | undefined {
     return this.tableGrid;
   }
+
   public getTableId(): string {
-    return this.tableGrid.nativeElement.id;
+    return this.tableGrid?.nativeElement?.id || this._uuid;
   }
+
   get uuid(): string {
     return this._uuid;
   }
+
   set uuid(value: string) {
     this._uuid = value;
+  }
+
+  public normalizeWidth(value?: string | number | null): string {
+    if (value === null || value === undefined || value === '') {
+      return 'auto';
+    }
+    const str = String(value).trim();
+    return /^\d+(\.\d+)?$/.test(str) ? `${str}px` : str;
+  }
+
+  public onCellChange(value: string, row: any, column: ColumnContract, rowIndex: number, columnIndex: number): void {
+    this.cellChange.emit({ row, column, rowIndex, columnIndex, value });
+  }
+
+  public trackByIndex(index: number): number {
+    return index;
+  }
+
+  public trackByColumn(index: number, column: ColumnContract): string | number {
+    return column?.dataIndex ?? column?.text ?? index;
+  }
+
+  public trackByRow = (index: number, row: any): any => {
+    if (this.trackBy) {
+      return this.trackBy(index, row);
+    }
+    return row?.id ?? index;
+  };
+
+  private resetPaginationParams(): void {
+    this.queryParams['page'] = 1;
+    if (this.limit != null) {
+      this.queryParams['limit'] = this.limit;
+      this.queryParams['skip'] = 0;
+    } else if (this.skip != null) {
+      this.queryParams['skip'] = 0;
+    }
   }
 }

@@ -1,3 +1,7 @@
-<div class="filter-container">
-  <input type="text" [(ngModel)]="filterValue" (keyup.enter)="applyFilter()" placeholder="Filter by {{ column.text }}">
+<div class="filter-container" *ngIf="column?.dataIndex">
+  <input type="text"
+         [(ngModel)]="filterValue"
+         (keyup.enter)="applyFilter()"
+         [placeholder]="placeholder"
+         [attr.aria-label]="placeholder">
 </div>

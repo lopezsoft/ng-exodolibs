@@ -1,13 +1,15 @@
 {
   "name": "ng-exodolibs",
-  "version": "0.8.13",
+  "version": "0.9.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --open --port 1200",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "lib": "ng build exodolibs && cp -R ./projects/exodolibs/src/lib/assets ./dist/exodolibs/lib && cp ./projects/exodolibs/src/lib/assets/style.scss ./dist/exodolibs/lib/style.scss"
+    "test:lib": "ng test exodolibs",
+    "test:ci": "ng test exodolibs --watch=false --browsers=ChromeHeadlessCI && ng test ng-exodolibs --watch=false --browsers=ChromeHeadlessCI",
+    "lib": "ng build exodolibs --configuration production"
   },
   "private": true,
   "dependencies": {
