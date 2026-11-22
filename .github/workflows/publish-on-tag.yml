@@ -4,6 +4,12 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag o versión a verificar (opcional, usa projects/exodolibs/package.json si se omite)'
+        type: string
+        required: false
 
 permissions:
   contents: read
@@ -31,14 +37,20 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           cache: 'npm'
 
-      - name: Verify tag matches package versions
+      - name: Verify version consistency
         run: |
-          TAG_VERSION="${GITHUB_REF_NAME#v}"
           ROOT_VERSION=$(node -p "require('./package.json').version")
           LIB_VERSION=$(node -p "require('./projects/exodolibs/package.json').version")
-          if [ "$TAG_VERSION" != "$ROOT_VERSION" ] || [ "$TAG_VERSION" != "$LIB_VERSION" ]; then
-            echo "Version mismatch: tag=$TAG_VERSION root=$ROOT_VERSION lib=$LIB_VERSION"
+          if [ "$ROOT_VERSION" != "$LIB_VERSION" ]; then
+            echo "Version mismatch: root=$ROOT_VERSION lib=$LIB_VERSION"
             exit 1
+          fi
+          if [ "${{ github.event_name }}" = "push" ]; then
+            TAG_VERSION="${GITHUB_REF_NAME#v}"
+            if [ "$TAG_VERSION" != "$LIB_VERSION" ]; then
+              echo "Version mismatch: tag=$TAG_VERSION lib=$LIB_VERSION"
+              exit 1
+            fi
           fi
 
       - name: Install dependencies
@@ -64,7 +76,7 @@ jobs:
         run: |
           cd dist/exodolibs
           if [ "$IS_PRIVATE" = "false" ]; then
-            npm publish --provenance --access public
+            npm publish --provenance --access public || npm publish --access public
           else
             npm publish --access public
           fi

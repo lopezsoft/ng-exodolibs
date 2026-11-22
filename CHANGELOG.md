@@ -38,7 +38,8 @@ Todos los cambios notables en `exodolibs` se documentan en este archivo siguiend
 - Exportación completa de contratos, tipos, `GridService`, `GridFilterComponent`, `GridFilterModule`, `SafeHtmlPipe`, `PipesModule`, `ExodoCustomHtmlDirective` y `escapeHTML` en `public-api.ts`.
 - Nuevos `@Output()` aditivos `loadError` y `cellChange`, e `@Input()` aditivos `autoFocusSearch` y `trackBy` en `ExodoGridComponent`.
 - Suites unitarias y de integración completas para seguridad XSS, `GridCellComponent`, `GridService`, `GridFilterComponent`, `ExodoTooltipDirective`, `ExodoCustomHtmlDirective`, `SafeHtmlPipe`, `ExodoPaginationComponent` y `ExodoGridComponent`.
-- Launcher `ChromeHeadlessCI` en Karma, scripts `test:lib` / `test:ci`, workflow `.github/workflows/ci.yml` y endurecimiento de `.github/workflows/publish-on-tag.yml`.
+- Launcher `ChromeHeadlessCI` en Karma, scripts `test:lib` / `test:ci`, workflow `.github/workflows/ci.yml`, pipeline idempotente de GitHub Releases (`.github/workflows/release.yml` + `scripts/build-release-notes.mjs`) y endurecimiento de `.github/workflows/publish-on-tag.yml`.
+- Licencia MIT actualizada (`Copyright (c) 2023-2026 Lewis Oswaldo Lopez Gomez`) en `LICENSE`, `projects/exodolibs/LICENSE`, metadatos de `package.json` y documentación `README.md`.
 
 ## [0.8.13] - 2025-11-12
 - Corrección de operador spread en llamadas `onLoad` y orden de combinación de parámetros.

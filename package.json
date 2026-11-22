@@ -1,6 +1,16 @@
 {
   "name": "ng-exodolibs",
   "version": "0.9.0",
+  "license": "MIT",
+  "author": "Lewis Oswaldo Lopez Gomez <lopezsoft.com@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lopezsoft/ng-exodolibs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lopezsoft/ng-exodolibs/issues"
+  },
+  "homepage": "https://github.com/lopezsoft/ng-exodolibs#readme",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --open --port 1200",

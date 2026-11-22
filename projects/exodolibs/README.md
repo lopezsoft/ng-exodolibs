@@ -1,5 +1,8 @@
 # ExodoLibs
 
+[![npm version](https://img.shields.io/npm/v/exodolibs.svg)](https://www.npmjs.com/package/exodolibs)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
+
 Librería de componentes UI para Angular enfocada en DataGrid remoto/local, paginación personalizable, filtros por columna, edición en línea, temas por instancia y tooltips accesibles.
 
 ## Compatibilidad
@@ -174,4 +177,8 @@ npm run test:lib
 npm run lib
 ```
 
-La publicación en npm se ejecuta automáticamente mediante GitHub Actions (`.github/workflows/publish-on-tag.yml`) al crear y subir un tag `vX.Y.Z` que coincida con la versión de `package.json` y `projects/exodolibs/package.json`.
+La publicación en npm se ejecuta mediante GitHub Actions (`.github/workflows/publish-on-tag.yml`) al crear un tag `vX.Y.Z` o manualmente vía `workflow_dispatch`, y la creación automática de **GitHub Releases** (con notas combinadas de `RELEASE_NOTES` + `CHANGELOG.md` y tarball `.tgz` adjunto) se ejecuta automáticamente en `.github/workflows/release.yml` cuando `CI` pasa en `main`.
+
+## Licencia
+
+Este proyecto es software libre de código abierto distribuido bajo la **[Licencia MIT](./LICENSE)** — Copyright (c) 2023-2026 Lewis Oswaldo Lopez Gomez. Consulta el archivo [LICENSE](./LICENSE) para más detalles.
